@@ -37,7 +37,7 @@ class StringReader extends AbstractReader
     /**
      * Для хранения результатов чтения строки (содержимое строки)
      */
-    readonly private CodeTmp $stringValue;
+    private CodeTmp $stringValue;
 
     protected function __construct(PhpReader $phpReader)
     {
@@ -63,7 +63,7 @@ class StringReader extends AbstractReader
         $this->quote = $this->phpReader->codeString->charFirst;
     }
 
-    public function run(): null|self
+    public function run(): ?AbstractReader
     {
         if ($this->stringValue->lastChar === "\\") $this->openSlash = !$this->openSlash;
         else $this->openSlash = false;

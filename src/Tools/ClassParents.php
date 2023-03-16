@@ -24,7 +24,7 @@ class ClassParents
     /**
      * Имя читаемого класса
      */
-    readonly private string $className;
+    private string $className;
 
     /**
      * Результат работы - Массив с всеми родительскими классами, интерфейсами и трейтами

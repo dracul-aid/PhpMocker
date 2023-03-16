@@ -31,7 +31,7 @@ class AutoloaderFilerNamespaceStorage extends AbstractAutoloaderFilerStorage
      */
     private array $tree = [];
 
-    public function add(string $addValue): static
+    public function add(string $addValue): AbstractAutoloaderFilerStorage
     {
         $namespaceParts = explode('\\', $addValue);
         $nowBranch = &$this->tree;
@@ -45,7 +45,7 @@ class AutoloaderFilerNamespaceStorage extends AbstractAutoloaderFilerStorage
         return $this;
     }
 
-    public function remove(string $removeValue): static
+    public function remove(string $removeValue): AbstractAutoloaderFilerStorage
     {
         $namespaceParts = explode('\\', $removeValue);
         $this->removeTreeBranch($this->tree, $namespaceParts);

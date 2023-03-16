@@ -12,6 +12,7 @@
 namespace DraculAid\PhpMocker\Managers;
 
 use DraculAid\PhpMocker\Creator\MockClassInterfaces\MockClassInterface;
+use DraculAid\PhpMocker\Creator\Services\GeneratorNoPublicMethods;
 use DraculAid\PhpMocker\Creator\ToolsElementNames;
 use DraculAid\PhpMocker\Exceptions\Managers\MethodManagerIncorrectForObjectException;
 use DraculAid\PhpMocker\Exceptions\Managers\MethodManagerNotFoundException;
@@ -41,6 +42,10 @@ use DraculAid\PhpMocker\Tools\ClassParents;
  * @see self::getProperty() - Получение значения свойства
  * @see self::setProperty() - Установка значения свойства
  * @see self::callMethod() - Вызов метода
+ *
+ * Свойства доступные только для чтения @see self::__get()
+ * @property object $toObject
+ * @property array $mockMethodNames
  */
 class ObjectManager extends AbstractClassAndObjectManager
 {
@@ -58,14 +63,14 @@ class ObjectManager extends AbstractClassAndObjectManager
     /**
      * Объект для которого создан менеджер
      */
-    readonly public object $toObject;
+    private object $toObject;
 
     /**
      * Список имен методов класса, для которых можно получить "мок-метод"
      *
      * @var string[] $mockMethodNames Ключи и значение - строка с именем метода
      */
-    readonly public array $mockMethodNames;
+    private array $mockMethodNames;
 
     /**
      * @param   object   $toObject   Объект для которого создается менеджер
@@ -80,7 +85,7 @@ class ObjectManager extends AbstractClassAndObjectManager
 
         // Мок-объекты могут быть "не полными", это значит, что они могут быть созданы не от мок-класса, а от обычного
         // класса, который наследует мок-методы от мок-класса родителя (обычного класса-родителя или трейта)
-        $this->getClassManager()?->objectManagers->attach($toObject, $this);
+        if ($this->getClassManager() !== null) $this->getClassManager()->objectManagers->attach($toObject, $this);
 
         if (!isset(self::$objectManagers)) self::$objectManagers = new \SplObjectStorage();
         self::$objectManagers[$toObject] = $this;
@@ -88,6 +93,11 @@ class ObjectManager extends AbstractClassAndObjectManager
         // * * *
 
         ObjectManagerCreateHandler::exe($this);
+    }
+
+    public function __get(string $name)
+    {
+        return $this->{$name};
     }
 
     /**
@@ -100,7 +110,7 @@ class ObjectManager extends AbstractClassAndObjectManager
      *
      * @throws  ObjectManagerNotFoundException   Может быть выброшен, в случае, если не был найден менеджер
      */
-    public static function getManager(object $mockObject, bool $throw = false): null|ObjectManager
+    public static function getManager(object $mockObject, bool $throw = false): ?ObjectManager
     {
         if (!isset(self::$objectManagers)) self::$objectManagers = new \SplObjectStorage();
 
@@ -155,9 +165,9 @@ class ObjectManager extends AbstractClassAndObjectManager
      *
      * @return  null|ClassManager  Вернет "менеджер мок-класса" или NULL, если мок-объект на который ссылается менеджер, не был создан от мок-класса
      */
-    public function getClassManager(): null|ClassManager
+    public function getClassManager(): ?ClassManager
     {
-        return ClassManager::getManager($this->toObject::class);
+        return ClassManager::getManager(get_class($this->toObject));
     }
 
     /**
@@ -165,9 +175,11 @@ class ObjectManager extends AbstractClassAndObjectManager
      *
      * @return  null|string   Вернет полное имя класса или NULL (если невозможно получить менеджер мок-класса)
      */
-    public function getDriver(): null|string
+    public function getDriver(): ?string
     {
-        return $this->getClassManager()?->getDriver();
+        if (!$this->getClassManager()) return null;
+
+        return $this->getClassManager()->getDriver();
     }
 
     /**
@@ -175,9 +187,11 @@ class ObjectManager extends AbstractClassAndObjectManager
      *
      * @return  null|string   Вернет полное имя класса или NULL (если невозможно получить менеджер мок-класса)
      */
-    public function getToClass(): null|string
+    public function getToClass(): ?string
     {
-        return $this->getClassManager()?->getToClass();
+        if (!$this->getClassManager()) return null;
+
+        return $this->getClassManager()->getToClass();
     }
 
     /**
@@ -193,11 +207,13 @@ class ObjectManager extends AbstractClassAndObjectManager
     /**
      * Получение значения статического свойства (в том числе и protected и private)
      *
+     * Код функции создается в @see GeneratorNoPublicMethods::runPropertyGet()
+     *
      * @param   string   $name    Имя статического свойства
      *
      * @return  mixed   Значение свойства
      */
-    public function getProperty(string $name): mixed
+    public function getProperty(string $name)
     {
         return [$this->toObject, ToolsElementNames::methodPropertyGet($this->getClassManager()->index)]($name);
     }
@@ -205,12 +221,14 @@ class ObjectManager extends AbstractClassAndObjectManager
     /**
      * Установка значения статического свойства (в том числе и protected и private)
      *
+     * Код функции создается в @see GeneratorNoPublicMethods::runPropertySet()
+     *
      * @param   string|array   $nameOrList   Имя статического свойства или массив с устанавливаемыми свойствами
      * @param   mixed          $value        Устанавливаемое значение
      *
      * @return  $this
      */
-    public function setProperty(string|array $nameOrList, mixed $value = null): self
+    public function setProperty($nameOrList, $value = null): self
     {
         if (is_array($nameOrList))
         {
@@ -227,12 +245,14 @@ class ObjectManager extends AbstractClassAndObjectManager
     /**
      * Вызов статического метода (в том числе и protected и private)
      *
+     * Код функции создается в @see GeneratorNoPublicMethods::runMethodCall()
+     *
      * @param   string    $name         Имя вызываемого метода
      * @param   mixed  ...$arguments    Аргументы вызываемого метода
      *
      * @return  mixed    Вернет результат работы функции
      */
-    public function callMethod(string $name, mixed ... $arguments): mixed
+    public function callMethod(string $name, ... $arguments)
     {
         return [$this->toObject, ToolsElementNames::methodCall($this->getClassManager()->index)]($name, $arguments);
     }
@@ -272,8 +292,8 @@ class ObjectManager extends AbstractClassAndObjectManager
     {
         $mockMethods = [];
 
-        $classList = ClassParents::getWithoutInterfaces($this->toObject::class);
-        $classList[$this->toObject::class] = $this->toObject::class;
+        $classList = ClassParents::getWithoutInterfaces(get_class($this->toObject));
+        $classList[get_class($this->toObject)] = get_class($this->toObject);
 
         foreach ($classList as $class)
         {

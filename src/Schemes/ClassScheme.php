@@ -11,6 +11,8 @@
 
 namespace DraculAid\PhpMocker\Schemes;
 
+use DraculAid\PhpMocker\Tools\ClassTools;
+
 /**
  * Схемы для ООП элементов: описание класса
  *
@@ -145,12 +147,15 @@ class ClassScheme extends AbstractBasicScheme
     /**
      * Создание схемы класса
      *
-     * @param   ClassSchemeType    $type    Тип создаваемого класса (класс, трейт, интерфейс, перечисление)
-     * @param   string         $name    Полное имя класса (включая пространство имен)
+     * @param   ClassSchemeType  $type         Тип создаваемого класса (класс, трейт, интерфейс, перечисление)
+     * @param   string           $name         Полное имя класса (включая пространство имен)
+     * @param   bool             $isAnonymous  Создается анонимный или обычный класс
      */
-    public function __construct(ClassSchemeType $type, string $name)
+    public function __construct(ClassSchemeType $type, string $name, bool $isAnonymous = false)
     {
         $this->type = $type;
+        $this->isAnonymous = $isAnonymous; // Влияет на правила создания имени класса
+
         $this->setFullName($name);
     }
 
@@ -171,9 +176,15 @@ class ClassScheme extends AbstractBasicScheme
      *
      * @return  $this
      */
-    public function setFullName(string $name): static
+    public function setFullName(string $name): self
     {
-        if ($name === '')
+        if ($this->isAnonymous)
+        {
+            $this->namespace = '';
+            $this->name = $name;
+            return $this;
+        }
+        elseif ($name === '')
         {
             $this->namespace = '';
             $this->name = '';
@@ -183,10 +194,8 @@ class ClassScheme extends AbstractBasicScheme
         // * * *
 
         if ($name[0] === '\\') $name = substr($name, 1);
-        $this->name = basename($name);
 
-        $this->namespace = dirname($name);
-        if ($this->namespace === '.') $this->namespace = '';
+        ClassTools::getNameAndNamespace($name, $this->namespace, $this->name);
 
         return $this;
     }
@@ -196,7 +205,7 @@ class ClassScheme extends AbstractBasicScheme
      *
      * @return   null|MethodScheme   Вернет схему метода-конструктора или NULL, если конструктор не описан
      */
-    public function getConstructor(): null|MethodScheme
+    public function getConstructor(): ?MethodScheme
     {
         return $this->methods['__construct'] ?? null;
     }

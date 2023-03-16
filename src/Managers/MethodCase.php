@@ -55,6 +55,9 @@ use DraculAid\PhpMocker\Tools\CallableObject;
  * @property $countAllCall
  * @property $isCanReturn
  * @property $canReturnData
+ * @property MethodManager $methodManager
+ * @property string $index
+ * @property array $arguments
  */
 class MethodCase
 {
@@ -63,13 +66,13 @@ class MethodCase
     /**
      * Объект менеджер мок-метода, которому принадлежит кейс вызова
      */
-    readonly public MethodManager $methodManager;
+    private MethodManager $methodManager;
 
     /**
      * Хэш от аргументов вызова, или значение константы @see MethodCase::DEFAULT для вызовов "по умолчанию"
      * @see MethodCase::$arguments - аргументы вызова
      */
-    readonly public string $index;
+    private string $index;
 
     /**
      * Аргументы вызова кейса
@@ -78,22 +81,24 @@ class MethodCase
      * @see MethodManager::caseIndex() - Построение хэша от аргументов вызова
      *
      */
-    readonly public array $arguments;
+    private array $arguments;
 
     /**
      * Исключение, которое должно быть выброшено при обращении к мок-методу
      *
      * NULL - исключение не будет выброшено.
      */
-    public null|\Throwable $canReturnException = null;
+    public ?\Throwable $canReturnException = null;
 
     /**
      * Функция, которая будет выполнена перед выполнением основного тела метода
      * (только, если метод может быть мок-методом)
      *
      * @see MethodUserFunctionInterface::__invoke() Описание входящих параметров функции и ее ответа
+     *
+     * @var null|CallableObject|MethodUserFunctionInterface
      */
-    public null|CallableObject|MethodUserFunctionInterface $userFunction = null;
+    public ?CallableObject $userFunction = null;
 
     /**
      * Счетчик срабатываний кейса (может быть сброшен)
@@ -125,7 +130,7 @@ class MethodCase
      *
      * Данные будут возвращены, если только @see MethodCase::$isCanReturn === true
      */
-    private mixed $canReturnData = null;
+    private $canReturnData = null;
 
     /**
      * @param   MethodManager   $method      Менеджер мок-метода
@@ -139,7 +144,7 @@ class MethodCase
         $this->arguments = $arguments;
     }
 
-    public function __get(string $name): mixed
+    public function __get(string $name)
     {
         return $this->{$name};
     }
@@ -163,7 +168,7 @@ class MethodCase
      *
      * @return  $this
      */
-    public function setWillReturn(mixed $data = null, bool $clearCounter = false): self
+    public function setWillReturn($data = null, bool $clearCounter = false): self
     {
         $this->isCanReturn = true;
         $this->canReturnData = $data;
@@ -199,7 +204,7 @@ class MethodCase
      *
      * @return  $this
      */
-    public function setWillException(null|\Throwable $exceptionObject, bool $clearCounter = false, bool $clearFunctionAndReturn = true): self
+    public function setWillException(?\Throwable $exceptionObject, bool $clearCounter = false, bool $clearFunctionAndReturn = true): self
     {
         $this->canReturnException = $exceptionObject;
 
@@ -228,15 +233,19 @@ class MethodCase
      * @see MethodUserFunctionInterface
      *
      */
-    public function setUserFunction(null|callable|CallableObject|MethodUserFunctionInterface $userFunction, bool $clearCounter = false): self
+    public function setUserFunction($userFunction, bool $clearCounter = false): self
     {
         if ($userFunction === null || is_a($userFunction, CallableObject::class) || is_a($userFunction, MethodUserFunctionInterface::class))
         {
             $this->userFunction = $userFunction;
         }
-        else
+        elseif (is_callable($userFunction))
         {
             $this->userFunction = new CallableObject($userFunction);
+        }
+        else
+        {
+            throw new \TypeError("Unsupported value for \$userFunction");
         }
 
         // * * *

@@ -11,20 +11,22 @@
 
 namespace DraculAid\PhpMocker\Schemes;
 
+use DraculAid\PhpMocker\Tools\AbstractEnums;
+
 /**
  * Схемы для ООП элементов: типы видимости
  *
  * Оглавление:
- * @see ViewScheme::PUBLIC - для публичных методов, свойств и констант
- * @see ViewScheme::PROTECTED - для protected методов, свойств и констант
- * @see ViewScheme::PRIVATE - для private методов, свойств и констант
+ * @see ViewScheme::PUBLIC()() - для публичных методов, свойств и констант
+ * @see ViewScheme::PROTECTED()() - для protected методов, свойств и констант
+ * @see ViewScheme::PRIVATE()() - для private методов, свойств и констант
  * @see ViewScheme::createFromReflection() - Вернет тип модификатора видимости по рефлексии
  */
-enum ViewScheme: string
+class ViewScheme extends AbstractEnums
 {
-    case PUBLIC = 'public';
-    case PROTECTED = 'protected';
-    case PRIVATE = 'private';
+    public static function PUBLIC() {return static::createStringVariant('public');}
+    public static function PROTECTED() {return static::createStringVariant('protected');}
+    public static function PRIVATE() {return static::createStringVariant('private');}
 
     /**
      * Вернет тип модификатора видимости по рефлексии
@@ -33,12 +35,10 @@ enum ViewScheme: string
      *
      * @return  static
      */
-    public static function createFromReflection(\ReflectionProperty|\ReflectionMethod|\ReflectionClassConstant $reflection): self
+    public static function createFromReflection(object $reflection): self
     {
-        return match (true) {
-            $reflection->isProtected() => self::PROTECTED,
-            $reflection->isPrivate() => self::PRIVATE,
-            default => self::PUBLIC,
-        };
+        if ($reflection->isProtected()) return self::PROTECTED();
+        elseif ($reflection->isPrivate()) return self::PRIVATE();
+        else return self::PUBLIC();
     }
 }

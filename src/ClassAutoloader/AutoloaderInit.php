@@ -49,14 +49,14 @@ class AutoloaderInit
      *
      * NULL - будет использован стандартный драйвер, использующий автозагрузчик композера, @see ComposerAutoloaderDriver
      */
-    private null|AutoloaderDriverInterface $autoloaderDriver = null;
+    private ?AutoloaderDriverInterface $autoloaderDriver = null;
 
     /**
      * Объект-фильтр, для определения, нужно ли преобразовать загружаемый класс в мок-класс
      *
      * NULL - будет использован стандартный фильтр, @see DefaultAutoloaderFilter
      */
-    private null|AutoloaderFilterInterface $autoloaderFilter = null;
+    private ?AutoloaderFilterInterface $autoloaderFilter = null;
 
     /**
      * Путь к каталогу в котором хранится кеш созданных автозагрузчиком мок-классов (пустая строка, если кеш не используется)
@@ -70,7 +70,7 @@ class AutoloaderInit
      *
      * @return  $this
      */
-    public function setAutoloaderDriver(null|AutoloaderDriverInterface $set): self
+    public function setAutoloaderDriver(?AutoloaderDriverInterface $set): self
     {
         $this->autoloaderDriver = $set;
         return $this;
@@ -97,7 +97,7 @@ class AutoloaderInit
      *
      * @return  $this
      */
-    public function setAutoloaderFilter(null|AutoloaderFilterInterface $set): self
+    public function setAutoloaderFilter(?AutoloaderFilterInterface $set): self
     {
         $this->autoloaderFilter = $set;
         return $this;

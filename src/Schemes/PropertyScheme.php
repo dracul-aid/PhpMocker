@@ -47,12 +47,12 @@ class PropertyScheme extends AbstractElementsScheme
     /**
      * Значение
      */
-    public mixed $value = '';
+    public $value = '';
 
     /**
      * Значение будет взято из константы (имя константы)
      */
-    public mixed $valueFromConstant = '';
+    public string $valueFromConstant = '';
 
     /**
      * Тип данных
@@ -81,7 +81,7 @@ class PropertyScheme extends AbstractElementsScheme
      *
      * @return  $this
      */
-    public function setValue(mixed $value): static
+    public function setValue($value): self
     {
         $this->isValue = true;
         $this->value = $value;
@@ -94,7 +94,7 @@ class PropertyScheme extends AbstractElementsScheme
      *
      * @return  $this
      */
-    public function clearValue(): static
+    public function clearValue(): self
     {
         $this->isValue = false;
         $this->value = null;
@@ -107,7 +107,7 @@ class PropertyScheme extends AbstractElementsScheme
      *
      * @return  null|string
      */
-    public function getValuePhpCode(): null|string
+    public function getValuePhpCode(): ?string
     {
         // если свойство не имеет значения
         if (!$this->isValue)
@@ -117,13 +117,11 @@ class PropertyScheme extends AbstractElementsScheme
 
         // * * *
 
-        return match (true) {
-            // если есть явно указанный PHP код
-            $this->innerPhpCode !== '' => $this->innerPhpCode,
-            // если есть имя константы
-            $this->valueFromConstant !== '' => $this->valueFromConstant,
-            // в остальных случаях значение
-            default => var_export($this->value, true),
-        };
+        // если есть явно указанный PHP код
+        if ($this->innerPhpCode !== '') return $this->innerPhpCode;
+        // если есть имя константы
+        elseif ($this->valueFromConstant !== '') return $this->valueFromConstant;
+        // в остальных случаях значение
+        else return var_export($this->value, true);
     }
 }

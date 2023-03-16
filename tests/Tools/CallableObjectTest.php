@@ -45,7 +45,7 @@ class CallableObjectTest extends TestCase
         self::assertEquals('111-B', $t1);
     }
 
-    public function methodForTest(string $t1, null|string &$t2): string
+    public function methodForTest(string $t1, &$t2): string
     {
         $t2 = "111-{$t1}";
         return "222-{$t1}";

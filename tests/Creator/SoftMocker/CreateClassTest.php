@@ -71,7 +71,7 @@ class CreateClassTest extends TestCase
 
     public function testCreateForOtherClassType(): void
     {
-        $classTypes = ['enum', 'trait', 'interface'];
+        $classTypes = ['trait', 'interface'];
 
         foreach ($classTypes as $classType)
         {

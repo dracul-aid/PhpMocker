@@ -39,5 +39,5 @@ interface MethodUserFunctionInterface
      * Если функция вернет объект @see CallResult То это приостановит выполнение мок-метода, поиск по кейсам-вызова
      * не будет проводиться, точно также, как и не будет отработан код самого метода
      */
-    public function __invoke(HasCalled $hasCalled, MethodManager $methodManager): mixed;
+    public function __invoke(HasCalled $hasCalled, MethodManager $methodManager);
 }

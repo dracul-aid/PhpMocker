@@ -33,7 +33,7 @@ class CallResult
      *
      * Данные будут возвращены, если только @see MethodCase::$isCanReturn === true
      */
-    public mixed $canReturnData = null;
+    public $canReturnData = null;
 
     /**
      * Массив, с значениями для перезаписи аргументов метода
@@ -47,7 +47,7 @@ class CallResult
      * @param   mixed   $canReturnData      Данные для возврата (значение для return)
      * @param   array   $rewriteArguments   Массив, с значениями для перезаписи аргументов метода
      */
-    public function __construct(bool $isCanReturn, mixed $canReturnData = null, array $rewriteArguments = [])
+    public function __construct(bool $isCanReturn, $canReturnData = null, array $rewriteArguments = [])
     {
         $this->isCanReturn = $isCanReturn;
         $this->canReturnData = $canReturnData;

@@ -19,7 +19,7 @@ class PropertySchemeTest extends TestCase
      */
     public function testGetValuePhpCode(): void
     {
-        $schemes = new ClassScheme(ClassSchemeType::CLASSES, 'testGetValuePhpCode' . uniqid());
+        $schemes = new ClassScheme(ClassSchemeType::CLASSES(), 'testGetValuePhpCode' . uniqid());
         $schemes->properties['test'] = new PropertyScheme($schemes, 'test');
         $schemes->properties['test']->isValue = false;
         $schemes->properties['test']->value = true;
@@ -40,7 +40,7 @@ class PropertySchemeTest extends TestCase
      */
     public function testSetValueAndClearValue(): void
     {
-        $schemes = new ClassScheme(ClassSchemeType::CLASSES, 'testGetValuePhpCode' . uniqid());
+        $schemes = new ClassScheme(ClassSchemeType::CLASSES(), 'testGetValuePhpCode' . uniqid());
         $schemes->properties['test'] = new PropertyScheme($schemes, 'test');
         self::assertFalse($schemes->properties['test']->isValue);
         self::assertEquals('', $schemes->properties['test']->value);

@@ -32,7 +32,7 @@ class TestTools
      *
      * @throws  \Throwable Все исключения, кроме указанного в $throwableName будут проброшены далее
      */
-    public static function waitThrow(callable $function, array $arguments, string $throwableName, null|string $message = null, null|int $code = null): bool
+    public static function waitThrow(callable $function, array $arguments, string $throwableName, ?string $message = null, ?int $code = null): bool
     {
         try {
             $function(...$arguments);

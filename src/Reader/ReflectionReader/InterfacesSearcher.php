@@ -61,7 +61,7 @@ class InterfacesSearcher
         // запомним все интерфейсы, кроме интерфейсов перечислений
         foreach ($this->reflection->getInterfaceNames() as $interface)
         {
-            if ($interface !== \BackedEnum::class && $interface !== \UnitEnum::class)
+            if (PHP_MAJOR_VERSION < 8 || ($interface !== \BackedEnum::class && $interface !== \UnitEnum::class))
             {
                 $this->scheme->interfaces["\\{$interface}"] = "\\{$interface}";
             }
@@ -77,7 +77,7 @@ class InterfacesSearcher
             }
 
             // удалим интерфейсы упомянутые у классов родителей
-            if (count($this->scheme->interfaces) > 0 && $this->scheme->parent !== '') foreach (class_parents($this->scheme->getFullName()) as $parent)
+            if (count($this->scheme->interfaces) > 0 && $this->scheme->parent !== '') foreach (class_parents($this->reflection->getName()) as $parent)
             {
                 $this->removeInterfacesByParent($parent);
             }

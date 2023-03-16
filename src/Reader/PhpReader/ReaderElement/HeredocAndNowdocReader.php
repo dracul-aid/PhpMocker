@@ -14,6 +14,7 @@ namespace DraculAid\PhpMocker\Reader\PhpReader\ReaderElement;
 use DraculAid\PhpMocker\Reader\PhpReader;
 use DraculAid\PhpMocker\Reader\PhpReader\CodeTmp;
 use DraculAid\PhpMocker\Tools\Char;
+use DraculAid\PhpMocker\Tools\Php8Functions;
 
 /**
  * Осуществляет чтение Heredoc и Nowdoc строк, разгружает код для @see PhpReader
@@ -73,7 +74,7 @@ class HeredocAndNowdocReader extends AbstractReader
         $this->searchMark();
     }
 
-    public function run(): null|self
+    public function run(): ?AbstractReader
     {
         $this->result .= $this->phpReader->codeString->charFirst;
 
@@ -96,7 +97,7 @@ class HeredocAndNowdocReader extends AbstractReader
                     if ($this->phpReader->readWithStrings) $this->StopAndSaveIntoResult();
                     return null;
                 }
-                elseif (!str_starts_with($this->mark, $this->lastString))
+                elseif (!Php8Functions::str_starts_with($this->mark, $this->lastString))
                 {
                     $this->lastStringIsNotEnd = true;
                 }

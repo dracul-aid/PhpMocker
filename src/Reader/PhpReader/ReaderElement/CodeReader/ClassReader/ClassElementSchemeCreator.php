@@ -44,7 +44,7 @@ class ClassElementSchemeCreator
      *
      * @return self
      */
-    public static function start(PhpReader $phpReader, null|TmpClassElement $tmpClassElement): self
+    public static function start(PhpReader $phpReader, ?TmpClassElement $tmpClassElement): self
     {
         static $_object_;
 
@@ -60,12 +60,12 @@ class ClassElementSchemeCreator
      * Осуществит чтение кода, для поиска в нем ключевых слов определение элемента класса.
      * Определив элемент, вернет объект для дальнейшего чтения кода
      *
-     * @return null|self|AbstractClassElementsReader
+     * @return null|static|AbstractClassElementsReader
      *
      * Возвращает, как самого себя, так и объект чтения конкретного элемента класса @seeAbstractClassElementsReader
      * (если был определен читаемый в настоящий момент элемент)
      */
-    public function run(): null|self|AbstractClassElementsReader
+    public function run(): ?object
     {
         // текущее чтение похоже на чтение свойства
         if ($this->phpReader->codeString->charFirst === '$')
@@ -173,7 +173,7 @@ class ClassElementSchemeCreator
         // это public элемент
         if ($this->phpReader->codeString->isWordStart(false, 'u', 'blic'))
         {
-            $this->tmpClassElement->view = ViewScheme::PUBLIC;
+            $this->tmpClassElement->view = ViewScheme::PUBLIC();
             $this->searchElementWordsClearPhpCode(4);
 
             return true;
@@ -184,7 +184,7 @@ class ClassElementSchemeCreator
             // это protected элемент
             if ($this->phpReader->codeString->phpCode[0] === 'o' && $this->phpReader->codeString->isWordStart(false, false, 'otected'))
             {
-                $this->tmpClassElement->view = ViewScheme::PROTECTED;
+                $this->tmpClassElement->view = ViewScheme::PROTECTED();
                 $this->searchElementWordsClearPhpCode(7);
 
                 return true;
@@ -192,7 +192,7 @@ class ClassElementSchemeCreator
             // это private элемент
             elseif ($this->phpReader->codeString->phpCode[0] === 'i' && $this->phpReader->codeString->isWordStart(false, false, 'ivate'))
             {
-                $this->tmpClassElement->view = ViewScheme::PRIVATE;
+                $this->tmpClassElement->view = ViewScheme::PRIVATE();
                 $this->searchElementWordsClearPhpCode(5);
 
                 return true;

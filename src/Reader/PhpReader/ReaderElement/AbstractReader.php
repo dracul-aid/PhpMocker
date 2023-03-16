@@ -28,13 +28,16 @@ use DraculAid\PhpMocker\Reader\PhpReader;
  * @see self::clear() - Очищает ранее накопленные временные данные
  * @see self::start() - Проводит выполнение стартовых процедур для начала чтения кода объектом "читателем кода"
  * @see self::run() - Проводит обработку прочитанного символа, и определяет не конец ли это работы "читателя кода"
+ *
+ * Свойства доступные только для чтения @see self::__get()
+ * @property PhpReader $phpReader
  */
 abstract class AbstractReader
 {
     /**
      * Объект "читатель кода", для которого идет накопление временных результатов
      */
-    readonly public PhpReader $phpReader;
+    protected PhpReader $phpReader;
 
     /**
      * @param   PhpReader   $phpReader   Объект "читатель кода", для которого идет накопление временных результатов
@@ -42,6 +45,11 @@ abstract class AbstractReader
     protected function __construct(PhpReader $phpReader)
     {
         $this->phpReader = $phpReader;
+    }
+
+    public function __get(string $name)
+    {
+        return $this->{$name};
     }
 
     /**
@@ -60,16 +68,14 @@ abstract class AbstractReader
      *
      * @return  null|AbstractReader   Вернет объект "читатель кода" (или NULL, если читатель кода не был найден)
      */
-    public static function searchReader(PhpReader $phpReader, bool $withAttributes): null|self
+    public static function searchReader(PhpReader $phpReader, bool $withAttributes): ?AbstractReader
     {
-        $readerClass = match (true) {
-            StringReader::isStart($phpReader) => StringReader::class,
-            CommentBlockReader::isStart($phpReader) => CommentBlockReader::class,
-            CommentLineReader::isStart($phpReader) => CommentLineReader::class,
-            $withAttributes && AttributesReader::isStart($phpReader) => AttributesReader::class,
-            HeredocAndNowdocReader::isStart($phpReader) => HeredocAndNowdocReader::class,
-            default => null,
-        };
+        if (StringReader::isStart($phpReader)) $readerClass = StringReader::class;
+        elseif (CommentBlockReader::isStart($phpReader)) $readerClass =  CommentBlockReader::class;
+        elseif (CommentLineReader::isStart($phpReader)) $readerClass = CommentLineReader::class;
+        elseif ($withAttributes && AttributesReader::isStart($phpReader)) $readerClass = AttributesReader::class;
+        elseif (HeredocAndNowdocReader::isStart($phpReader)) $readerClass = HeredocAndNowdocReader::class;
+        else $readerClass = null;
 
         if ($readerClass === null) return null;
         else return self::getReaderObjectByClass($readerClass, $phpReader);
@@ -122,5 +128,5 @@ abstract class AbstractReader
      *
      * @return   null|AbstractReader   Вернет объект для дальнейшего чтения или NULL, если объект для дальнейшего чтения не определен
      */
-    abstract public function run(): null|self;
+    abstract public function run(): ?AbstractReader;
 }

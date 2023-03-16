@@ -11,17 +11,19 @@
 
 namespace DraculAid\PhpMocker\Schemes;
 
+use DraculAid\PhpMocker\Tools\AbstractEnums;
+
 /**
  * Схемы для ООП элементов: Типы конструкций use (для классов, функций или констант) @see UseScheme
  *
  * Оглавление:
- * @see UseSchemeType::CLASSES - для классов
- * @see UseSchemeType::CONSTANTS - для констант
- * @see UseSchemeType::FUNCTIONS - для функций
+ * @see UseSchemeType::CLASSES() - для классов
+ * @see UseSchemeType::CONSTANTS() - для констант
+ * @see UseSchemeType::FUNCTIONS() - для функций
  */
-enum UseSchemeType: string
+class UseSchemeType extends AbstractEnums
 {
-    case CLASSES = '';
-    case CONSTANTS = 'const';
-    case FUNCTIONS = 'function';
+    public static function CLASSES() {return static::createStringVariant('');}
+    public static function CONSTANTS() {return static::createStringVariant('const');}
+    public static function FUNCTIONS() {return static::createStringVariant('function');}
 }

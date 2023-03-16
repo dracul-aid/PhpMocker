@@ -29,13 +29,16 @@ use DraculAid\PhpMocker\Reader\PhpReader\ReaderElement\CodeReader\ClassReader\Tm
  * @see self::clear() - Очищает ранее накопленные временные данные
  * @see self::start() - Проводит выполнение стартовых процедур для начала чтения кода объектом "читателем кода"
  * @see self::run() - Проводит обработку прочитанного символа, и определяет не конец ли это работы "читателя кода"
+ *
+ * Свойства доступные только для чтения @see self::__get()
+ * @property TmpClassElement $tmpClassElement
  */
 class ClassReader extends AbstractReader
 {
     /**
      * Временные данные для "текущего читаемого элемента класса"
      */
-    readonly public TmpClassElement $tmpClassElement;
+    protected TmpClassElement $tmpClassElement;
 
     /**
      * Объект, для чтения вложенных в атрибут элементов (строк)
@@ -44,13 +47,20 @@ class ClassReader extends AbstractReader
      * Может быть:
      * @see ClassElementSchemeCreator - Анализатор кода на предмет, какая сущьность класса начинает читаться
      * @see AbstractClassElementsReader - Анализатор кода, для коркнертной сущности класса (свойства, константы...)
+     *
+     * @var null|AbstractClassElementsReader|ClassElementSchemeCreator
      */
-    private null|AbstractClassElementsReader|ClassElementSchemeCreator $codeReader = null;
+    private ?object $codeReader = null;
 
     protected function __construct(PhpReader $phpReader)
     {
         parent::__construct($phpReader);
         $this->tmpClassElement = new TmpClassElement();
+    }
+
+    public function __get(string $name)
+    {
+        return $this->{$name};
     }
 
     public static function isStart(PhpReader $phpReader): bool
@@ -66,7 +76,7 @@ class ClassReader extends AbstractReader
         $this->phpReader->codeTmp->resultClearAndSetSpase();
     }
 
-    public function run(): null|self
+    public function run(): ?AbstractReader
     {
         if ($this->phpReader->codeString->charFirst === '}' && $this->phpReader->tmpResult->codeBlockDeep === $this->phpReader->tmpResult->codeBlockForClassDeep - 1)
         {

@@ -35,15 +35,23 @@ use DraculAid\PhpMocker\Tools\NotPublicProxy;
  * @see self::call() - Вызов метода
  * @see self::callStatic() - Вызов статического метода
  * @see self::getProxy() - Позволяет получить прокси для работы с непубличными свойствами и методами объекта
+ *
+ * Свойства доступные только для чтения @see self::__get()
+ * @property object $toObject
  */
 class NotPublic
 {
     /**
      * Для какого объекта создан "объект для взаимодействия с непубличными элементами"
      */
-    readonly public object $toObject;
+    protected object $toObject;
 
     private function __construct() {}
+
+    public function __get(string $name)
+    {
+        return $this->{$name};
+    }
 
     /**
      * Вернет объект для взаимодействия с непубличными элементами класса и объекта
@@ -52,13 +60,16 @@ class NotPublic
      *
      * @return  static
      */
-    public static function instance(string|object $objectOrClass): self
+    public static function instance($objectOrClass): self
     {
         /**
          * Массив объектов, для которых создан объект для взаимодействия с непубличными элементами
          * @var NotPublic[]|\SplObjectStorage $_notPublicObjects
          */
-        static $_notPublicObjects = new \SplObjectStorage();
+        static $_notPublicObjects;
+        if (!isset($_notPublicObjects)) $_notPublicObjects = new \SplObjectStorage();
+
+        if (!is_string($objectOrClass) && !is_object($objectOrClass)) throw new \TypeError('$objectOrClass is not string or object');
 
         /**
          * Массив классов, для которых создан объект для взаимодействия с непубличными элементами
@@ -99,7 +110,8 @@ class NotPublic
      */
     public static function proxy(object $object): NotPublicProxy
     {
-        static $_proxyStorage = new \SplObjectStorage();
+        static $_proxyStorage;
+        if (!isset($_proxyStorage)) $_proxyStorage = new \SplObjectStorage();
 
         if (empty($_proxyStorage[$object])) $_proxyStorage[$object] = new NotPublicProxy($object);
 
@@ -117,8 +129,10 @@ class NotPublic
      *
      * @return  object  Вернет созданный объект
      */
-    public static function createObject(string $class, false|array $arguments = false, array $properties = []): object
+    public static function createObject(string $class, $arguments = false, array $properties = []): object
     {
+        if ($arguments !== false && !is_array($arguments)) throw new \TypeError('$arguments is not array or false');
+
         $reflectionClass = new \ReflectionClass($class);
         $object = $reflectionClass->newInstanceWithoutConstructor();
 
@@ -140,8 +154,10 @@ class NotPublic
      *
      * @return  NotPublicProxy
      */
-    public static function createObjectAndReturnProxy(string $class, false|array $arguments = false, array $properties = []): NotPublicProxy
+    public static function createObjectAndReturnProxy(string $class, $arguments = false, array $properties = []): NotPublicProxy
     {
+        if ($arguments !== false && !is_array($arguments)) throw new \TypeError('$arguments is not array or false');
+
         $object = self::createObject($class, $arguments, $properties);
 
         return self::proxy($object);
@@ -155,7 +171,7 @@ class NotPublic
      *
      * @return  mixed
      */
-    public static function readConstant(string|object $classOrObject, string $name): mixed
+    public static function readConstant($classOrObject, string $name)
     {
         return self::instance($classOrObject)->constant($name);
     }
@@ -167,7 +183,7 @@ class NotPublic
      *
      * @return  mixed
      */
-    public function constant(string $name): mixed
+    public function constant(string $name)
     {
         return $this->getOrCreateFunctionForConstants()($name);
     }
@@ -180,7 +196,7 @@ class NotPublic
      *
      * @return  mixed
      */
-    public static function readProperty(string|object $classOrObject, string $name): mixed
+    public static function readProperty($classOrObject, string $name)
     {
         if (is_object($classOrObject)) return self::instance($classOrObject)->get($name);
         else return self::instance($classOrObject)->getStatic($name);
@@ -193,7 +209,7 @@ class NotPublic
      *
      * @return  mixed
      */
-    public function get(string $name): mixed
+    public function get(string $name)
     {
         return $this->getOrCreateFunctionForGetProperties()($name);
     }
@@ -205,7 +221,7 @@ class NotPublic
      *
      * @return  mixed
      */
-    public function getStatic(string $name): mixed
+    public function getStatic(string $name)
     {
         return $this->getOrCreateFunctionForGetStaticProperties()($name);
     }
@@ -219,7 +235,7 @@ class NotPublic
      *
      * @return  mixed
      */
-    public static function writeProperty(string|object $classOrObject, string|array $name, mixed $data = null): mixed
+    public static function writeProperty($classOrObject, $name, $data = null)
     {
         if (is_object($classOrObject)) return self::instance($classOrObject)->set($name, $data);
         else return self::instance($classOrObject)->setStatic($name, $data);
@@ -233,7 +249,7 @@ class NotPublic
      *
      * @return  $this
      */
-    public function set(string|array $var, mixed $data = null): self
+    public function set($var, $data = null): self
     {
         if (is_string($var)) $this->getOrCreateFunctionForSetProperties()($var, $data);
         else foreach ($var as $name => $data) $this->getOrCreateFunctionForSetProperties()($name, $data);
@@ -249,7 +265,7 @@ class NotPublic
      *
      * @return  $this
      */
-    public function setStatic(string|array $var, mixed $data = null): self
+    public function setStatic($var, $data = null): self
     {
         if (is_string($var)) $this->getOrCreateFunctionForSetStaticProperties()($var, $data);
         else foreach ($var as $name => $data) $this->getOrCreateFunctionForSetStaticProperties()($name, $data);
@@ -266,7 +282,7 @@ class NotPublic
      *
      * @return  mixed
      */
-    public static function callMethod(string|object $classOrObject, string|array $name, array $arguments = []): mixed
+    public static function callMethod($classOrObject, $name, array $arguments = [])
     {
         if (is_object($classOrObject)) return self::instance($classOrObject)->call($name, $arguments);
         else return self::instance($classOrObject)->callStatic($name, $arguments);
@@ -280,7 +296,7 @@ class NotPublic
      *
      * @return  mixed
      */
-    public function call(string $name, array $arguments = []): mixed
+    public function call(string $name, array $arguments = [])
     {
         return $this->getOrCreateFunctionForCall()($name, $arguments);
     }
@@ -293,7 +309,7 @@ class NotPublic
      *
      * @return  mixed
      */
-    public function callStatic(string $name, array $arguments = []): mixed
+    public function callStatic(string $name, array $arguments = [])
     {
         return $this->getOrCreateFunctionForCallStatic()($name, $arguments);
     }
@@ -319,12 +335,13 @@ class NotPublic
          * Для хранения созданных анонимных функций для конкретных классов (ключи массива - объект, которому "принадлежит" функция)
          * @var \Closure[]|\SplObjectStorage $_functionInObject
          */
-        static $_functionInObject = new \SplObjectStorage();
+        static $_functionInObject;
+        if (!isset($_functionInObject)) $_functionInObject = new \SplObjectStorage();
 
         if (empty($_functionInObject[$this->toObject]))
         {
             $_functionInObject[$this->toObject] = function($name) {
-                return constant($this::class . "::{$name}");
+                return constant(get_class($this) . "::{$name}");
             };
             $_functionInObject[$this->toObject] = $_functionInObject[$this->toObject]->bindTo($this->toObject, $this->toObject);
         }
@@ -343,7 +360,8 @@ class NotPublic
          * Для хранения созданных анонимных функций для конкретных классов (ключи массива - объект, которому "принадлежит" функция)
          * @var \Closure[]|\SplObjectStorage $_functionInObject
          */
-        static $_functionInObject = new \SplObjectStorage();
+        static $_functionInObject;
+        if (!isset($_functionInObject)) $_functionInObject = new \SplObjectStorage();
 
         if (empty($_functionInObject[$this->toObject]))
         {
@@ -367,12 +385,13 @@ class NotPublic
          * Для хранения созданных анонимных функций для конкретных классов (ключи массива - объект, которому "принадлежит" функция)
          * @var \Closure[]|\SplObjectStorage $_functionInObject
          */
-        static $_functionInObject = new \SplObjectStorage();
+        static $_functionInObject;
+        if (!isset($_functionInObject)) $_functionInObject = new \SplObjectStorage();
 
         if (empty($_functionInObject[$this->toObject]))
         {
             $_functionInObject[$this->toObject] = function($name) {
-                return ($this::class)::$$name;
+                return get_class($this)::$$name;
             };
             $_functionInObject[$this->toObject] = $_functionInObject[$this->toObject]->bindTo($this->toObject, $this->toObject);
         }
@@ -391,7 +410,8 @@ class NotPublic
          * Для хранения созданных анонимных функций для конкретных классов (ключи массива - объект, которому "принадлежит" функция)
          * @var \Closure[]|\SplObjectStorage $_functionInObject
          */
-        static $_functionInObject = new \SplObjectStorage();
+        static $_functionInObject;
+        if (!isset($_functionInObject)) $_functionInObject = new \SplObjectStorage();
 
         if (empty($_functionInObject[$this->toObject]))
         {
@@ -415,12 +435,13 @@ class NotPublic
          * Для хранения созданных анонимных функций для конкретных классов (ключи массива - объект, которому "принадлежит" функция)
          * @var \Closure[]|\SplObjectStorage $_functionInObject
          */
-        static $_functionInObject = new \SplObjectStorage();
+        static $_functionInObject;
+        if (!isset($_functionInObject)) $_functionInObject = new \SplObjectStorage();
 
         if (empty($_functionInObject[$this->toObject]))
         {
             $_functionInObject[$this->toObject] = function($name, $data) {
-                ($this::class)::$$name = $data;
+                get_class($this)::$$name = $data;
             };
             $_functionInObject[$this->toObject] = $_functionInObject[$this->toObject]->bindTo($this->toObject, $this->toObject);
         }
@@ -439,7 +460,8 @@ class NotPublic
          * Для хранения созданных анонимных функций для конкретных классов (ключи массива - объект, которому "принадлежит" функция)
          * @var \Closure[]|\SplObjectStorage $_functionInObject
          */
-        static $_functionInObject = new \SplObjectStorage();
+        static $_functionInObject;
+        if (!isset($_functionInObject)) $_functionInObject = new \SplObjectStorage();
 
         if (empty($_functionInObject[$this->toObject]))
         {
@@ -463,12 +485,13 @@ class NotPublic
          * Для хранения созданных анонимных функций для конкретных классов (ключи массива - объект, которому "принадлежит" функция)
          * @var \Closure[]|\SplObjectStorage $_functionInObject
          */
-        static $_functionInObject = new \SplObjectStorage();
+        static $_functionInObject;
+        if (!isset($_functionInObject)) $_functionInObject = new \SplObjectStorage();
 
         if (empty($_functionInObject[$this->toObject]))
         {
             $_functionInObject[$this->toObject] = function($name, $arguments) {
-                return [$this::class, $name](...$arguments);
+                return [get_class($this), $name](...$arguments);
             };
             $_functionInObject[$this->toObject] = $_functionInObject[$this->toObject]->bindTo($this->toObject, $this->toObject);
         }

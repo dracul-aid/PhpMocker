@@ -18,8 +18,15 @@ class HasCalledArgumentsTest extends TestCase
     
     private HasCalledArguments $argumentObject;
 
-    private null|int $arg1 = self::ARG_1_VAL;
-    private null|int|array $arg2 = self::ARG_2_VAL;
+    /**
+     * @var int|null
+     */
+    private $arg1 = self::ARG_1_VAL;
+
+    /**
+     * @var int|array|string[]|null
+     */
+    private $arg2 = self::ARG_2_VAL;
 
     public function testRun(): void
     {
@@ -106,7 +113,7 @@ class HasCalledArgumentsTest extends TestCase
         self::assertEquals(self::ARG_2_VAL, $tmp['arg2']);
     }
 
-    private function testingRead(mixed $var1, mixed $var2): void
+    private function testingRead($var1, $var2): void
     {
         self::assertEquals($var1, $this->argumentObject->getValue(0));
         self::assertEquals($var1, $this->argumentObject->getValue('arg1'));

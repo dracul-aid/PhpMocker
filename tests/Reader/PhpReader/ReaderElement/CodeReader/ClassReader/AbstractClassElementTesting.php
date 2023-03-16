@@ -42,7 +42,7 @@ class AbstractClassElementTesting extends TestCase
     protected function createObjectsAndGetRunner(string $phpCode): ClassElementSchemeCreator
     {
         $this->phpReader = NotPublic::createObject(PhpReader::class, [$phpCode]);
-        $this->phpReader->tmpResult->schemeClass = new ClassScheme(ClassSchemeType::CLASSES, 'TestClassName');
+        $this->phpReader->tmpResult->schemeClass = new ClassScheme(ClassSchemeType::CLASSES(), 'TestClassName');
 
         return ClassElementSchemeCreator::start($this->phpReader, new TmpClassElement());
     }

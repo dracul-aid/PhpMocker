@@ -22,7 +22,7 @@ namespace DraculAid\PhpMocker\Reader\PhpReader\ReaderElement\CodeReader\ClassRea
  */
 abstract class AbstractClassElementsValuesReader extends AbstractClassElementsReader
 {
-    final public function run(): null|self
+    final public function run(): ?AbstractClassElementsReader
     {
         if ($this->phpReader->codeString->charFirst === ';')
         {

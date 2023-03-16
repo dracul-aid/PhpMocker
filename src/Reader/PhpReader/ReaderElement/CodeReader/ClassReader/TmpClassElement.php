@@ -78,12 +78,12 @@ class TmpClassElement
      * @var null|\DraculAid\PhpMocker\Schemes\ConstantScheme|\DraculAid\PhpMocker\Schemes\PropertyScheme|\DraculAid\PhpMocker\Schemes\MethodScheme $scheme
      * (Классы перечислены явно, так как имеют немного разный набор методов)
      */
-    public null|AbstractElementsScheme $scheme = null;
+    public ?AbstractElementsScheme $scheme = null;
 
     /**
      * Область видимости читаемого элемента
      */
-    public null|ViewScheme $view = null;
+    public ?ViewScheme $view = null;
     /**
      * Является ли читаемый элемент "финальным"
      */
@@ -137,6 +137,6 @@ class TmpClassElement
      */
     public function getView(): ViewScheme
     {
-        return $this->view ?? ViewScheme::PUBLIC;
+        return $this->view ?? ViewScheme::PUBLIC();
     }
 }

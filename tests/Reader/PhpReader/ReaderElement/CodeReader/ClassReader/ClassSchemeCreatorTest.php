@@ -22,14 +22,14 @@ class ClassSchemeCreatorTest extends TestCase
     public function testClassType(): void
     {
         $testCases = [
-            'final class MyFinalClass' => ['type' => ClassSchemeType::CLASSES, 'isFinal' => true, 'isReadonly' => false, 'name' => 'MyFinalClass', 'enumType' => ''],
-            'readonly final class MyFinalReadonlyClass' => ['type' => ClassSchemeType::CLASSES, 'isFinal' => true, 'isReadonly' => true, 'name' => 'MyFinalReadonlyClass', 'enumType' => ''],
-            'class MyClass' => ['type' => ClassSchemeType::CLASSES, 'isFinal' => false, 'isReadonly' => false, 'name' => 'MyClass', 'enumType' => ''],
-            'abstract class MyAbstractClass' => ['type' => ClassSchemeType::ABSTRACT_CLASSES, 'isFinal' => false, 'isReadonly' => false, 'name' => 'MyAbstractClass', 'enumType' => ''],
-            'enum MyEnumWithoutValue' => ['type' => ClassSchemeType::ENUMS, 'isFinal' => false, 'isReadonly' => false, 'name' => 'MyEnumWithoutValue', 'enumType' => ''],
-            'enum MyEnumWithValue: int' => ['type' => ClassSchemeType::ENUMS, 'isFinal' => false, 'isReadonly' => false, 'name' => 'MyEnumWithValue', 'enumType' => 'int'],
-            'interface MyInterface' => ['type' => ClassSchemeType::INTERFACES, 'isFinal' => false, 'isReadonly' => false, 'name' => 'MyInterface', 'enumType' => ''],
-            'trait MyTrait' => ['type' => ClassSchemeType::TRAITS, 'isFinal' => false, 'isReadonly' => false, 'name' => 'MyTrait', 'enumType' => ''],
+            'final class MyFinalClass' => ['type' => ClassSchemeType::CLASSES(), 'isFinal' => true, 'isReadonly' => false, 'name' => 'MyFinalClass', 'enumType' => ''],
+            'readonly final class MyFinalReadonlyClass' => ['type' => ClassSchemeType::CLASSES(), 'isFinal' => true, 'isReadonly' => true, 'name' => 'MyFinalReadonlyClass', 'enumType' => ''],
+            'class MyClass' => ['type' => ClassSchemeType::CLASSES(), 'isFinal' => false, 'isReadonly' => false, 'name' => 'MyClass', 'enumType' => ''],
+            'abstract class MyAbstractClass' => ['type' => ClassSchemeType::ABSTRACT_CLASSES(), 'isFinal' => false, 'isReadonly' => false, 'name' => 'MyAbstractClass', 'enumType' => ''],
+            'enum MyEnumWithoutValue' => ['type' => ClassSchemeType::ENUMS(), 'isFinal' => false, 'isReadonly' => false, 'name' => 'MyEnumWithoutValue', 'enumType' => ''],
+            'enum MyEnumWithValue: int' => ['type' => ClassSchemeType::ENUMS(), 'isFinal' => false, 'isReadonly' => false, 'name' => 'MyEnumWithValue', 'enumType' => 'int'],
+            'interface MyInterface' => ['type' => ClassSchemeType::INTERFACES(), 'isFinal' => false, 'isReadonly' => false, 'name' => 'MyInterface', 'enumType' => ''],
+            'trait MyTrait' => ['type' => ClassSchemeType::TRAITS(), 'isFinal' => false, 'isReadonly' => false, 'name' => 'MyTrait', 'enumType' => ''],
         ];
 
         foreach ($testCases as $phpCode => $classOptions)

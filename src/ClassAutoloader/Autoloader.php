@@ -43,6 +43,10 @@ use DraculAid\PhpMocker\Exceptions\PphMockerExceptionInterface;
  * --- Управление автозагрузчиками
  * @see Autoloader::$autoloaderList - Список всех созданных объектов-автозагрузчиков
  * @see Autoloader::$allConvertToMock - Указание, что все классы должны быть преобразованны, как мок-классы (без исключения)
+ *
+ * Свойства доступные только для чтения @see self::__get()
+ * @property string $mockClassCachePath
+ * @property AutoloaderDriverInterface $autoloaderDriver
  */
 class Autoloader
 {
@@ -65,17 +69,17 @@ class Autoloader
      * @see self::$autoMockerEnabled
      * @see self::$autoloaderFilter
      */
-    public static null|bool $allConvertToMock = null;
+    public static ?bool $allConvertToMock = null;
 
     /**
      * Путь к каталогу в котором хранится кеш созданных автозагрузчиком мок-классов (пустая строка, если кеш не используется)
      */
-    readonly public string $mockClassCachePath;
+    public string $mockClassCachePath;
 
     /**
      * Драйвер "базового автозагрузчика проекта"
      */
-    readonly public AutoloaderDriverInterface $autoloaderDriver;
+    public AutoloaderDriverInterface $autoloaderDriver;
 
     /**
      * Фильтр, для определения, нужно ли преобразовывать загружаемый класс в мок-класс
@@ -101,6 +105,11 @@ class Autoloader
         $this->mockClassCachePath = $mockClassCachePath;
 
         static::$autoloaderList[] = $this;
+    }
+
+    public function __get(string $name)
+    {
+        return $this->{$name};
     }
 
     /**

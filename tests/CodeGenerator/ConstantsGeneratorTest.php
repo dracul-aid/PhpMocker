@@ -19,22 +19,14 @@ use PHPUnit\Framework\TestCase;
  */
 class ConstantsGeneratorTest extends TestCase
 {
-    private const CONSTANTS = [
-        'C_PUBLIC' => ['view' => ViewScheme::PUBLIC, 'value' => '123', 'isFinal' => false],
-        'C_PROTECTED' => ['view' => ViewScheme::PROTECTED, 'value' => 123, 'isFinal' => false],
-        'C_PRIVATE' => ['view' => ViewScheme::PRIVATE, 'value' => false, 'isFinal' => false],
-        'C_FINAL' => ['view' => ViewScheme::PUBLIC, 'value' => null, 'isFinal' => true],
-    ];
-
     public function testGeneral(): void
     {
-        $scheme = new ClassScheme(ClassSchemeType::CLASSES, 'TestGeneral' . uniqid());
-        foreach (self::CONSTANTS as $name => $data)
+        $scheme = new ClassScheme(ClassSchemeType::CLASSES(), 'TestGeneral' . uniqid());
+        foreach (self::CONSTANTS() as $name => $data)
         {
             $scheme->constants[$name] = new ConstantScheme($scheme, $name, $data['value']);
             $scheme->constants[$name]->isDefine = true;
             $scheme->constants[$name]->view = $data['view'];
-            $scheme->constants[$name]->isFinal = $data['isFinal'];
         }
 
         $scheme->methods['getConst'] = new MethodScheme($scheme, 'getConst');
@@ -47,7 +39,7 @@ class ConstantsGeneratorTest extends TestCase
         $newScheme = ReflectionReader::exe($scheme->getFullName());
         self::assertCount(4, $newScheme->constants);
 
-        foreach (self::CONSTANTS as $const => $data)
+        foreach (self::CONSTANTS() as $const => $data)
         {
             self::assertArrayHasKey($const, $newScheme->constants);
             self::assertEquals('', $newScheme->constants[$const]->innerPhpCode);
@@ -61,7 +53,7 @@ class ConstantsGeneratorTest extends TestCase
 
     public function testInnerPhpCode(): void
     {
-        $scheme = new ClassScheme(ClassSchemeType::CLASSES, 'testInnerPhpCode' . uniqid());
+        $scheme = new ClassScheme(ClassSchemeType::CLASSES(), 'testInnerPhpCode' . uniqid());
         $scheme->constants['TEST'] = new ConstantScheme($scheme, 'TEST');
         $scheme->constants['TEST']->innerPhpCode = 'PHP_VERSION . PHP_EOL';
 
@@ -72,5 +64,15 @@ class ConstantsGeneratorTest extends TestCase
         self::assertArrayHasKey('TEST', $newScheme->constants);
 
         self::assertEquals(PHP_VERSION . PHP_EOL, constant($scheme->getFullName() . '::TEST'));
+    }
+
+    private static function CONSTANTS(): array
+    {
+        return [
+            'C_PUBLIC' => ['view' => ViewScheme::PUBLIC(), 'value' => '123'],
+            'C_PROTECTED' => ['view' => ViewScheme::PROTECTED(), 'value' => 123],
+            'C_PRIVATE' => ['view' => ViewScheme::PRIVATE(), 'value' => false],
+            'C_FINAL' => ['view' => ViewScheme::PUBLIC(), 'value' => null],
+        ];
     }
 }

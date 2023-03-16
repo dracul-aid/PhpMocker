@@ -78,7 +78,7 @@ class ClassGenerator
     {
         $phpCode = static::generatePhpCode($classScheme);
 
-        // echo $phpCode; die();
+        //echo $phpCode; //die();
         eval($phpCode);
     }
 

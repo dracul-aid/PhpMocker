@@ -49,7 +49,7 @@ class CommentLineReader extends AbstractReader
         $this->phpReader->codeString->charClear();
     }
 
-    public function run(): null|self
+    public function run(): ?AbstractReader
     {
         // если это конец строки - значит комментарий кончился
         if ($this->phpReader->codeString->charFirst === "\n")

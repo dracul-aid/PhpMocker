@@ -17,6 +17,7 @@ use DraculAid\PhpMocker\Reader\PhpReader\TmpResult;
 use DraculAid\PhpMocker\Schemes\ClassScheme;
 use DraculAid\PhpMocker\Schemes\ClassSchemeType;
 use DraculAid\PhpMocker\Tools\ClassTools;
+use DraculAid\PhpMocker\Tools\Php8Functions;
 
 /**
  * Класс, для создания схемы класса, используется для разгрузки кода в:
@@ -30,11 +31,11 @@ class ClassSchemeCreator
     /**
      * Объект с накапливаемой строкой кода
      */
-    readonly private CodeTmp $codeTmp;
+    private CodeTmp $codeTmp;
     /**
      * Объект для хранения временных результатов
      */
-    readonly private TmpResult $tmpResult;
+    private TmpResult $tmpResult;
 
     /**
      * Создаст схему класса и определит имя и родителей класса
@@ -74,14 +75,14 @@ class ClassSchemeCreator
         {
             $className = $this->searchClassName($tmp + 7);
 
-                if (str_contains($this->codeTmp->result, ' abstract ')) $this->tmpResult->schemeClass = new ClassScheme(ClassSchemeType::ABSTRACT_CLASSES, $className);
-                else $this->tmpResult->schemeClass = new ClassScheme(ClassSchemeType::CLASSES, $className);
+                if (Php8Functions::str_contains($this->codeTmp->result, ' abstract ')) $this->tmpResult->schemeClass = new ClassScheme(ClassSchemeType::ABSTRACT_CLASSES(), $className);
+                else $this->tmpResult->schemeClass = new ClassScheme(ClassSchemeType::CLASSES(), $className);
             }
         // это интерфейс
         elseif (($tmp = strpos($this->codeTmp->result, ' interface ')) !== false)
         {
             $this->tmpResult->schemeClass = new ClassScheme(
-                ClassSchemeType::INTERFACES,
+                ClassSchemeType::INTERFACES(),
                 $this->searchClassName($tmp + 11)
             );
         }
@@ -89,7 +90,7 @@ class ClassSchemeCreator
         elseif (($tmp = strpos($this->codeTmp->result, ' trait ')) !== false)
         {
             $this->tmpResult->schemeClass = new ClassScheme(
-                ClassSchemeType::TRAITS,
+                ClassSchemeType::TRAITS(),
                 $this->searchClassName($tmp + 7)
             );
         }
@@ -97,7 +98,7 @@ class ClassSchemeCreator
         elseif (($tmp = strpos($this->codeTmp->result, ' enum ')) !== false)
         {
             $this->tmpResult->schemeClass = new ClassScheme(
-                ClassSchemeType::ENUMS,
+                ClassSchemeType::ENUMS(),
                 $this->searchClassName($tmp + 6)
             );
         }
@@ -111,15 +112,15 @@ class ClassSchemeCreator
 
         $this->tmpResult->schemeClass->namespace = $this->tmpResult->namespace;
         $this->tmpResult->schemeClass->uses = $this->tmpResult->uses;
-        if (str_contains($this->codeTmp->result, ' final ')) $this->tmpResult->schemeClass->isFinal = true;
-        if (str_contains($this->codeTmp->result, ' readonly ')) $this->tmpResult->schemeClass->isReadonly = true;
+        if (Php8Functions::str_contains($this->codeTmp->result, ' final ')) $this->tmpResult->schemeClass->isFinal = true;
+        if (Php8Functions::str_contains($this->codeTmp->result, ' readonly ')) $this->tmpResult->schemeClass->isReadonly = true;
 
         $this->tmpResult->schemeClass->isInternal = ClassTools::isInternal($this->tmpResult->schemeClass->getFullName());
 
         $this->searchParents();
         $this->searchInterfaces();
 
-        if ($this->tmpResult->schemeClass->type === ClassSchemeType::ENUMS) $this->enumSearchType();
+        if ($this->tmpResult->schemeClass->type === ClassSchemeType::ENUMS()) $this->enumSearchType();
 
         $this->saveAttributes();
     }
@@ -200,7 +201,7 @@ class ClassSchemeCreator
                 $parentList[] = trim($parent);
             }
 
-            if ($this->tmpResult->schemeClass->type === ClassSchemeType::INTERFACES) $this->tmpResult->schemeClass->interfaces = $parentList;
+            if ($this->tmpResult->schemeClass->type === ClassSchemeType::INTERFACES()) $this->tmpResult->schemeClass->interfaces = $parentList;
             elseif ($this->tmpResult->schemeClass->type->canUseExtends()) $this->tmpResult->schemeClass->parent = implode(', ', $parentList);
         }
     }
@@ -215,7 +216,7 @@ class ClassSchemeCreator
     private function searchInterfaces(): void
     {
         // если это интерфейс или тип класса не поддерживающий интерфейсы - выйдем
-        if ($this->tmpResult->schemeClass->type === ClassSchemeType::INTERFACES || !$this->tmpResult->schemeClass->type->canUseInterfaces())
+        if ($this->tmpResult->schemeClass->type === ClassSchemeType::INTERFACES() || !$this->tmpResult->schemeClass->type->canUseInterfaces())
         {
             return;
         }

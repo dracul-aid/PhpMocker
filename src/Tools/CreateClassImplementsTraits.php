@@ -25,8 +25,10 @@ class CreateClassImplementsTraits
      *
      * @return  string    Вернет строку с именем класса, реализовавшем трейты
      */
-    public static function exe(string|array $trait, string $className = ''): string
+    public static function exe($trait, string $className = ''): string
     {
+        if (!is_string($trait) && !is_array($trait)) throw new \TypeError('$trait is not string or object');
+
         if ($className === '') $className = '___sf_class_for_trait_' . uniqid() . '___';
 
         if (is_string($trait))

@@ -79,6 +79,8 @@ class ReflectionReader
      */
     public static function readAttributesFor(SchemeWithAttributesInterface $scheme, array $attributes): void
     {
+        if (PHP_MAJOR_VERSION < 8) return;
+
         foreach ($attributes as $attribute)
         {
             $attributeScheme = new AttributeScheme($scheme, $attribute->getName());
@@ -95,7 +97,7 @@ class ReflectionReader
     private function __construct(string $class)
     {
         try {
-            if (enum_exists($class, false)) $this->reflection = new \ReflectionEnum($class);
+            if (PHP_MAJOR_VERSION > 7 && enum_exists($class, false)) $this->reflection = new \ReflectionEnum($class);
             else $this->reflection = new \ReflectionClass($class);
         }
         catch (\ReflectionException $error) {
@@ -106,7 +108,8 @@ class ReflectionReader
 
         $this->classScheme = new ClassScheme(
             ClassSchemeType::createFromReflection($this->reflection),
-            $class
+            $class,
+            $this->reflection->isAnonymous()
         );
     }
 
@@ -129,7 +132,7 @@ class ReflectionReader
             $this->classScheme->parent = "\\{$this->reflection->getParentClass()->getName()}";
         }
 
-        if ($this->reflection->isEnum() && $this->reflection->isBacked())
+        if (PHP_MAJOR_VERSION > 7 && $this->reflection->isEnum() && $this->reflection->isBacked())
         {
             $this->classScheme->enumType = StringTypeFromReflection::exe($this->reflection->getBackingType());
         }
@@ -175,11 +178,15 @@ class ReflectionReader
             $elementName = $reflectionOfConstanta->getName();
             $this->classScheme->constants[$elementName] = new ConstantScheme($this->classScheme, $elementName, $reflectionOfConstanta->getValue());
 
-            self::readAttributesFor($this->classScheme->constants[$elementName], $reflectionOfConstanta->getAttributes());
             $this->classScheme->constants[$elementName]->view = ViewScheme::createFromReflection($reflectionOfConstanta);
-            $this->classScheme->constants[$elementName]->isEnumCase = $reflectionOfConstanta->isEnumCase();
-            $this->classScheme->constants[$elementName]->isFinal = $reflectionOfConstanta->isFinal();
             $this->classScheme->constants[$elementName]->isDefine = $this->classScheme->getFullName() === $reflectionOfConstanta->getDeclaringClass()->getName();
+
+            if (PHP_MAJOR_VERSION > 7)
+            {
+                $this->classScheme->constants[$elementName]->isEnumCase = $reflectionOfConstanta->isEnumCase();
+                self::readAttributesFor($this->classScheme->constants[$elementName], $reflectionOfConstanta->getAttributes());
+                $this->classScheme->constants[$elementName]->isFinal = $reflectionOfConstanta->isFinal();
+            }
         }
     }
 
@@ -198,27 +205,40 @@ class ReflectionReader
      */
     private function runProperties(): void
     {
+        if (PHP_MAJOR_VERSION < 8)
+        {
+            $defaultValueProperties = $this->reflection->getDefaultProperties();
+        }
+
         foreach ($this->reflection->getProperties() as $reflectionOfProperty)
         {
             $elementName = $reflectionOfProperty->getName();
             $this->classScheme->properties[$elementName] = new PropertyScheme($this->classScheme, $elementName);
 
-            if ($reflectionOfProperty->hasDefaultValue())
-            {
-                $this->classScheme->properties[$elementName]->setValue($reflectionOfProperty->getDefaultValue());
-            }
             if ($reflectionOfProperty->hasType())
             {
                 $this->classScheme->properties[$elementName]->type = ReflectionReader\StringTypeFromReflection::exe($reflectionOfProperty->getType());
             }
 
-            self::readAttributesFor($this->classScheme->properties[$elementName], $reflectionOfProperty->getAttributes());
-
-            $this->classScheme->properties[$elementName]->isInConstruct = $reflectionOfProperty->isPromoted();
             $this->classScheme->properties[$elementName]->isStatic = $reflectionOfProperty->isStatic();
-            $this->classScheme->properties[$elementName]->isReadonly = $reflectionOfProperty->isReadOnly();
             $this->classScheme->properties[$elementName]->isDefine = $this->classScheme->getFullName() === $reflectionOfProperty->getDeclaringClass()->getName();
             $this->classScheme->properties[$elementName]->view = ViewScheme::createFromReflection($reflectionOfProperty);
+
+            if (PHP_MAJOR_VERSION > 7)
+            {
+                if ($reflectionOfProperty->hasDefaultValue())
+                {
+                    $this->classScheme->properties[$elementName]->setValue($reflectionOfProperty->getDefaultValue());
+                }
+
+                self::readAttributesFor($this->classScheme->properties[$elementName], $reflectionOfProperty->getAttributes());
+                $this->classScheme->properties[$elementName]->isInConstruct = $reflectionOfProperty->isPromoted();
+                $this->classScheme->properties[$elementName]->isReadonly = $reflectionOfProperty->isReadOnly();
+            }
+            elseif (isset($defaultValueProperties[$elementName]))
+            {
+                $this->classScheme->properties[$elementName]->setValue($defaultValueProperties[$elementName]);
+            }
         }
     }
 
@@ -233,6 +253,8 @@ class ReflectionReader
     {
         foreach ($this->reflection->getMethods() as $reflectionOfMethod)
         {
+            if ($reflectionOfMethod->isPrivate() && $this->classScheme->getFullName() !== $reflectionOfMethod->getDeclaringClass()->getName()) continue;
+
             ReadMethod::exe($this->classScheme, $reflectionOfMethod);
         }
     }

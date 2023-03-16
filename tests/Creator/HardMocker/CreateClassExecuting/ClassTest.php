@@ -51,12 +51,10 @@ class ClassTest extends TestCase
     public function testCreateObject(): void
     {
         $className = $this->getClassName();
-        $phpCode = "class {$className} {public function __construct(public string \$construct_var = 'XXX') {} public function f1(){return '111';}}";
+        $phpCode = "class {$className} {public function f1(){return '111';}}";
 
         $classManager = MockCreator::hardFromPhpCode($phpCode);
-        $objectManager1 = $classManager->createObjectAndManager(['ZZZ']);
-
-        self::assertEquals('ZZZ', $objectManager1->toObject->construct_var);
+        $objectManager1 = $classManager->createObjectAndManager();
         self::assertEquals('111', $objectManager1->toObject->f1());
 
         $classManager->getMethodManager('f1')->defaultCase()->setWillReturn('AAA');

@@ -21,7 +21,7 @@ use DraculAid\PhpMocker\NotPublic;
  */
 class NotPublicProxy
 {
-    readonly private NotPublic $___not_public_object___;
+    private NotPublic $___not_public_object___;
 
     public function __construct(object $toObject)
     {
@@ -33,17 +33,17 @@ class NotPublicProxy
         return $this->___not_public_object___;
     }
 
-    public function __call(string $name, array $arguments): mixed
+    public function __call(string $name, array $arguments)
     {
         return $this()->call($name, $arguments);
     }
 
-    public function __get(string $name): mixed
+    public function __get(string $name)
     {
         return $this()->get($name);
     }
 
-    public function __set(string $name, mixed $data): void
+    public function __set(string $name, $data): void
     {
         $this()->set($name, $data);
     }

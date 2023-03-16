@@ -43,7 +43,7 @@ class TmpResult
     /**
      * Схема текущего читаемого класса или NULL, если чтение происходит вне класса
      */
-    public null|ClassScheme $schemeClass = null;
+    public ?ClassScheme $schemeClass = null;
 
     /**
      * Указывает на текущую глубину вложений в фигурные скобки

@@ -11,6 +11,8 @@
 
 namespace DraculAid\PhpMocker\Schemes;
 
+use DraculAid\PhpMocker\Tools\ClassTools;
+
 /**
  * Схемы для ООП элементов: описание атрибутов
  *
@@ -26,7 +28,7 @@ class AttributeScheme
     /**
      * Имя атрибута
      */
-    public string $name;
+    public string $name = '';
 
     /**
      * Пространство имен
@@ -45,12 +47,12 @@ class AttributeScheme
      * Для констант и свойств - значение
      * Для методов - тело функции
      */
-    public mixed $innerPhpCode = '';
+    public string $innerPhpCode = '';
 
     /**
      * Объект-схема для которой был создан атрибут
      */
-    protected null|SchemeWithAttributesInterface $ownerScheme;
+    protected ?SchemeWithAttributesInterface $ownerScheme;
 
     /**
      * Создание схемы атрибута
@@ -58,7 +60,7 @@ class AttributeScheme
      * @param   null|SchemeWithAttributesInterface   $scheme   Объект-схема для которой был создан атрибут
      * @param   string                               $name     Полное имя атрибута (включая пространство имен)
      */
-    public function __construct(null|SchemeWithAttributesInterface $scheme, string $name)
+    public function __construct(?SchemeWithAttributesInterface $scheme, string $name)
     {
         $this->ownerScheme = $scheme;
         $this->setFullName($name);
@@ -81,22 +83,9 @@ class AttributeScheme
      *
      * @return  $this
      */
-    public function setFullName(string $name): static
+    public function setFullName(string $name): self
     {
-        // если устанавливается пустое имя
-        if ($name === '')
-        {
-            $this->namespace = '';
-            $this->name = '';
-            return $this;
-        }
-
-
-        // * * *
-
-        $this->name = basename($name);
-        $this->namespace = dirname($name);
-        if ($this->namespace === '.') $this->namespace = '';
+        ClassTools::getNameAndNamespace($name, $this->namespace, $this->name);
 
         return $this;
     }
@@ -108,7 +97,7 @@ class AttributeScheme
      *
      * @return  $this
      */
-    public function setOwnerScheme(null|AbstractBasicScheme $ownerScheme): static
+    public function setOwnerScheme(?AbstractBasicScheme $ownerScheme): self
     {
         $this->ownerScheme = $ownerScheme;
 

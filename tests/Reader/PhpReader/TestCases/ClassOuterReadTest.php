@@ -21,37 +21,37 @@ class ClassOuterReadTest extends TestCase
         self::assertCount(7, $schemes);
 
         self::assertEquals('MyAbstractClass', $schemes[0]->getFullName());
-        self::assertEquals(ClassSchemeType::ABSTRACT_CLASSES, $schemes[0]->type);
+        self::assertEquals(ClassSchemeType::ABSTRACT_CLASSES(), $schemes[0]->type);
         self::assertFalse($schemes[0]->isReadonly);
         self::assertFalse($schemes[0]->isFinal);
 
         self::assertEquals('MyInterface', $schemes[1]->getFullName());
-        self::assertEquals(ClassSchemeType::INTERFACES, $schemes[1]->type);
+        self::assertEquals(ClassSchemeType::INTERFACES(), $schemes[1]->type);
         self::assertFalse($schemes[1]->isReadonly);
         self::assertFalse($schemes[1]->isFinal);
 
         self::assertEquals('MyTrait', $schemes[2]->getFullName());
-        self::assertEquals(ClassSchemeType::TRAITS, $schemes[2]->type);
+        self::assertEquals(ClassSchemeType::TRAITS(), $schemes[2]->type);
         self::assertFalse($schemes[2]->isReadonly);
         self::assertFalse($schemes[2]->isFinal);
 
         self::assertEquals('MyEnum', $schemes[3]->getFullName());
-        self::assertEquals(ClassSchemeType::ENUMS, $schemes[3]->type);
+        self::assertEquals(ClassSchemeType::ENUMS(), $schemes[3]->type);
         self::assertFalse($schemes[3]->isReadonly);
         self::assertFalse($schemes[3]->isFinal);
 
         self::assertEquals('MyClassReadonly', $schemes[4]->getFullName());
-        self::assertEquals(ClassSchemeType::CLASSES, $schemes[4]->type);
+        self::assertEquals(ClassSchemeType::CLASSES(), $schemes[4]->type);
         self::assertTrue($schemes[4]->isReadonly);
         self::assertFalse($schemes[4]->isFinal);
 
         self::assertEquals('MyClassFinal', $schemes[5]->getFullName());
-        self::assertEquals(ClassSchemeType::CLASSES, $schemes[5]->type);
+        self::assertEquals(ClassSchemeType::CLASSES(), $schemes[5]->type);
         self::assertFalse($schemes[5]->isReadonly);
         self::assertTrue($schemes[5]->isFinal);
 
         self::assertEquals('MyClassReadonlyFinal', $schemes[6]->getFullName());
-        self::assertEquals(ClassSchemeType::CLASSES, $schemes[6]->type);
+        self::assertEquals(ClassSchemeType::CLASSES(), $schemes[6]->type);
         self::assertTrue($schemes[6]->isReadonly);
         self::assertTrue($schemes[6]->isFinal);
     }

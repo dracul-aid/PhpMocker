@@ -25,19 +25,22 @@ use DraculAid\PhpMocker\Reader\PhpReader\ReaderElement\CodeReader\ScriptUseReade
  * @see self::clear() - Очищает ранее накопленные временные данные
  * @see self::start() - Проводит выполнение стартовых процедур для начала чтения кода объектом "читателем кода"
  * @see self::run() - Проводит обработку прочитанного символа, и определяет не конец ли это работы "читателя кода"
+ *
+ * Свойства доступные только для чтения @see self::__get()
+ * @property PhpReader $phpReader
  */
 class CodeReader
 {
     /**
      * Объект "читатель кода", для которого идет накопление временных результатов
      */
-    readonly public PhpReader $phpReader;
+    protected PhpReader $phpReader;
 
     /**
      * Объект, для чтения вложенных в атрибут элементов (строк)
      * (NULL - объект чтения кода не установлен)
      */
-    protected null|AbstractReader $codeReader = null;
+    protected ?AbstractReader $codeReader = null;
 
     /**
      * @param   PhpReader   $phpReader   Объект "читатель кода", для которого идет накопление временных результатов
@@ -47,12 +50,17 @@ class CodeReader
         $this->phpReader = $phpReader;
     }
 
+    public function __get(string $name)
+    {
+        return $this->{$name};
+    }
+
     /**
      * Осуществляет чтение кода класса и создание схемы
      *
      * @todo  инструкции declare - https://www.php.net/manual/ru/control-structures.declare.php
      */
-    public function run(): null|self
+    public function run(): ?self
     {
         if (trim($this->phpReader->codeString->charFirst) === '')
         {
@@ -79,12 +87,10 @@ class CodeReader
             }
             else
             {
-                $readerClass = match (true) {
-                    ScriptUseReader::isStart($this->phpReader) => ScriptUseReader::class,
-                    ScriptNamespaceReader::isStart($this->phpReader) => ScriptNamespaceReader::class,
-                    ClassReader::isStart($this->phpReader) => ClassReader::class,
-                    default => null,
-                };
+                if (ScriptUseReader::isStart($this->phpReader)) $readerClass = ScriptUseReader::class;
+                elseif (ScriptNamespaceReader::isStart($this->phpReader)) $readerClass = ScriptNamespaceReader::class;
+                elseif (ClassReader::isStart($this->phpReader)) $readerClass = ClassReader::class;
+                else $readerClass = null;
 
                 if ($readerClass === null) $this->phpReader->codeTmp->addChar();
                 else $this->codeReader = AbstractReader::getReaderObjectByClass($readerClass, $this->phpReader);

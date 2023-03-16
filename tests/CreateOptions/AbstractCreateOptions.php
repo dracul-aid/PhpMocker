@@ -18,6 +18,6 @@ abstract class AbstractCreateOptions extends TestCase
 
     protected function getClassScheme(string $name): ClassScheme
     {
-        return new ClassScheme(ClassSchemeType::CLASSES, $name);
+        return new ClassScheme(ClassSchemeType::CLASSES(), $name);
     }
 }

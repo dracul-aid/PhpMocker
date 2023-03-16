@@ -66,7 +66,10 @@ class ReadMethod
             $this->scheme->methods[$methodName]->returnType =  ReflectionReader\StringTypeFromReflection::exe($this->reflectionMethod->getReturnType());
         }
 
-        ReflectionReader::readAttributesFor($this->scheme->methods[$methodName], $this->reflectionMethod->getAttributes());
+        if (PHP_MAJOR_VERSION > 7)
+        {
+            ReflectionReader::readAttributesFor($this->scheme->methods[$methodName], $this->reflectionMethod->getAttributes());
+        }
 
         $this->scheme->methods[$methodName]->view = ViewScheme::createFromReflection($this->reflectionMethod);
         $this->scheme->methods[$methodName]->isFinal = $this->reflectionMethod->isFinal();
@@ -99,7 +102,10 @@ class ReadMethod
             $argumentName = $argumentReflection->getName();
             $schemeMethod->arguments[$argumentName] = new MethodArgumentScheme($schemeMethod, $argumentName);
 
-            ReflectionReader::readAttributesFor($schemeMethod->arguments[$argumentName], $argumentReflection->getAttributes());
+            if (PHP_MAJOR_VERSION > 7)
+            {
+                ReflectionReader::readAttributesFor($schemeMethod->arguments[$argumentName], $argumentReflection->getAttributes());
+            }
 
             $this->runMethodsArgumentsSetDefaultValue($schemeMethod->arguments[$argumentName], $argumentReflection);
 
@@ -127,7 +133,7 @@ class ReadMethod
         {
             $schemeArgument->isValue = true;
 
-            if ($reflectionArgument->isDefaultValueConstant()) $schemeArgument->valueFromConstant = '\\' . $reflectionArgument->getDefaultValueConstantName();
+            if (PHP_MAJOR_VERSION > 7 && $reflectionArgument->isDefaultValueConstant()) $schemeArgument->valueFromConstant = '\\' . $reflectionArgument->getDefaultValueConstantName();
             elseif ($reflectionArgument->isDefaultValueAvailable()) $schemeArgument->value = $reflectionArgument->getDefaultValue();
         }
     }

@@ -35,7 +35,7 @@ class MethodArgumentScheme implements SchemeWithAttributesInterface
     /**
      * Значение аргумента по умолчанию
      */
-    public mixed $value = '';
+    public $value = '';
 
     /**
      * Значение по умолчанию будет взято из константы (имя константы)
@@ -94,12 +94,10 @@ class MethodArgumentScheme implements SchemeWithAttributesInterface
      *
      * @return  null|PropertyScheme
      */
-    public function ifInConstructGetPropertiesScheme(): null|PropertyScheme
+    public function ifInConstructGetPropertiesScheme(): ?PropertyScheme
     {
-        return match (true) {
-            !isset($this->methodScheme->getClassScheme()->properties[$this->name]) => null,
-            $this->methodScheme->getClassScheme()->properties[$this->name]->isInConstruct => $this->methodScheme->getClassScheme()->properties[$this->name],
-            default => null
-        };
+        if (!isset($this->methodScheme->getClassScheme()->properties[$this->name])) return null;
+        elseif ($this->methodScheme->getClassScheme()->properties[$this->name]->isInConstruct) return $this->methodScheme->getClassScheme()->properties[$this->name];
+        else return null;
     }
 }

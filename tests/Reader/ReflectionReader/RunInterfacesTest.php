@@ -12,6 +12,16 @@ use PHPUnit\Framework\TestCase;
  */
 class RunInterfacesTest extends TestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        if (!interface_exists(\Stringable::class, false))
+        {
+            eval('interface Stringable {}');
+        }
+    }
+
     public function testWithoutInterfaces(): void
     {
         $classScheme = ReflectionReader::exe(
@@ -57,27 +67,41 @@ class RunInterfacesTest extends TestCase
         );
 
         self::assertIsArray($classScheme->interfaces);
-        self::assertCount(1, $classScheme->interfaces);
 
-        self::assertEquals(
-            [
-                '\SplObserver' => '\SplObserver',
-            ],
-            $classScheme->interfaces
-        );
+        if (PHP_MAJOR_VERSION > 7)
+        {
+            self::assertCount(1, $classScheme->interfaces);
+            self::assertEquals(
+                [
+                    '\SplObserver' => '\SplObserver',
+                ],
+                $classScheme->interfaces
+            );
+        }
+        else
+        {
+            self::assertCount(2, $classScheme->interfaces);
+            self::assertEquals(
+                [
+                    '\Stringable' => '\Stringable',
+                    '\SplObserver' => '\SplObserver',
+                ],
+                $classScheme->interfaces
+            );
+        }
     }
 
     private function createClassForWithoutInterfaces(): string
     {
         return get_class(
-            new class {}
+            new class() {}
         );
     }
 
     private function createClassForInterfacesInClassAndNotIntParent(): string
     {
         return get_class(
-            new class extends \stdClass implements \Stringable, \SplObserver {
+            new class() extends \stdClass implements \Stringable, \SplObserver {
                 public function __toString(): string
                 {
                     return "";
@@ -92,7 +116,7 @@ class RunInterfacesTest extends TestCase
     private function createClassForInterfacesNotInClassAndIntParent(): string
     {
         return get_class(
-            new class extends \Exception {
+            new class() extends \Exception {
             }
         );
     }
@@ -100,7 +124,7 @@ class RunInterfacesTest extends TestCase
     private function createClassForInterfacesInClassAndIntParent(): string
     {
         return get_class(
-            new class extends \Exception implements \Stringable, \SplObserver {
+            new class() extends \Exception implements \Stringable, \SplObserver {
                 public function update(\SplSubject $subject): void
                 {
                 }

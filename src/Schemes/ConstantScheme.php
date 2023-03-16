@@ -34,7 +34,7 @@ class ConstantScheme extends AbstractElementsScheme
     /**
      * Значение
      */
-    public mixed $value = '';
+    public $value = '';
 
     /**
      * Элемент является финальным (от него невозможно создавать потомки)
@@ -48,10 +48,10 @@ class ConstantScheme extends AbstractElementsScheme
 
     /**
      * @param   ClassScheme   $schemesClass   Объект "схема класса" для которой создана константа
-     * @param   string    $name            Имя константы
-     * @param   mixed     $value           Значение константы
+     * @param   string        $name           Имя константы
+     * @param   mixed         $value          Значение константы
      */
-    public function __construct(ClassScheme $schemesClass, string $name, mixed $value = '')
+    public function __construct(ClassScheme $schemesClass, string $name, $value = '')
     {
         parent::__construct($schemesClass, $name);
         $this->value = $value;
@@ -64,11 +64,8 @@ class ConstantScheme extends AbstractElementsScheme
      */
     public function getValuePhpCode(): string
     {
-        return match (true)
-        {
-            $this->innerPhpCode !== '' => $this->innerPhpCode,
-            $this->isEnumCase => isset($this->value->value) ? var_export($this->value->value, true) : '',
-            default => var_export($this->value, true),
-        };
+        if ($this->innerPhpCode !== '') return $this->innerPhpCode;
+        elseif ($this->isEnumCase) return isset($this->value->value) ? var_export($this->value->value, true) : '';
+        else return var_export($this->value, true);
     }
 }

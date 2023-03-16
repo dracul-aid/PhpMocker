@@ -60,7 +60,7 @@ class HasCalledArguments implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @throws  \TypeError   Аргумент с таким именем или позицией не был найден
      */
-    public function getValue(int|string $index): mixed
+    public function getValue($index)
     {
         if (is_string($index))
         {
@@ -81,7 +81,7 @@ class HasCalledArguments implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @return  mixed
      */
-    public function getValueOrNull(int|string $index): mixed
+    public function getValueOrNull($index)
     {
         if (is_string($index)) return $this->argumentsByName[$index];
         else return $this->argumentsByPosition[$index];
@@ -99,7 +99,7 @@ class HasCalledArguments implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @throws  \TypeError   Аргумент с таким именем или позицией не был найден
      */
-    public function &getLink(int|string $index): mixed
+    public function &getLink($index)
     {
         if (is_string($index))
         {
@@ -125,7 +125,7 @@ class HasCalledArguments implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * (!) Если $index массив, то функция рекурсивно вызывает саму себя. Используя ключи $index, как имя или позицию аргумента
      */
-    public function update(int|string|array $index, mixed $setData = null): static
+    public function update($index, $setData = null)
     {
         if (is_string($index))
         {
@@ -153,7 +153,7 @@ class HasCalledArguments implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @return  bool
      */
-    public function in(int|string $index, bool $throwIfError = false): bool
+    public function in($index, bool $throwIfError = false): bool
     {
         if (is_string($index)) return $this->issetByName($index, $throwIfError);
         else return $this->issetByPosition($index, $throwIfError);
@@ -184,7 +184,7 @@ class HasCalledArguments implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @return  bool
      */
-    public function offsetExists(mixed $offset): bool
+    public function offsetExists($offset): bool
     {
         return $this->in($offset, false);
     }
@@ -198,7 +198,8 @@ class HasCalledArguments implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @throws  \TypeError   Аргумент с таким именем или позицией не был найден
      */
-    public function &offsetGet(mixed $offset): mixed
+    #[\ReturnTypeWillChange]
+    public function &offsetGet($offset)
     {
         return $this->getLink($offset);
     }
@@ -215,7 +216,7 @@ class HasCalledArguments implements \Countable, \ArrayAccess, \IteratorAggregate
      * @throws  \TypeError   Аргумент с таким именем или позицией не был найден
      *
      */
-    public function offsetSet(mixed $offset, mixed $value): void
+    public function offsetSet($offset, $value): void
     {
         if ($offset === null) throw new \TypeError("Value cannot be added into Arguments");
 
@@ -232,7 +233,7 @@ class HasCalledArguments implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @throws  \TypeError   Аргумент с таким именем или позицией не был найден
      */
-    public function offsetUnset(mixed $offset): void
+    public function offsetUnset($offset): void
     {
         if (is_string($offset)) $this->argumentsByName[$offset] = null;
         else $this->argumentsByPosition[$offset] = null;

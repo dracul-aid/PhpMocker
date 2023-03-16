@@ -29,28 +29,34 @@ use DraculAid\PhpMocker\ClassAutoloader\Filters\Storages\AutoloaderFilerNamespac
  * @see self::$namespaceBlackList [const] - Черный список Пространств имен
  * @see self::$namespaceWhiteList [const] - Белый список пространств имен
  * @see self::canBeMock() - Проверяет, можно ли класс преобразовывать в мок класс
+ *
+ * Свойства доступные только для чтения @see self::__get()
+ * @property AutoloaderFilerClassNameStorage $classBlackList
+ * @property AutoloaderFilerClassNameStorage $classWhiteList
+ * @property AutoloaderFilerNamespaceStorage $namespaceBlackList
+ * @property AutoloaderFilerNamespaceStorage $namespaceWhiteList
  */
 class DefaultAutoloaderFilter implements AutoloaderFilterInterface
 {
     /**
      * Черный Список классов
      */
-    readonly public AutoloaderFilerClassNameStorage $classBlackList;
+    protected AutoloaderFilerClassNameStorage $classBlackList;
 
     /**
      * Белый список классов
      */
-    readonly public AutoloaderFilerClassNameStorage $classWhiteList;
+    protected AutoloaderFilerClassNameStorage $classWhiteList;
 
     /**
      * Черный список Пространств имен
      */
-    readonly public AutoloaderFilerNamespaceStorage $namespaceBlackList;
+    protected AutoloaderFilerNamespaceStorage $namespaceBlackList;
 
     /**
      * Белый список пространств имен
      */
-    readonly public AutoloaderFilerNamespaceStorage $namespaceWhiteList;
+    protected AutoloaderFilerNamespaceStorage $namespaceWhiteList;
 
     public function __construct()
     {
@@ -60,6 +66,11 @@ class DefaultAutoloaderFilter implements AutoloaderFilterInterface
         $this->namespaceWhiteList = new AutoloaderFilerNamespaceStorage();
 
         $this->__constructSetDefaultValuesInFilters();
+    }
+
+    public function __get(string $name)
+    {
+        return $this->{$name};
     }
 
     /**

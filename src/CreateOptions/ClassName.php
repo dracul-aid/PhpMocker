@@ -25,14 +25,14 @@ class ClassName implements CreateOptionsInterface
      *    TRUE - Имя будет создано автоматически
      *    string - Явно указанное имя
      */
-    private bool|string $newName;
+    private $newName;
 
     /**
      * @param   bool|string   $newName   Имя создаваемого мок класса
      *                                   * TRUE: Имя будет создано автоматически
      *                                   * string: Явно указанное имя
      */
-    public function __construct(bool|string $newName)
+    public function __construct($newName)
     {
         $this->newName = $newName;
     }

@@ -55,7 +55,7 @@ class AttributesReader extends AbstractReader
      * Объект, для чтения вложенных в атрибут элементов (строк)
      * (NULL - объект чтения кода не установлен)
      */
-    private null|AbstractReader $codeReader = null;
+    private ?AbstractReader $codeReader = null;
 
     /**
      * Подсчет глубины круглых скобок
@@ -86,7 +86,7 @@ class AttributesReader extends AbstractReader
         $this->phpReader->readWithStrings = true;
     }
 
-    public function run(): null|self
+    public function run(): ?AbstractReader
     {
         if ($this->readBodyType != self::READ_FROM_ARGUMENTS && $this->phpReader->codeString->charFirst === ']')
         {

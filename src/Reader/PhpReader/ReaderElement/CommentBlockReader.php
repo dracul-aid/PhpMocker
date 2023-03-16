@@ -49,7 +49,7 @@ class CommentBlockReader extends AbstractReader
         $this->phpReader->codeString->charClear();
     }
 
-    public function run(): null|self
+    public function run(): ?AbstractReader
     {
         if ($this->phpReader->codeString->charFirst === '*' && $this->phpReader->codeString->charSecond === '/')
         {

@@ -34,16 +34,16 @@ class ClassElementSchemeCreatorTest extends TestCase
     public function testProperty(): void
     {
         $testCases = [
-            'public $var;' => ['view' => ViewScheme::PUBLIC, 'isStatic' => false, 'isReadonly' => false],
-            'public static $var;' => ['view' => ViewScheme::PUBLIC, 'isStatic' => true, 'isReadonly' => false],
-            'readonly public string $var;' => ['view' => ViewScheme::PUBLIC, 'isStatic' => false, 'isReadonly' => true],
-            'static public $var;' => ['view' => ViewScheme::PUBLIC, 'isStatic' => true, 'isReadonly' => false],
-            '$var;' => ['view' => ViewScheme::PUBLIC, 'isStatic' => false, 'isReadonly' => false],
-            'var $var;' => ['view' => ViewScheme::PUBLIC, 'isStatic' => false, 'isReadonly' => false],
-            'protected $var;' => ['view' => ViewScheme::PROTECTED, 'isStatic' => false, 'isReadonly' => false],
-            'private $var;' => ['view' => ViewScheme::PRIVATE, 'isStatic' => false, 'isReadonly' => false],
-            'public string|int $var;' => ['view' => ViewScheme::PUBLIC, 'isStatic' => false, 'isReadonly' => false],
-            'public Alpha&Beta $var;' => ['view' => ViewScheme::PUBLIC, 'isStatic' => false, 'isReadonly' => false],
+            'public $var;' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => false, 'isReadonly' => false],
+            'public static $var;' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => true, 'isReadonly' => false],
+            'readonly public string $var;' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => false, 'isReadonly' => true],
+            'static public $var;' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => true, 'isReadonly' => false],
+            '$var;' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => false, 'isReadonly' => false],
+            'var $var;' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => false, 'isReadonly' => false],
+            'protected $var;' => ['view' => ViewScheme::PROTECTED(), 'isStatic' => false, 'isReadonly' => false],
+            'private $var;' => ['view' => ViewScheme::PRIVATE(), 'isStatic' => false, 'isReadonly' => false],
+            'public string|int $var;' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => false, 'isReadonly' => false],
+            'public Alpha&Beta $var;' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => false, 'isReadonly' => false],
         ];
 
         foreach ($testCases as $phpCode => $options)
@@ -65,20 +65,20 @@ class ClassElementSchemeCreatorTest extends TestCase
     public function testMethods(): void
     {
         $testCases = [
-            'public function f() {}' => ['view' => ViewScheme::PUBLIC, 'isStatic' => false, 'isFinal' => false, 'isAbstract' => false],
-            'public static function f() {}' => ['view' => ViewScheme::PUBLIC, 'isStatic' => true, 'isFinal' => false, 'isAbstract' => false],
-            'static public function f() {}' => ['view' => ViewScheme::PUBLIC, 'isStatic' => true, 'isFinal' => false, 'isAbstract' => false],
-            'final public function f() {}' => ['view' => ViewScheme::PUBLIC, 'isStatic' => false, 'isFinal' => true, 'isAbstract' => false],
-            'final static public function f() {}' => ['view' => ViewScheme::PUBLIC, 'isStatic' => true, 'isFinal' => true, 'isAbstract' => false],
-            'final public static function f() {}' => ['view' => ViewScheme::PUBLIC, 'isStatic' => true, 'isFinal' => true, 'isAbstract' => false],
-            'abstract public static function f();' => ['view' => ViewScheme::PUBLIC, 'isStatic' => true, 'isFinal' => false, 'isAbstract' => true],
-            'abstract static public function f();' => ['view' => ViewScheme::PUBLIC, 'isStatic' => true, 'isFinal' => false, 'isAbstract' => true],
-            'protected static function f() {}' => ['view' => ViewScheme::PROTECTED, 'isStatic' => true, 'isFinal' => false, 'isAbstract' => false],
-            'private static function f() {}' => ['view' => ViewScheme::PRIVATE, 'isStatic' => true, 'isFinal' => false, 'isAbstract' => false],
-            'function f() {}' => ['view' => ViewScheme::PUBLIC, 'isStatic' => false, 'isFinal' => false, 'isAbstract' => false],
-            'static function f() {}' => ['view' => ViewScheme::PUBLIC, 'isStatic' => true, 'isFinal' => false, 'isAbstract' => false],
-            'abstract function f() {}' => ['view' => ViewScheme::PUBLIC, 'isStatic' => false, 'isFinal' => false, 'isAbstract' => true],
-            'final static function f() {}' => ['view' => ViewScheme::PUBLIC, 'isStatic' => true, 'isFinal' => true, 'isAbstract' => false],
+            'public function f() {}' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => false, 'isFinal' => false, 'isAbstract' => false],
+            'public static function f() {}' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => true, 'isFinal' => false, 'isAbstract' => false],
+            'static public function f() {}' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => true, 'isFinal' => false, 'isAbstract' => false],
+            'final public function f() {}' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => false, 'isFinal' => true, 'isAbstract' => false],
+            'final static public function f() {}' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => true, 'isFinal' => true, 'isAbstract' => false],
+            'final public static function f() {}' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => true, 'isFinal' => true, 'isAbstract' => false],
+            'abstract public static function f();' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => true, 'isFinal' => false, 'isAbstract' => true],
+            'abstract static public function f();' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => true, 'isFinal' => false, 'isAbstract' => true],
+            'protected static function f() {}' => ['view' => ViewScheme::PROTECTED(), 'isStatic' => true, 'isFinal' => false, 'isAbstract' => false],
+            'private static function f() {}' => ['view' => ViewScheme::PRIVATE(), 'isStatic' => true, 'isFinal' => false, 'isAbstract' => false],
+            'function f() {}' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => false, 'isFinal' => false, 'isAbstract' => false],
+            'static function f() {}' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => true, 'isFinal' => false, 'isAbstract' => false],
+            'abstract function f() {}' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => false, 'isFinal' => false, 'isAbstract' => true],
+            'final static function f() {}' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => true, 'isFinal' => true, 'isAbstract' => false],
         ];
 
         foreach ($testCases as $phpCode => $options)
@@ -100,11 +100,11 @@ class ClassElementSchemeCreatorTest extends TestCase
     public function testConstants(): void
     {
         $testCases = [
-            'public const NAME' => ['view' => ViewScheme::PUBLIC, 'isFinal' => false],
-            'protected const NAME' => ['view' => ViewScheme::PROTECTED, 'isFinal' => false],
-            'private const NAME' => ['view' => ViewScheme::PRIVATE, 'isFinal' => false],
-            'final public const NAME' => ['view' => ViewScheme::PUBLIC, 'isFinal' => true],
-            'final const NAME' => ['view' => ViewScheme::PUBLIC, 'isFinal' => true],
+            'public const NAME' => ['view' => ViewScheme::PUBLIC(), 'isFinal' => false],
+            'protected const NAME' => ['view' => ViewScheme::PROTECTED(), 'isFinal' => false],
+            'private const NAME' => ['view' => ViewScheme::PRIVATE(), 'isFinal' => false],
+            'final public const NAME' => ['view' => ViewScheme::PUBLIC(), 'isFinal' => true],
+            'final const NAME' => ['view' => ViewScheme::PUBLIC(), 'isFinal' => true],
         ];
 
         foreach ($testCases as $phpCode => $options)
@@ -178,7 +178,7 @@ class ClassElementSchemeCreatorTest extends TestCase
     private function createObjects(string $phpCode): void
     {
         $this->phpReader = NotPublic::createObject(PhpReader::class, [$phpCode]);
-        $this->phpReader->tmpResult->schemeClass = new ClassScheme(ClassSchemeType::CLASSES, 'TestClassName');
+        $this->phpReader->tmpResult->schemeClass = new ClassScheme(ClassSchemeType::CLASSES(), 'TestClassName');
         $this->tmpClassElement = new TmpClassElement();
 
         $this->classElementSchemeCreator = ClassElementSchemeCreator::start($this->phpReader, $this->tmpClassElement);

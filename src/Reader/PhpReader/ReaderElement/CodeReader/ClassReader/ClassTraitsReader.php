@@ -26,7 +26,7 @@ class ClassTraitsReader extends AbstractClassElementsReader
         $this->readCodeBlock = false;
     }
 
-    public function run(): null|self
+    public function run(): ?AbstractClassElementsReader
     {
         $this->phpReader->codeTmp->addChar();
 

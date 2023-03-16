@@ -23,10 +23,47 @@ class ClassToolsTest extends TestCase
         // * * *
 
         $object = new class() {
-            public function __construct(public string $arg1 = '', $arg2 = '') {}
+            public string $arg1 = '';
+            public function __construct(string $arg1 = '', $arg2 = '')
+            {
+                $this->arg1 = $arg1;
+            }
         };
 
         $methods = ClassTools::getMethodArgumentNames($object, '__construct');
         self::assertEquals(['arg1' => 'arg1', 'arg2' => 'arg2'], $methods);
+    }
+
+    /**
+     * Test for
+     * @see ClassTools::getNamespace()
+     * @see ClassTools::getNameWithoutNamespace()
+     * @see ClassTools::getNameAndNamespace()
+     */
+    public function testGetNameOrNamespace(): void
+    {
+        self::assertEquals('catalog\\subcatalog', ClassTools::getNamespace('catalog\\subcatalog\\class'));
+        self::assertEquals('catalog', ClassTools::getNamespace('catalog\\class'));
+        self::assertEquals('', ClassTools::getNamespace('class'));
+
+        // * * *
+
+        self::assertEquals('class', ClassTools::getNameWithoutNamespace('catalog\\subcatalog\\class'));
+        self::assertEquals('class', ClassTools::getNameWithoutNamespace('catalog\\class'));
+        self::assertEquals('class', ClassTools::getNameWithoutNamespace('class'));
+
+        // * * *
+
+        ClassTools::getNameAndNamespace('catalog\\subcatalog\\class', $namespace, $name);
+        self::assertEquals('catalog\\subcatalog', $namespace);
+        self::assertEquals('class', $name);
+
+        ClassTools::getNameAndNamespace('catalog\\class', $namespace, $name);
+        self::assertEquals('catalog', $namespace);
+        self::assertEquals('class', $name);
+
+        ClassTools::getNameAndNamespace('class', $namespace, $name);
+        self::assertEquals('', $namespace);
+        self::assertEquals('class', $name);
     }
 }

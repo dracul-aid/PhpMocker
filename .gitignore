@@ -3,3 +3,4 @@ vendor/
 composer.phar
 test.php
 .phpunit.result.cache
+docker-compose.yml

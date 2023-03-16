@@ -21,18 +21,22 @@ use Composer\Autoload\ClassLoader;
  * @see self::$composerClassLoader [Readonly] - Объект "автозагрузчик классов" композера
  * @see self::getPath() - Вернет путь к загружаемому классу
  * @see self::unregister() - Снятие регистрации "базового автозагрузчика"
+ *
+ * Свойства доступные только для чтения @see self::__get()
+ * @property string $vendorPath
+ * @property ClassLoader $composerClassLoader
  */
 class ComposerAutoloaderDriver implements AutoloaderDriverInterface
 {
     /**
      * Путь к каталогу vendor композера
      */
-    readonly public string $vendorPath;
+    protected string $vendorPath;
 
     /**
      * Объект "автозагрузчик классов" композера
      */
-    readonly public ClassLoader $composerClassLoader;
+    protected ClassLoader $composerClassLoader;
 
     /**
      * @param   string   $vendorPath   Путь к каталогу vendor композера
@@ -41,6 +45,11 @@ class ComposerAutoloaderDriver implements AutoloaderDriverInterface
     {
         $this->vendorPath = $vendorPath;
         $this->composerClassLoader = require("{$this->vendorPath}/autoload.php");
+    }
+
+    public function __get(string $name)
+    {
+        return $this->{$name};
     }
 
     public function getPath(string $class): string

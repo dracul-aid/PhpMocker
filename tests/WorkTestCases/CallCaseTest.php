@@ -77,7 +77,7 @@ class CallCaseTest extends TestCase
         $this->classManager = MockCreator::hardFromPhpCode(<<<CODE
                 class {$this->className} 
                 {
-                    public static function f(mixed \$arg): string
+                    public static function f(\$arg): string
                     {
                         return 'f_' . \$arg;                    
                     }

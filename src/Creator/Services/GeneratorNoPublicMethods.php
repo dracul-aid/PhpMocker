@@ -26,12 +26,12 @@ class GeneratorNoPublicMethods
     /**
      * Хранит схему класса
      */
-    readonly private ClassScheme $classScheme;
+    private ClassScheme $classScheme;
 
     /**
      * Уникальный идентификатор мок-класса
      */
-    readonly private string $index;
+    private string $index;
 
     /**
      * Создаем методы для взаимодействия с менеджером мок-объектов
@@ -81,7 +81,7 @@ class GeneratorNoPublicMethods
     {
         $methodName = ToolsElementNames::methodPropertySet($this->index);
         $this->classScheme->methods[$methodName] = new MethodScheme($this->classScheme, $methodName);
-        $this->classScheme->methods[$methodName]->argumentsPhpCode = 'string $name, mixed $value';
+        $this->classScheme->methods[$methodName]->argumentsPhpCode = 'string $name, $value';
         $this->classScheme->methods[$methodName]->innerPhpCode .= AbstractMocker::NEW_LINE_FOR_METHOD_CODE . '$this->{ $name } = $value;';
     }
 
@@ -136,7 +136,7 @@ class GeneratorNoPublicMethods
         $methodName = ToolsElementNames::methodStaticPropertySet($this->index);
         $this->classScheme->methods[$methodName] = new MethodScheme($this->classScheme, $methodName);
         $this->classScheme->methods[$methodName]->isStatic = true;
-        $this->classScheme->methods[$methodName]->argumentsPhpCode = 'string $name, mixed $value';
+        $this->classScheme->methods[$methodName]->argumentsPhpCode = 'string $name, $value';
         $this->classScheme->methods[$methodName]->innerPhpCode .= AbstractMocker::NEW_LINE_FOR_METHOD_CODE . 'static::$$name = $value;';
     }
 

@@ -19,13 +19,18 @@ namespace DraculAid\PhpMocker\Tools;
  * @see self::$callable [const] - Вызываемая функция
  * @see self::$defaultArguments Параметры, которые будут переданы функции, при вызове с помощью call()
  * @see self::call() - Вызов прикрепленной функции, с массивом аргументов (позволяет передавать аргументы по ссылке)
+ *
+ * Свойства доступные только для чтения @see self::__get()
+ * @property string|array|\Closure|callable $callable
  */
 class CallableObject
 {
     /**
      * Вызываемая функция
+     *
+     * @var string|array|\Closure|callable
      */
-    readonly public string|array|\Closure $callable;
+    private $callable;
 
     /**
      * Параметры, которые будут переданы функции, при вызове с помощью @see CallableObject::call()
@@ -47,6 +52,11 @@ class CallableObject
         $this->defaultArguments = array_values($defaultArguments);
     }
 
+    public function __get(string $name)
+    {
+        return $this->{$name};
+    }
+
     /**
      * Вызов объекта эквивалентен вызову функции. При вызове можно передать список аргументов.
      * Не переданные аргументы, будут дополнены из @see self::$defaultArguments
@@ -55,7 +65,7 @@ class CallableObject
      *
      * @return  mixed   Вернет результат работы функции
      */
-    public function __invoke(mixed ...$arguments): mixed
+    public function __invoke(...$arguments)
     {
         return $this->call($arguments);
     }
@@ -68,7 +78,7 @@ class CallableObject
      *
       * @return  mixed   Вернет результат работы функции
      */
-    public function call(array $arguments = []): mixed
+    public function call(array $arguments = [])
     {
         $arguments = array_replace($this->defaultArguments, $arguments);
 

@@ -41,9 +41,9 @@ class HardMocker extends AbstractMocker
     /**
      * Различные параметры и настройки создания мок-классов
      */
-    readonly protected HardMockerOptions $mockerOptions;
+    protected HardMockerOptions $mockerOptions;
 
-    public static function getTextWhyMethodIsNotMockMethod(string|object $owner, string $methodName): string
+    public static function getTextWhyMethodIsNotMockMethod($owner, string $methodName): string
     {
         $classReflection = new \ReflectionClass($owner);
 
@@ -80,7 +80,7 @@ class HardMocker extends AbstractMocker
      * @throws  HardMockerCreateForInterface                          Может быть выброшено: Если в переданном коде содержатся интерфейсы
      * @throws  MockClassCreatorClassWasLoadedException               Попытка переопределения уже загруженного класса
      */
-    public static function createForCode(string $phpCode, null|callable $beforeRun = null, bool $create = true): array
+    public static function createForCode(string $phpCode, ?callable $beforeRun = null, bool $create = true): array
     {
         /** @var ClassManager[] $classManagers - Для накопления результатов работы функции */
         $classManagers = [];
@@ -122,7 +122,7 @@ class HardMocker extends AbstractMocker
      * @throws  HardMockClassCreatorPhpFileNotFoundException          Если указанный путь ведет не к файлу
      * @throws  HardMockClassCreatorPhpFileIsNotReadableException     Если указанный путь ведет к файлу, на который нет прав на чтение
      */
-    public static function createClassFromScript(string $path, null|callable $beforeRun = null): array
+    public static function createClassFromScript(string $path, ?callable $beforeRun = null): array
     {
         if (!is_file($path)) throw new HardMockClassCreatorPhpFileNotFoundException($path);
         elseif (!is_readable($path)) throw new HardMockClassCreatorPhpFileIsNotReadableException($path);
@@ -155,7 +155,7 @@ class HardMocker extends AbstractMocker
      * Если $create === FALSE, созданный PHP код мок класса будет помещен в @see ClassManagerWithPhpCode::$createPhpCode
      * Кроме того, возвращенные функцией "менеджеры мок-класса" будут объектами @see ClassManagerWithPhpCode
      */
-    protected static function createClassExecuting(ClassScheme $classScheme, null|callable $beforeRun, string $classOriginal, bool $create = true): ClassManager
+    protected static function createClassExecuting(ClassScheme $classScheme, ?callable $beforeRun, string $classOriginal, bool $create = true): ClassManager
     {
         $generator = new static();
         $generator->classScheme = $classScheme;
@@ -186,7 +186,7 @@ class HardMocker extends AbstractMocker
         {
             throw new MockClassCreatorClassIsInternalException($this->classScheme->type->value, $this->classScheme->getFullName());
         }
-        elseif ($this->mockerOptions->exceptionForInterface && $this->classScheme->type == ClassSchemeType::INTERFACES)
+        elseif ($this->mockerOptions->exceptionForInterface && $this->classScheme->type == ClassSchemeType::INTERFACES())
         {
             throw new HardMockerCreateForInterface($this->classScheme->getFullName());
         }

@@ -41,7 +41,7 @@ class MockCreator
     /**
      * Версия PHP мокера
      */
-    final public const VERSION = '0.0.1';
+    public const VERSION = 'PHP7-0.0.1';
 
     /**
      * Создает мок-класс с помощью наследования
@@ -64,7 +64,7 @@ class MockCreator
      * В случае, если мок-класс создан для абстрактного класса, все абстрактные методы будут реализованны, но в случае их вызова
      * они будут выбрасывать исключение (или не будут, если было установлено какое-либо мок значение для ответа)
      */
-    public static function softClass(string $classOriginal, null|callable $beforeRun = null): ClassManager
+    public static function softClass(string $classOriginal, ?callable $beforeRun = null): ClassManager
     {
         return SoftMocker::createClass($classOriginal, $beforeRun);
     }
@@ -94,7 +94,7 @@ class MockCreator
      * $trait = [ 'trait_1', 'trait_2', 'rules' => 'trait_2::bigTalk as talk;' ];
      * ```
      */
-    public static function softTrait(string|array $trait, null|callable $beforeRun = null): ClassManager
+    public static function softTrait($trait, ?callable $beforeRun = null): ClassManager
     {
         return SoftMocker::createClassForTraits($trait, $beforeRun);
     }
@@ -108,7 +108,7 @@ class MockCreator
      *
      * @param   string    $class
      *
-     * @return   null|ClassManager
+     * @return   ClassManager
      *
      * (!) Создаст мок классы для классов, абстрактных классов, трейтов и перечислений (включая финальные классы)
      * (!) Интерфейс будет загружен без преобразования в мок-класс
@@ -119,7 +119,7 @@ class MockCreator
      *
      * @todo  Переработать поиск менеджера и вызов загрузки класса (см комментарии в коде)
      */
-    public static function hardLoadClass(string $class): null|ClassManager
+    public static function hardLoadClass(string $class): ClassManager
     {
         // если уже есть менеджер класса - вернем его
         // если класс уже загружен, как обычный класс - выбросим исключение
@@ -149,7 +149,7 @@ class MockCreator
      * @param   string          $phpCode     PHP код с описанием класса (или классов)
      * @param   null|callable   $beforeRun   Функция с настройками создания
      *
-     * @return  array|ClassManager   Вернет схему или массив схем классов (ключи - имена классов)
+     * @return  ClassManager[]|ClassManager   Вернет схему или массив схем классов (ключи - имена классов)
      *
      * (!) Создаст мок классы для классов, абстрактных классов, трейтов и перечислений (включая финальные классы)
      * (!) Создание мок копии для интерфейсов бесполезно, поэтому не будет производиться
@@ -165,7 +165,7 @@ class MockCreator
      * @throws  HardMockerCreateForInterface                          Если в переданном коде содержатся интерфейсы
      * @throws  MockClassCreatorClassWasLoadedException               Попытка переопределения уже загруженного класса
      */
-    public static function hardFromPhpCode(string $phpCode, null|callable $beforeRun = null): array|ClassManager
+    public static function hardFromPhpCode(string $phpCode, ?callable $beforeRun = null)
     {
         $classManagers = HardMocker::createForCode($phpCode, $beforeRun);
 
@@ -181,7 +181,7 @@ class MockCreator
      * @param   string          $path        Путь к PHP скрипту
      * @param   null|callable   $beforeRun   Функция с настройками создания
      *
-     * @return  array|ClassManager   Вернет схему или массив схем классов (ключи - имена классов)
+     * @return  ClassManager[]|ClassManager   Вернет схему или массив схем классов (ключи - имена классов)
      *
      * @throws  HardMockClassCreatorPhpCodeWithoutElementsException   В PHP коде не был найден код, для которого можно создать моки (не было определения классов)
      * @throws  MockClassCreatorClassIsInternalException              Попытка переопределить в мок-класс встроенный в PHP класс
@@ -190,7 +190,7 @@ class MockCreator
      * @throws  HardMockClassCreatorPhpFileNotFoundException          Если указанный путь ведет не к файлу
      * @throws  HardMockClassCreatorPhpFileIsNotReadableException     Если указанный путь ведет к файлу, на который нет прав на чтение
      */
-    public static function hardFromScript(string $path, null|callable $beforeRun = null): array|ClassManager
+    public static function hardFromScript(string $path, ?callable $beforeRun = null)
     {
         $classManagers = HardMocker::createClassFromScript($path, $beforeRun);
 

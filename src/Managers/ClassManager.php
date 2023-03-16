@@ -49,6 +49,14 @@ use DraculAid\PhpMocker\Schemes\ClassSchemeType;
  * @see self::getProperty() - Получение значения статического свойства
  * @see self::setProperty() - Установка значения статического свойства
  * @see self::callMethod() - Вызов статического метода
+ *
+ * Свойства доступные только для чтения @see self::__get()
+ * @property string $toClass
+ * @property string[] $mockMethodNames
+ * @property string $driverName
+ * @property string $index
+ * @property \SplObjectStorage $objectManagers
+ * @property ClassSchemeType $classType
  */
 class ClassManager extends AbstractClassAndObjectManager
 {
@@ -61,12 +69,12 @@ class ClassManager extends AbstractClassAndObjectManager
      *
      * @var ClassManager[] $managers
      */
-    private static array $managers = [];
+    protected static array $managers = [];
 
     /**
      * Имя класса, для которого создан менеджер
      */
-    readonly public string $toClass;
+    protected string $toClass;
 
     /**
      * Список имен методов класса, для которых можно получить "мок-метод"
@@ -75,25 +83,25 @@ class ClassManager extends AbstractClassAndObjectManager
      *
      * Для установки @see self::setMockMethodNames()
      */
-    readonly public array $mockMethodNames;
+    private array $mockMethodNames;
 
     /**
      * Рефлексия класса, для которого создан менеджер
      */
-    readonly private ClassScheme $schemeToClass;
+    private ClassScheme $schemeToClass;
 
     /**
      * Имя класса, с помощью которого создан мок-класс, обычно это:
      * @see \DraculAid\PhpMocker\Creator\SoftMocker Мок-классы созданные с помощью наследования
      * @see \DraculAid\PhpMocker\Creator\HurdMocker Мок-классы созданные с помощью изменения PHP кода
      */
-    readonly protected string $driverName;
+    protected string $driverName;
 
     /**
      * Уникальный идентификатор мок-класса
      * (Последовательность символов, которую можно использовать, для создания уникальных имен связанных с мок-классом)
      */
-    readonly public string $index;
+    protected string $index;
 
     /**
      * Хранилище менеджеров мок-объектов созданных на основе класса (взаимодействие, как с массивом)
@@ -103,12 +111,12 @@ class ClassManager extends AbstractClassAndObjectManager
      *
      * @var \SplObjectStorage|ObjectManager[] $objectManagers
      */
-    readonly public \SplObjectStorage $objectManagers;
+    protected \SplObjectStorage $objectManagers;
 
     /**
      * Хранит тип мок-класса (интерфейс, класс, трейт...)
      */
-    readonly public ClassSchemeType $classType;
+    protected ClassSchemeType $classType;
 
     /**
      * Вернет "менеджер мок-класса" по имени мок-класса
@@ -120,7 +128,7 @@ class ClassManager extends AbstractClassAndObjectManager
      *
      * @throws  ClassManagerNotFoundException  Может быть выброшен, в случае, если не был найден менеджер (обычно это значит, что был запрошен менеджер НЕ ДЛЯ мок-класса)
      */
-    public static function getManager(string $mockClass, bool $throw = false): null|ClassManager
+    public static function getManager(string $mockClass, bool $throw = false): ?ClassManager
     {
         if (empty(self::$managers[$mockClass]))
         {
@@ -136,7 +144,7 @@ class ClassManager extends AbstractClassAndObjectManager
      * @param   string            $driverName   Имя класса, создавшего менеджер
      * @param   string            $index        Уникальный идентификатор мок-класса
      */
-    public function __construct(ClassSchemeType $classType, string $className, string $driverName, null|string $index = null)
+    public function __construct(ClassSchemeType $classType, string $className, string $driverName, ?string $index = null)
     {
         $this->toClass = $className;
         $this->driverName = $driverName;
@@ -147,6 +155,11 @@ class ClassManager extends AbstractClassAndObjectManager
         $this->classType = $classType;
 
         $this->registerInManagerList();
+    }
+
+    public function __get(string $name)
+    {
+        return $this->{$name};
     }
 
     /**
@@ -199,7 +212,7 @@ class ClassManager extends AbstractClassAndObjectManager
      *
      * @return  object   Вернет мок-объект
      */
-    public function createObject(mixed ... $arguments): object
+    public function createObject(... $arguments): object
     {
         return NotPublic::createObject($this->toClass, $arguments);
     }
@@ -216,7 +229,7 @@ class ClassManager extends AbstractClassAndObjectManager
      *
      * В отличие от создания объекта с помощью рефлексии, этот способ также создаст и менеджер мок-объекта
      */
-    public function createObjectWithoutConstructor(array $setProperties = [], null|ObjectManager &$objectManager = null): object
+    public function createObjectWithoutConstructor(array $setProperties = [], ?ObjectManager &$objectManager = null): object
     {
         $reflection = new \ReflectionClass($this->toClass);
 
@@ -237,7 +250,7 @@ class ClassManager extends AbstractClassAndObjectManager
      *
      * @return  ObjectManager   Менеджер мок-объекта
      */
-    public function createObjectAndManager(false|array $constructorArguments = false, array $setProperties = [], null|object &$newObject = null): ObjectManager
+    public function createObjectAndManager($constructorArguments = false, array $setProperties = [], ?object &$newObject = null): ObjectManager
     {
         if (is_array($constructorArguments))
         {
@@ -257,11 +270,13 @@ class ClassManager extends AbstractClassAndObjectManager
     /**
      * Получение значения константы (в том числе и protected и private)
      *
+     * Код функции создается в @see GeneratorNoPublicMethods::runConstGet()
+     *
      * @param   string   $name    Имя константы
      *
      * @return  mixed    Значение константы
      */
-    public function getConst(string $name): mixed
+    public function getConst(string $name)
     {
         return [$this->toClass, ToolsElementNames::methodConstGet($this->index)]($name);
     }
@@ -269,17 +284,21 @@ class ClassManager extends AbstractClassAndObjectManager
     /**
      * Получение значения статического свойства (в том числе и protected и private)
      *
+     * Код функции создается в @see GeneratorNoPublicMethods::runStaticPropertyGet()
+     *
      * @param   string   $name    Имя статического свойства
      *
      * @return  mixed   Значение свойства
      */
-    public function getProperty(string $name): mixed
+    public function getProperty(string $name)
     {
         return [$this->toClass, ToolsElementNames::methodStaticPropertyGet($this->index)]($name);
     }
 
     /**
      * Установка значения статического свойства или списка свойств (в том числе и protected и private)
+     *
+     * Код функции создается в @see GeneratorNoPublicMethods::runStaticPropertySet()
      *
      * @param   string|array   $nameOrList   Имя статического свойства или массив с устанавливаемыми свойствами
      * @param   mixed          $value        Устанавливаемое значение
@@ -290,7 +309,7 @@ class ClassManager extends AbstractClassAndObjectManager
      * Если устанавливается список свойств, то $nameOrList - представляет собой массив, в котором ключи - имена свойств,
      * а значения - устанавливаемые значения для свойства
      */
-    public function setProperty(string|array $nameOrList, mixed $value = null): self
+    public function setProperty($nameOrList, $value = null): self
     {
         if (is_array($nameOrList))
         {
@@ -307,12 +326,14 @@ class ClassManager extends AbstractClassAndObjectManager
     /**
      * Вызов статического метода (в том числе и protected и private)
      *
+     * Код функции создается в @see GeneratorNoPublicMethods::runStaticMethodCall()
+     *
      * @param   string    $name         Имя вызываемого метода
      * @param   mixed  ...$arguments    Аргументы вызываемого метода
      *
      * @return  mixed    Вернет результат работы функции
      */
-    public function callMethod(string $name, mixed ... $arguments): mixed
+    public function callMethod(string $name, ... $arguments)
     {
         return [$this->toClass, ToolsElementNames::methodStaticCall($this->index)]($name, $arguments);
     }

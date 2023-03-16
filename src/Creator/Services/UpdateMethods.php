@@ -27,12 +27,12 @@ class UpdateMethods
     /**
      * Хранит схему класса
      */
-    readonly private ClassScheme $classScheme;
+    private ClassScheme $classScheme;
 
     /**
      * Менеджер создаваемого мок-класса
      */
-    readonly private ClassManager $classManager;
+    private ClassManager $classManager;
 
     /**
      * Список имен методов класса, для которых можно получить "мок-метод"

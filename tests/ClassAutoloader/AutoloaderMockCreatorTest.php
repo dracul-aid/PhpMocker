@@ -114,7 +114,7 @@ class AutoloaderMockCreatorTest extends TestCase
         self::assertTrue(is_subclass_of($newClassName, HardMockClassInterface::class));
 
         self::assertEquals([[
-            'type' => ClassSchemeType::CLASSES->value,
+            'type' => ClassSchemeType::CLASSES()->value,
             'class_name' => $newClassName,
             'driver_name' => HardMocker::class,
             'index' => $classManager->index,
@@ -170,7 +170,7 @@ class AutoloaderMockCreatorTest extends TestCase
     private function createAutoloader(bool $withCache): Autoloader
     {
         return new class($withCache) extends Autoloader {
-            readonly public string $mockClassCachePath;
+            public string $mockClassCachePath;
             public function __construct(bool $withCache)
             {
                 $this->mockClassCachePath = $withCache ? 'withCache' : '';

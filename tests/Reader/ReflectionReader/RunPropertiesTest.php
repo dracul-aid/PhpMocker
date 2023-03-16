@@ -33,30 +33,23 @@ class RunPropertiesTest extends TestCase
         $this->classScheme = ReflectionReader::exe('RunPropertiesTestClass1');
 
         self::assertIsArray($this->classScheme->properties);
-        self::assertCount(7, $this->classScheme->properties);
+        self::assertCount(5, $this->classScheme->properties);
         self::assertIsArray($this->classScheme->constants);
         self::assertCount(0, $this->classScheme->constants);
         self::assertIsArray($this->classScheme->methods);
         self::assertCount(0, $this->classScheme->methods);
 
         self::assertArrayHasKey('var_static', $this->classScheme->properties);
-        self::assertArrayHasKey('var_readonly', $this->classScheme->properties);
         self::assertArrayHasKey('var_string', $this->classScheme->properties);
         self::assertArrayHasKey('var_int', $this->classScheme->properties);
         self::assertArrayHasKey('var_false', $this->classScheme->properties);
         self::assertArrayHasKey('var_with_null', $this->classScheme->properties);
-        self::assertArrayHasKey('var_intersection', $this->classScheme->properties);
 
         self::assertTrue($this->classScheme->properties['var_static']->isStatic);
-        self::assertFalse($this->classScheme->properties['var_readonly']->isStatic);
-        self::assertTrue($this->classScheme->properties['var_readonly']->isReadonly);
         self::assertFalse($this->classScheme->properties['var_static']->isReadonly);
 
         self::assertEquals('', $this->classScheme->properties['var_static']->value);
         self::assertEquals('', $this->classScheme->properties['var_static']->type);
-
-        self::assertEquals('', $this->classScheme->properties['var_readonly']->value);
-        self::assertEquals('array|string', $this->classScheme->properties['var_readonly']->type);
 
         self::assertEquals('string', $this->classScheme->properties['var_string']->value);
         self::assertEquals('string', $this->classScheme->properties['var_string']->type);
@@ -68,10 +61,7 @@ class RunPropertiesTest extends TestCase
         self::assertEquals('bool', $this->classScheme->properties['var_false']->type);
 
         self::assertEquals('', $this->classScheme->properties['var_with_null']->value);
-        self::assertEquals('bool|null', $this->classScheme->properties['var_with_null']->type);
-
-        self::assertEquals('', $this->classScheme->properties['var_intersection']->value);
-        self::assertEquals('\Traversable&\Stringable', $this->classScheme->properties['var_intersection']->type);
+        self::assertEquals('?bool', $this->classScheme->properties['var_with_null']->type);
     }
 
     public function testClassWithPropertiesInConstruct(): void
@@ -87,11 +77,6 @@ class RunPropertiesTest extends TestCase
         self::assertArrayHasKey('var_2', $this->classScheme->properties);
         self::assertArrayHasKey('var_3', $this->classScheme->properties);
         self::assertArrayHasKey('var_object', $this->classScheme->properties);
-
-        self::assertFalse($this->classScheme->properties['var_1']->isInConstruct);
-        self::assertTrue($this->classScheme->properties['var_2']->isInConstruct);
-        self::assertTrue($this->classScheme->properties['var_3']->isInConstruct);
-        self::assertTrue($this->classScheme->properties['var_object']->isInConstruct);
     }
     
     public function testClassesWithProperties(): void
@@ -109,22 +94,22 @@ class RunPropertiesTest extends TestCase
         self::assertArrayHasKey('var_2_protected', $this->classScheme->properties);
         self::assertArrayHasKey('var_2_private', $this->classScheme->properties);
 
-        $this->assertConstSchemes('var_1_public', '1_public', ViewScheme::PUBLIC, false);
-        $this->assertConstSchemes('var_1_protected', '1_protected', ViewScheme::PROTECTED, false);
-        $this->assertConstSchemes('var_2_public', '2_public', ViewScheme::PUBLIC, true);
-        $this->assertConstSchemes('var_2_protected', '2_protected', ViewScheme::PROTECTED, true);
-        $this->assertConstSchemes('var_2_private', '2_private', ViewScheme::PRIVATE, true);
+        $this->assertConstSchemes('var_1_public', '1_public', ViewScheme::PUBLIC(), false);
+        $this->assertConstSchemes('var_1_protected', '1_protected', ViewScheme::PROTECTED(), false);
+        $this->assertConstSchemes('var_2_public', '2_public', ViewScheme::PUBLIC(), true);
+        $this->assertConstSchemes('var_2_protected', '2_protected', ViewScheme::PROTECTED(), true);
+        $this->assertConstSchemes('var_2_private', '2_private', ViewScheme::PRIVATE(), true);
     }
 
     private function assertConstSchemes(string $name, string $value, ViewScheme $view, bool $inClass): void
     {
-        self::assertEquals($name, $this->classScheme->properties[$name]->name);
-        self::assertEquals('', $this->classScheme->properties[$name]->valueFromConstant);
-        self::assertEquals('', $this->classScheme->properties[$name]->innerPhpCode);
-        self::assertEquals($value, $this->classScheme->properties[$name]->value);
-        self::assertEquals($view, $this->classScheme->properties[$name]->view);
-        self::assertEquals($inClass, $this->classScheme->properties[$name]->isDefine);
-        self::assertFalse($this->classScheme->properties[$name]->isInConstruct);
+        self::assertEquals($name, $this->classScheme->properties[$name]->name, "For test property {$name}");
+        self::assertEquals('', $this->classScheme->properties[$name]->valueFromConstant, "For test property {$name}");
+        self::assertEquals('', $this->classScheme->properties[$name]->innerPhpCode, "For test property {$name}");
+        self::assertEquals($value, $this->classScheme->properties[$name]->value, "For test property {$name}");
+        self::assertEquals($view, $this->classScheme->properties[$name]->view, "For test property {$name}");
+        self::assertEquals($inClass, $this->classScheme->properties[$name]->isDefine, "For test property {$name}");
+        self::assertFalse($this->classScheme->properties[$name]->isInConstruct, "For test property {$name}");
     }
 
     private function createClassWithProperties(): void
@@ -133,12 +118,10 @@ class RunPropertiesTest extends TestCase
         <<<'END'
                 class RunPropertiesTestClass1 {
                     public static $var_static;
-                    readonly public string|array $var_readonly;
                     public string $var_string = 'string';
                     public int $var_int = 123;
                     public bool $var_false = false;
                     public ?bool $var_with_null;
-                    public \Traversable&Stringable $var_intersection;
                 }
             END
         );
@@ -150,7 +133,14 @@ class RunPropertiesTest extends TestCase
         <<<'END'
                 class RunPropertiesTestClass2 {
                     public $var_1;
-                    public function __construct($opt_1, protected $var_2, public string $var_3, mixed $opt_2, public \stdClass $var_object = new \stdClass()) {}
+                    protected $var_2;
+                    public string $var_3;
+                    public \stdClass $var_object;
+                    public function __construct($opt_1, $var_2, string $var_3, $opt_2, \stdClass $var_object = null) {
+                        $this->var_2 = $var_2;
+                        $this->var_3 = $var_3;
+                        $this->var_object = $var_object === null ? new \stdClass() : $var_object;
+                    }
                 }
             END
         );

@@ -41,7 +41,7 @@ class CodeTmp
     /**
      * Объект "читатель кода", для которого идет накопление временных результатов
      */
-    readonly private PhpReader $phpReader;
+    private PhpReader $phpReader;
 
     public function __construct(PhpReader $phpReader)
     {
@@ -56,7 +56,7 @@ class CodeTmp
      *
      * @return void
      */
-    public function set(string $string, null|string $lastChar = null): void
+    public function set(string $string, ?string $lastChar = null): void
     {
         $this->result = $string;
 
@@ -71,7 +71,7 @@ class CodeTmp
      *
      * @return void
      */
-    public function addChar(null|string $char = null): void
+    public function addChar(?string $char = null): void
     {
         if ($char === null) $char = $this->phpReader->codeString->charFirst;
 
@@ -87,7 +87,7 @@ class CodeTmp
      *
      * @return void
      */
-    public function addString(string $string, null|string $lastChar = null): void
+    public function addString(string $string, ?string $lastChar = null): void
     {
         $this->result .= $string;
 

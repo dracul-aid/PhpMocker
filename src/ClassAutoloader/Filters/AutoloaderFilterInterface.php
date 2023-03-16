@@ -24,14 +24,14 @@ interface AutoloaderFilterInterface
     /**
      * Пространство имен PhpMocker-а
      */
-    final public const PHP_MOCKER_NAMESPACE = 'DraculAid\\PhpMocker';
+    public const PHP_MOCKER_NAMESPACE = 'DraculAid\\PhpMocker';
 
     /**
      * Список пространств имен PhpUnit библиотеки, и связанных с нею пакетов, которые не должны преобразовываться в мок-классы
      *
      * @todo Изучить, и добавить в этот список значения
      */
-    final public const PHP_UNIT_NAMESPACES = [
+    public const PHP_UNIT_NAMESPACES = [
         'PHPUnit'
     ];
 

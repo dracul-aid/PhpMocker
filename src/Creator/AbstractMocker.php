@@ -75,7 +75,7 @@ abstract class AbstractMocker
     /**
      * Уникальный идентификатор генерации мок-класса
      */
-    readonly protected string $index;
+    protected string $index;
 
     /**
      * Создать конструктор мок классов напрямую нельзя
@@ -94,7 +94,7 @@ abstract class AbstractMocker
      *
      * @return  string   Вернет описание проблемы, или '', если метод может быть мок-методом
      */
-    abstract public static function getTextWhyMethodIsNotMockMethod(string|object $owner, string $methodName): string;
+    abstract public static function getTextWhyMethodIsNotMockMethod($owner, string $methodName): string;
 
     /**
      * Создаст мок-класс
@@ -117,7 +117,7 @@ abstract class AbstractMocker
 
         $this->createClassManager();
 
-        if ($this->classScheme->type !== ClassSchemeType::INTERFACES)
+        if ($this->classScheme->type !== ClassSchemeType::INTERFACES())
         {
             UpdateMethods::exe($this->classScheme, $this->classManager);
             GeneratorNoPublicMethods::exe($this->classScheme, $this->classManager->index);
@@ -165,6 +165,6 @@ abstract class AbstractMocker
      *
      * Описание "функций настройки создания" @see CreateOptionsInterface
      */
-    abstract protected static function createClassExecuting(ClassScheme $classScheme, null|callable $beforeRun, string $classOriginal): ClassManager;
+    abstract protected static function createClassExecuting(ClassScheme $classScheme, ?callable $beforeRun, string $classOriginal): ClassManager;
 
 }

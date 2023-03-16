@@ -17,7 +17,7 @@ class AutoloaderInitTest extends TestCase
     {
         $autoloaderInit = include(dirname(__DIR__, 2) . '/src/autoloader.php');
 
-        self::assertTrue($autoloaderInit::class === AutoloaderInit::class);
+        self::assertTrue(get_class($autoloaderInit) === AutoloaderInit::class);
     }
 
     public function testCreateWithDriver(): void

@@ -12,6 +12,7 @@
 namespace DraculAid\PhpMocker\Reader\PhpReader;
 
 use DraculAid\PhpMocker\Reader\PhpReader;
+use DraculAid\PhpMocker\Tools\Php8Functions;
 
 /**
  * Объект для работы с еще не обработанным PHP кодом в @see PhpReader и дочерних классов
@@ -102,8 +103,11 @@ class CodeString
      * $CodeString->isWordStart( 'p', 'u', 'blic' )
      * ```
      */
-    public function isWordStart(false|string $first, false|string $second, string $beforeString): bool
+    public function isWordStart($first, $second, string $beforeString): bool
     {
+        if (!is_bool($first) && !is_string($first)) throw new \TypeError('$first is not false|string');
+        if (!is_bool($second) && !is_string($second)) throw new \TypeError('$second is not false|string');
+
         if ($first !== false && $this->charFirst !== $first)
         {
             return false;
@@ -121,7 +125,7 @@ class CodeString
 
         foreach ([' ', "\n", '/*', "\t", "\r"] as $test)
         {
-            if (str_starts_with($this->phpCode, "{$beforeString}{$test}"))
+            if (Php8Functions::str_starts_with($this->phpCode, "{$beforeString}{$test}"))
             {
                 return true;
             }

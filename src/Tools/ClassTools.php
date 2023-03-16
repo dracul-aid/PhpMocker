@@ -18,6 +18,8 @@ namespace DraculAid\PhpMocker\Tools;
  * @see ClassTools::isLoad() - Проверит, данное имя является загруженным классом, трейтом, перечислением или интерфейсом
  * @see ClassTools::isInternal() - Проверит, является ли указанный класс встроенным в PHP классом
  * @see ClassTools::getMethodArgumentNames() - Вернет массив с именами всех аргументов метода
+ * @see ClassTools::getNamespace() - Вернет пространство имен класса
+ * @see ClassTools::getNameWithoutNamespace() - Вернет имя класса, без пространства имен
  */
 class ClassTools
 {
@@ -34,7 +36,7 @@ class ClassTools
         return class_exists($className, false)
             || interface_exists($className, false)
             || trait_exists($className, false)
-            || enum_exists($className, false);
+            || (PHP_MAJOR_VERSION > 7 && enum_exists($className, false));
     }
 
     /**
@@ -63,7 +65,7 @@ class ClassTools
      *
      * @throws  \ReflectionException
      */
-    public static function getMethodArgumentNames(string|object $classOrObject, string $methodName): array
+    public static function getMethodArgumentNames($classOrObject, string $methodName): array
     {
         /**
          * Кеш, для хранения списка полученных имен аргументов
@@ -72,7 +74,9 @@ class ClassTools
          */
         static $_storage = [];
 
-        $fullMethodName = (is_string($classOrObject) ? $classOrObject : $classOrObject::class) . "::{$methodName}";
+        if (!is_string($classOrObject) && !is_object($classOrObject)) throw new \TypeError('$classOrObject is not string or object');
+
+        $fullMethodName = (is_string($classOrObject) ? $classOrObject : get_class($classOrObject)) . "::{$methodName}";
 
         // * * *
 
@@ -90,6 +94,61 @@ class ClassTools
             }
 
             return $_storage[$fullMethodName];
+        }
+    }
+
+    /**
+     * Вернет пространство имен класса
+     *
+     * @param   string   $class   Полное имя класса
+     *
+     * @return  string   Вернет пространство имен класса, если это "глобальное" пространство имен - вернет пустую строку
+     */
+    public static function getNamespace(string $class): string
+    {
+        $position = strrpos($class, '\\');
+
+        if ($position === false) return '';
+        else return substr($class, 0, $position);
+    }
+
+    /**
+     * Вернет имя класса, без пространства имен
+     *
+     * @param   string   $class   Полное имя класса
+     *
+     * @return  string
+     */
+    public static function getNameWithoutNamespace(string $class): string
+    {
+        $position = strrpos($class, '\\');
+
+        if ($position === false) return $class;
+        else return substr($class, $position + 1);
+    }
+
+    /**
+     * Вернет имя класса и пространство имен
+     *
+     * @param   string        $class       Полное имя класса
+     * @param   null|string  &$namespace   Пространство имен
+     * @param   null|string  &$name        Имя класса, без пространства имен
+     *
+     * @return  void
+     */
+    public static function getNameAndNamespace(string $class, ?string &$namespace, ?string &$name): void
+    {
+        $position = strrpos($class, '\\');
+
+        if ($position === false)
+        {
+            $namespace = '';
+            $name = $class;
+        }
+        else
+        {
+            $namespace = substr($class, 0, $position);
+            $name = substr($class, $position + 1);
         }
     }
 }

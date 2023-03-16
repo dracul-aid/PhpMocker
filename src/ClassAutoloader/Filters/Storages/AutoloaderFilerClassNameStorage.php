@@ -31,14 +31,14 @@ class AutoloaderFilerClassNameStorage extends AbstractAutoloaderFilerStorage
      */
     private array $storage = [];
 
-    public function add(string $addValue): static
+    public function add(string $addValue): AbstractAutoloaderFilerStorage
     {
         $this->storage[$addValue] = true;
 
         return $this;
     }
 
-    public function remove(string $removeValue): static
+    public function remove(string $removeValue): AbstractAutoloaderFilerStorage
     {
         unset($this->storage[$removeValue]);
 

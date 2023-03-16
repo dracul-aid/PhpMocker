@@ -37,7 +37,7 @@ class AutoloaderTest extends TestCase
             $autoloader->getPath('class_name', true);
             $this->fail();
         }
-        catch (PhpMockerAutoloaderPathException) {}
+        catch (PhpMockerAutoloaderPathException $error) {}
     }
 
     /**
@@ -121,9 +121,11 @@ class AutoloaderTest extends TestCase
         return new class($driverReturnPath) extends Autoloader {
             public bool $callRequireClassFile = false;
             public bool $callExecutingClassLoadCreateMock = false;
-            readonly public string $mockClassCachePath;
-            public function __construct(public string $driverReturnPath)
+            public string $mockClassCachePath;
+            public string $driverReturnPath;
+            public function __construct(string $driverReturnPath)
             {
+                $this->driverReturnPath = $driverReturnPath;
                 $this->autoloaderFilter = new DefaultAutoloaderFilter();
                 $this->mockClassCachePath = '';
             }
@@ -148,7 +150,7 @@ class AutoloaderTest extends TestCase
     private function createMockAutoloaderForTestExecutingClassLoadCreateMock(): Autoloader
     {
         return new class() extends Autoloader {
-            readonly public string $mockClassCachePath;
+            public string $mockClassCachePath;
             public function __construct()
             {
                 $this->mockClassCachePath = '';

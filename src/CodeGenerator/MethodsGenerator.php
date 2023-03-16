@@ -28,7 +28,7 @@ class MethodsGenerator
     /**
      * Схема класса
      */
-    readonly private ClassScheme $classScheme;
+    private ClassScheme $classScheme;
 
     /**
      * Схема класса
@@ -86,7 +86,7 @@ class MethodsGenerator
             $this->result .= ClassGenerator::NEW_LINE_FOR_ELEMENTS;
 
             if ($method->isAbstract && $this->classScheme->type->canUseAbstractMethods()) $this->result .= "abstract ";
-            elseif ($method->isFinal) $this->result .= "final ";
+            elseif (PHP_MAJOR_VERSION > 7 && $method->isFinal) $this->result .= "final ";
 
             $this->result .= "{$method->view->value} ";
             if ($method->isStatic) $this->result .= "static ";
@@ -94,7 +94,7 @@ class MethodsGenerator
             if ($method->name === '__construct') $this->runIfIsConstruct($method);
             else $this->runIfIsNotConstruct($method);
 
-            if ($this->classScheme->type === ClassSchemeType::INTERFACES || $method->isAbstract) $this->result .= ";\n";
+            if ($this->classScheme->type === ClassSchemeType::INTERFACES() || $method->isAbstract) $this->result .= ";\n";
             elseif ($method->innerPhpCode !== '') $this->result .= "\n" . ClassGenerator::NEW_LINE_FOR_ELEMENTS . "{\n{$method->innerPhpCode}\n" . ClassGenerator::NEW_LINE_FOR_ELEMENTS . "}\n";
             else $this->result .= "{}\n";
         }

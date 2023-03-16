@@ -40,18 +40,22 @@ use DraculAid\PhpMocker\Tools\CallableObject;
  * @see self::defaultCase() - Вернет кейс вызова метода "по умолчанию"
  * --- Прочее
  * @see self::hasCalled() - Отрабатывает вызов метода для данного кейса-вызова
+ *
+ * Свойства доступные только для чтения @see self::__get()
+ * @property AbstractClassAndObjectManager $ownerManager
+ * @property string $name
  */
 class MethodManager
 {
     /**
      * Объект-менеджер - владелец менеджера метода
      */
-    readonly public AbstractClassAndObjectManager $ownerManager;
+    private AbstractClassAndObjectManager $ownerManager;
 
     /**
      * Имя метода
      */
-    readonly public string $name;
+    private string $name;
 
     /**
      * Массив со списком кейсов вызовов для мок-метода
@@ -87,8 +91,10 @@ class MethodManager
      *
      * @see MethodUserFunctionInterface::__invoke() Описание входящих параметров функции и ее ответа
      * @see self::countCallUserFunctionReturn Хрнит счетчик вызова функции, с перехватом выполнения основного кода
+     *
+     * @var null|CallableObject|MethodUserFunctionInterface
      */
-    public null|CallableObject|MethodUserFunctionInterface $userFunction = null;
+    public ?CallableObject $userFunction = null;
 
     /**
      * @param   AbstractClassAndObjectManager   $owner   Объект "владелец метода" (менеджер мок-класса или мок-объекта)
@@ -100,6 +106,11 @@ class MethodManager
         $this->name = $name;
     }
 
+    public function __get(string $name)
+    {
+        return $this->{$name};
+    }
+
     /**
      * Вызов метода (в том числе и protected и private)
      *
@@ -107,7 +118,7 @@ class MethodManager
      *
      * @return  mixed    Вернет результат работы функции
      */
-    public function call(mixed ... $arguments): mixed
+    public function call(... $arguments)
     {
         return $this->ownerManager->callMethod($this->name, ... $arguments);
     }
@@ -119,15 +130,19 @@ class MethodManager
      *
      * @return  $this
      */
-    public function setUserFunction(null|callable|CallableObject|MethodUserFunctionInterface $userFunction): self
+    public function setUserFunction($userFunction, bool $clearCounter = false): self
     {
         if ($userFunction === null || is_a($userFunction, CallableObject::class) || is_a($userFunction, MethodUserFunctionInterface::class))
         {
             $this->userFunction = $userFunction;
         }
-        else
+        elseif (is_callable($userFunction))
         {
             $this->userFunction = new CallableObject($userFunction);
+        }
+        else
+        {
+            throw new \TypeError("Unsupported value for \$userFunction");
         }
 
         return $this;
@@ -140,7 +155,7 @@ class MethodManager
      *
      * @return  MethodCase   Вернет объект кейс вызова
      */
-    public function case(mixed ... $arguments): MethodCase
+    public function case(... $arguments): MethodCase
     {
         return $this->getOrCreateCase($this->caseIndex($arguments), $arguments);
     }
@@ -162,7 +177,7 @@ class MethodManager
      *
      * @return $this
      */
-    public function clearCases(): static
+    public function clearCases(): self
     {
         foreach ($this->cases as $caseIndex => $caseData)
         {
@@ -230,9 +245,10 @@ class MethodManager
      *
      * @return  string   Хэш от аргументов
      */
-    private function caseIndex(array|HasCalledArguments $arguments): string
+    private function caseIndex($arguments): string
     {
-        if (is_object($arguments)) $arguments = iterator_to_array($arguments->for(false));
+        if (is_object($arguments) && is_a($arguments, HasCalledArguments::class)) $arguments = iterator_to_array($arguments->for(false));
+        elseif (!is_array($arguments)) throw new \TypeError("Argument list is not a HasCalledArguments or Array");
 
         // Тесты показали, что json_encode() быстрее serialize()
         return hash('crc32c', json_encode(array_values($arguments)));

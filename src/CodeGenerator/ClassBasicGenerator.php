@@ -29,7 +29,7 @@ class ClassBasicGenerator
     /**
      * Схема класса
      */
-    readonly private ClassScheme $classScheme;
+    private ClassScheme $classScheme;
 
     /**
      * Схема класса
@@ -115,7 +115,7 @@ class ClassBasicGenerator
      */
     private function runParents(): void
     {
-        if ($this->classScheme->type === ClassSchemeType::INTERFACES)
+        if ($this->classScheme->type === ClassSchemeType::INTERFACES())
         {
             if (count($this->classScheme->interfaces) > 0)
             {

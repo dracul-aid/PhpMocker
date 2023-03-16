@@ -11,16 +11,18 @@
 
 namespace DraculAid\PhpMocker\Schemes;
 
+use DraculAid\PhpMocker\Tools\AbstractEnums;
+
 /**
  * Схемы для ООП элементов: типы классов (класс, перечисление, интерфейс...)
  *
  * Оглавление:
  * --- Типы
- * @see ClassSchemeType::CLASSES - Обычные классы
- * @see ClassSchemeType::ABSTRACT_CLASSES - Абстрактные классы
- * @see ClassSchemeType::INTERFACES - Интерфейсы
- * @see ClassSchemeType::TRAITS - Трейты
- * @see ClassSchemeType::ENUMS - Перечисления
+ * @see ClassSchemeType::CLASSES() - Обычные классы
+ * @see ClassSchemeType::ABSTRACT_CLASSES() - Абстрактные классы
+ * @see ClassSchemeType::INTERFACES() - Интерфейсы
+ * @see ClassSchemeType::TRAITS() - Трейты
+ * @see ClassSchemeType::ENUMS() - Перечисления
  * @see ClassSchemeType::createFromReflection() - Вернет тип по данным полученным из рефлексии класса
  * --- Получение информации по типам
  * @see self::canUseFinal() - Может ли использоваться с ключевым словом final
@@ -29,13 +31,24 @@ namespace DraculAid\PhpMocker\Schemes;
  * @see self::canUseProperties() - Может ли использовать свойства
  * @see self::canUseReadonly() - Может ли использовать свойство readonly
  */
-enum ClassSchemeType: string
+class ClassSchemeType extends AbstractEnums
 {
-    case CLASSES = 'class';
-    case ABSTRACT_CLASSES = 'abstract class';
-    case INTERFACES = 'interface';
-    case TRAITS = 'trait';
-    case ENUMS = 'enum';
+    public static function CLASSES() {return static::createStringVariant('class');}
+    public static function ABSTRACT_CLASSES() {return static::createStringVariant('abstract class');}
+    public static function INTERFACES() {return static::createStringVariant('interface');}
+    public static function TRAITS() {return static::createStringVariant('trait');}
+    public static function ENUMS() {return static::createStringVariant('enum');}
+
+    public static function from(string $variant): self
+    {
+        if ($variant === 'class') return self::CLASSES();
+        elseif ($variant === 'abstract class') return self::ABSTRACT_CLASSES();
+        elseif ($variant === 'interface') return self::INTERFACES();
+        elseif ($variant === 'trait') return self::TRAITS();
+        elseif ($variant === 'enum') return self::ENUMS();
+
+        throw new \TypeError("Undefined Enum variant: {$variant}");
+    }
 
     /**
      * Вернет тип по данным полученным из рефлексии класса
@@ -46,13 +59,11 @@ enum ClassSchemeType: string
      */
     public static function createFromReflection(\ReflectionClass $reflection): self
     {
-        return match (true) {
-            $reflection->isInterface() => self::INTERFACES,
-            $reflection->isTrait() => self::TRAITS,
-            $reflection->isEnum() => self::ENUMS,
-            $reflection->isAbstract() => self::ABSTRACT_CLASSES,
-            default => self::CLASSES,
-        };
+        if ($reflection->isInterface()) return self::INTERFACES();
+        elseif ($reflection->isTrait()) return self::TRAITS();
+        elseif (PHP_MAJOR_VERSION > 7 && $reflection->isEnum()) return self::ENUMS();
+        elseif ($reflection->isAbstract()) return self::ABSTRACT_CLASSES();
+        else return self::CLASSES();
     }
 
     /**
@@ -62,7 +73,7 @@ enum ClassSchemeType: string
      */
     public function canUseFinal(): bool
     {
-        return $this === self::CLASSES;
+        return $this === self::CLASSES();
     }
 
     /**
@@ -72,7 +83,7 @@ enum ClassSchemeType: string
      */
     public function canUseInterfaces(): bool
     {
-        return $this !== self::TRAITS;
+        return $this !== self::TRAITS();
     }
 
     /**
@@ -82,7 +93,7 @@ enum ClassSchemeType: string
      */
     public function canUseExtends(): bool
     {
-        return $this === self::CLASSES || $this === self::ABSTRACT_CLASSES;
+        return $this === self::CLASSES() || $this === self::ABSTRACT_CLASSES();
     }
 
     /**
@@ -93,7 +104,7 @@ enum ClassSchemeType: string
     public function canUseReadonly(): bool
     {
         if (PHP_MAJOR_VERSION < 8 || PHP_MINOR_VERSION < 2) return false;
-        else return $this === self::CLASSES || $this === self::ABSTRACT_CLASSES;
+        else return $this === self::CLASSES() || $this === self::ABSTRACT_CLASSES();
     }
 
     /**
@@ -103,10 +114,8 @@ enum ClassSchemeType: string
      */
     public function canUseProperties(): bool
     {
-        return match ($this) {
-            self::CLASSES, self::ABSTRACT_CLASSES => true, self::TRAITS => true,
-            default => false,
-        };
+        if ($this === self::CLASSES() || $this === self::ABSTRACT_CLASSES() || $this === self::TRAITS()) return true;
+        else return false;
     }
 
     /**
@@ -116,6 +125,6 @@ enum ClassSchemeType: string
      */
     public function canUseAbstractMethods(): bool
     {
-        return $this === self::ABSTRACT_CLASSES || $this === self::TRAITS;
+        return $this === self::ABSTRACT_CLASSES() || $this === self::TRAITS();
     }
 }

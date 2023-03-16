@@ -47,7 +47,7 @@ class ClassMethodsReader extends AbstractClassElementsReader
         $this->tmpClassElement->scheme->isAbstract = $this->tmpClassElement->isAbstract;
     }
 
-    public function run(): null|self
+    public function run(): ?AbstractClassElementsReader
     {
         if ($this->phpReader->codeString->charFirst === '(') $this->deepBrackets++;
         elseif ($this->phpReader->codeString->charFirst === ')') $this->deepBrackets--;

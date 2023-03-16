@@ -48,28 +48,34 @@ use DraculAid\PhpMocker\Schemes\ClassScheme;
  *    @see PhpReader\ReaderElement\CodeReader\ClassReader\ClassConstantsReader - Чтение констант
  *    @see PhpReader\ReaderElement\CodeReader\ClassReader\ClassMethodsReader - Чтение методов
  *    @see PhpReader\ReaderElement\CodeReader\ClassReader\ClassPropertiesReader - Чтение свойств
+ *
+ *
+ * Свойства доступные только для чтения @see self::__get()
+ * @property CodeString $codeString
+ * @property CodeTmp $codeTmp
+ * @property TmpResult $tmpResult
  */
 class PhpReader
 {
     /**
      * Объект с еще не обработанным кодом
      */
-    readonly public CodeString $codeString;
+    private CodeString $codeString;
     /**
      * Объект с накапливаемой строкой кода
      */
-    readonly public CodeTmp $codeTmp;
+    private CodeTmp $codeTmp;
 
     /**
      * Объект, который в данный момент ведет чтение кода
      * (NULL - объект чтения кода не установлен)
      */
-    private null|AbstractReader $codeReader = null;
+    private ?AbstractReader $codeReader = null;
 
     /**
      * Объект для хранения временных результатов
      */
-    readonly public TmpResult $tmpResult;
+    private TmpResult $tmpResult;
 
     /**
      * Нужно ли "временный результат" помещать строки, @see self::$codeTmp
@@ -86,7 +92,7 @@ class PhpReader
     /**
      * Объект для чтения кода, если не удалось определить объект в @see self::$codeReader
      */
-    readonly protected CodeReader $defaultCodeReader;
+    protected CodeReader $defaultCodeReader;
 
     /**
      * Обработает PHP код и вернет схемы для всех найденных в нем классов
@@ -112,6 +118,11 @@ class PhpReader
         $this->codeTmp = new PhpReader\CodeTmp($this);
         $this->tmpResult = new TmpResult();
         $this->defaultCodeReader = new CodeReader($this);
+    }
+
+    public function __get(string $name)
+    {
+        return $this->{$name};
     }
 
     /**

@@ -18,19 +18,8 @@ use PHPUnit\Framework\TestCase;
  */
 class MethodsGeneratorTest extends TestCase
 {
-    private const METHODS_FOR_GENERAL = [
-        'f_public' => ['view' => ViewScheme::PUBLIC, 'isStatic' => false, 'isFinal' => false, 'isReturnLink' => false, 'isAbstract' => false],
-        'f_protected' => ['view' => ViewScheme::PROTECTED, 'isStatic' => false, 'isFinal' => false, 'isReturnLink' => false, 'isAbstract' => false],
-        'f_private' => ['view' => ViewScheme::PRIVATE, 'isStatic' => false, 'isFinal' => false, 'isReturnLink' => false, 'isAbstract' => false],
-        'f_static' => ['view' => ViewScheme::PUBLIC, 'isStatic' => true, 'isFinal' => false, 'isReturnLink' => false, 'isAbstract' => false],
-        'f_final' => ['view' => ViewScheme::PUBLIC, 'isStatic' => false, 'isFinal' => true, 'isReturnLink' => false, 'isAbstract' => false],
-        'f_link' => ['view' => ViewScheme::PUBLIC, 'isStatic' => false, 'isFinal' => false, 'isReturnLink' => true, 'isAbstract' => false],
-        'f_abstract' => ['view' => ViewScheme::PUBLIC, 'isStatic' => false, 'isFinal' => false, 'isReturnLink' => false, 'isAbstract' => true],
-    ];
-
     private const ARGUMENTS_FOR_GENERAL = [
         'not_value' => ['isValue'=>false, 'isVariadic'=>false, 'isLink'=>false, 'type' => 'int', 'value' => ''],
-        'string_bool' => ['isValue'=>false, 'isVariadic'=>false, 'isLink'=>false, 'type' => 'string|bool', 'value' => ''],
         'link' => ['isValue'=>true, 'isVariadic'=>false, 'isLink'=>true, 'type' => 'string', 'value' => '123'],
         'variadic' => ['isValue'=>false, 'isVariadic'=>true, 'isLink'=>false, 'type' => '', 'value' => ''],
     ];
@@ -40,8 +29,8 @@ class MethodsGeneratorTest extends TestCase
      */
     public function testGeneral(): void
     {
-        $scheme = new ClassScheme(ClassSchemeType::ABSTRACT_CLASSES, 'TestGeneral' . uniqid());
-        foreach (self::METHODS_FOR_GENERAL as $method => $data)
+        $scheme = new ClassScheme(ClassSchemeType::ABSTRACT_CLASSES(), 'TestGeneral' . uniqid());
+        foreach (self::METHODS_FOR_GENERAL() as $method => $data)
         {
             $scheme->methods[$method] = new MethodScheme($scheme, $method);
             foreach ($data as $name => $value)
@@ -54,9 +43,9 @@ class MethodsGeneratorTest extends TestCase
         ClassGenerator::generateCodeAndEval($scheme);
 
         $newScheme = ReflectionReader::exe($scheme->getFullName());
-        self::assertCount(count(self::METHODS_FOR_GENERAL), $newScheme->methods);
+        self::assertCount(count(self::METHODS_FOR_GENERAL()), $newScheme->methods);
 
-        foreach (self::METHODS_FOR_GENERAL as $method => $data)
+        foreach (self::METHODS_FOR_GENERAL() as $method => $data)
         {
             self::assertArrayHasKey($method, $newScheme->methods);
             self::assertEquals('', $newScheme->methods[$method]->innerPhpCode);
@@ -72,7 +61,7 @@ class MethodsGeneratorTest extends TestCase
      */
     public function testArguments(): void
     {
-        $scheme = new ClassScheme(ClassSchemeType::CLASSES, 'testArguments' . uniqid());
+        $scheme = new ClassScheme(ClassSchemeType::CLASSES(), 'testArguments' . uniqid());
         $scheme->methods['f'] = new MethodScheme($scheme, 'f');
         foreach (self::ARGUMENTS_FOR_GENERAL as $argument => $data) {
             $scheme->methods['f']->arguments[$argument] = new MethodArgumentScheme($scheme->methods['f'], $argument);
@@ -95,5 +84,17 @@ class MethodsGeneratorTest extends TestCase
                 self::assertEquals($value, $newScheme->methods['f']->arguments[$argument]->{$name}, "\${$argument} in {$name}");
             }
         }
+    }
+
+    private static function METHODS_FOR_GENERAL(): array
+    {
+        return [
+            'f_public' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => false, 'isReturnLink' => false, 'isAbstract' => false],
+            'f_protected' => ['view' => ViewScheme::PROTECTED(), 'isStatic' => false, 'isReturnLink' => false, 'isAbstract' => false],
+            'f_private' => ['view' => ViewScheme::PRIVATE(), 'isStatic' => false, 'isReturnLink' => false, 'isAbstract' => false],
+            'f_static' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => true, 'isReturnLink' => false, 'isAbstract' => false],
+            'f_link' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => false, 'isReturnLink' => true, 'isAbstract' => false],
+            'f_abstract' => ['view' => ViewScheme::PUBLIC(), 'isStatic' => false, 'isReturnLink' => false, 'isAbstract' => true],
+        ];
     }
 }

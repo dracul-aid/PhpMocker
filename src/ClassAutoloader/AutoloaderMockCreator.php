@@ -25,7 +25,6 @@ use DraculAid\PhpMocker\Schemes\ClassSchemeType;
  * (если класс есть в кеше, будет использован кеш)
  *
  * Кеш @see Autoloader::$mockClassCachePath - хранит путь к каталогу с кешем (пустая строка - если кеш не используется)
- *
  */
 class AutoloaderMockCreator
 {
@@ -131,7 +130,7 @@ class AutoloaderMockCreator
      *
      * @return  mixed   Вернет значение, возвращенное require_once
      */
-    protected function requireOnce(string $path): mixed
+    protected function requireOnce(string $path)
     {
         return require_once($path);
     }

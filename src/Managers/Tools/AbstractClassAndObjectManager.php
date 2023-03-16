@@ -52,7 +52,7 @@ abstract class AbstractClassAndObjectManager
      *
      * @throws  MethodManagerNotFoundException   Если метод не определён в классе
      */
-    public function getMethodManager(string $name, bool $ifIsNotCreate = true): null|MethodManager
+    public function getMethodManager(string $name, bool $ifIsNotCreate = true): ?MethodManager
     {
         if (empty($this->methodManagers[$name]) && $ifIsNotCreate) $this->methodCreateManager($name);
 
@@ -64,14 +64,14 @@ abstract class AbstractClassAndObjectManager
      *
      * @return  string   Вернет полное имя класса или NULL (если невозможно получить менеджер мок-класса)
      */
-    abstract public function getDriver(): null|string;
+    abstract public function getDriver(): ?string;
 
     /**
      * Вернет имя мок-класса, для которого создан менеджер
      *
      * @return  string   Вернет полное имя класса или NULL (если невозможно получить менеджер мок-класса)
      */
-    abstract public function getToClass(): null|string;
+    abstract public function getToClass(): ?string;
 
     /**
      * Вернет схему класса, для которого создан менеджер (если ее нет, создаст ее)
@@ -98,7 +98,7 @@ abstract class AbstractClassAndObjectManager
      *
      * @return  mixed   Значение свойства
      */
-    abstract public function getProperty(string $name): mixed;
+    abstract public function getProperty(string $name);
 
     /**
      * Установка значения свойства или списка свойств (в том числе и protected и private)
@@ -112,7 +112,7 @@ abstract class AbstractClassAndObjectManager
      * Если устанавливается список свойств, то $nameOrList - представляет собой массив, в котором ключи - имена свойств,
      * а значения - устанавливаемые значения для свойства
      */
-    abstract public function setProperty(string|array $nameOrList, mixed $value = null): self;
+    abstract public function setProperty($nameOrList, $value = null): self;
 
     /**
      * Вызов метода (в том числе и protected и private)
@@ -122,7 +122,7 @@ abstract class AbstractClassAndObjectManager
      *
      * @return  mixed    Вернет результат работы функции
      */
-    abstract public function callMethod(string $name, mixed ... $arguments): mixed;
+    abstract public function callMethod(string $name, ... $arguments);
 
 
     /**

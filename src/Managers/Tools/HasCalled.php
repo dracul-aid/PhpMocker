@@ -28,13 +28,20 @@ use DraculAid\PhpMocker\Managers\ObjectManager;
  * @see self::$callObject [readonly]  - Объект, в котором произошел вызов мок-метода
  * @see self::getArgumentValueByName() - Вернет аргумент вызова по его имени
  * @see self::getArgumentValueByNumber() - Вернет аргумент вызова по его номеру
+ *
+ * Свойства доступные только для чтения @see self::__get()
+ * @property string $function
+ * @property array|HasCalledArguments $arguments
+ * @property string $ownerClass
+ * @property string $callClass
+ * @property null|object $callObject
  */
 class HasCalled
 {
     /**
      * Имя вызванной функции (метода)
      */
-    readonly public string $function;
+    public string $function;
 
     /**
      * Аргументы, с которыми была вызвана функция (Пустой массив - вызов был без аргументов)
@@ -43,24 +50,29 @@ class HasCalled
      *    Ключи: имена аргументов
      *    Значения: ссылка на аргумент метода
      */
-    readonly public HasCalledArguments $arguments;
+    public HasCalledArguments $arguments;
 
     /**
      * Класс, в котором находится код вызванного мок-метода
      */
-    readonly public string $ownerClass;
+    public string $ownerClass;
 
     /**
      * Класс, в котором произошел вызов
      * (напоминание: вызов методов трейтов, никогда не происходит в самом трейте)
      */
-    readonly public string $callClass;
+    public string $callClass;
 
     /**
      * Объект, в котором произошел вызов мок-метода
      * (NULL - для статических методов)
      */
-    readonly public null|object $callObject;
+    public ?object $callObject;
+
+    public function __get(string $name)
+    {
+        return $this->{$name};
+    }
 
     /**
      * Отрабатывает вызов мок-метода
@@ -80,7 +92,7 @@ class HasCalled
      * @todo Подумать что делать с методами трейтов, которые были переименованы в классе (use traitName {oldName as newName}),
      * так как методы остаются доступными под обоими именами. Напоминалка: определить метод описанный в трейте, можно только через путь к файлу и номерам строк
      */
-    public static function exeForMethod(string $ownerClass, string $callClass, null|object $callObject, string $method, array $arguments): null|CallResult
+    public static function exeForMethod(string $ownerClass, string $callClass, ?object $callObject, string $method, array $arguments): ?CallResult
     {
         $call = new self();
         $call->ownerClass = $ownerClass;
@@ -113,7 +125,7 @@ class HasCalled
      *
      * @return  void
      */
-    private function exeForMethodSearchManagers(null|ObjectManager &$objectManager, null|ClassManager &$classManager, null|MethodManager &$methodManager): void
+    private function exeForMethodSearchManagers(?ObjectManager &$objectManager, ?ClassManager &$classManager, ?MethodManager &$methodManager): void
     {
         $classManager = ClassManager::getManager($this->ownerClass);
 

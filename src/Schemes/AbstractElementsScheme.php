@@ -26,7 +26,7 @@ abstract class AbstractElementsScheme extends AbstractBasicScheme
     /**
      * Уровень видимости
      */
-    public ViewScheme $view = ViewScheme::PUBLIC;
+    public ViewScheme $view;
 
     /**
      * Элемент определен (переопределен) в этом текущем классе схемы
@@ -46,6 +46,7 @@ abstract class AbstractElementsScheme extends AbstractBasicScheme
     {
         $this->name = $name;
         $this->classScheme = $schemesClass;
+        $this->view = ViewScheme::PUBLIC();
     }
 
     /**
@@ -65,7 +66,7 @@ abstract class AbstractElementsScheme extends AbstractBasicScheme
      */
     public function isPublic(): bool
     {
-        return $this->view === ViewScheme::PUBLIC;
+        return $this->view === ViewScheme::PUBLIC();
     }
 
     /**
@@ -75,7 +76,7 @@ abstract class AbstractElementsScheme extends AbstractBasicScheme
      */
     public function isProtected(): bool
     {
-        return $this->view === ViewScheme::PROTECTED;
+        return $this->view === ViewScheme::PROTECTED();
     }
 
     /**
@@ -85,6 +86,6 @@ abstract class AbstractElementsScheme extends AbstractBasicScheme
      */
     public function isPrivate(): bool
     {
-        return $this->view === ViewScheme::PRIVATE;
+        return $this->view === ViewScheme::PRIVATE();
     }
 }

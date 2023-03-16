@@ -50,7 +50,7 @@ class ScriptNamespaceReader extends AbstractReader
         $this->phpReader->tmpResult->namespace = '';
     }
 
-    public function run(): null|self
+    public function run(): ?AbstractReader
     {
         if ($this->phpReader->codeString->charFirst === ';' || $this->phpReader->codeString->charFirst === '{')
         {

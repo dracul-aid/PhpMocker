@@ -18,14 +18,20 @@ use PHPUnit\Framework\TestCase;
  */
 class ExeTest extends TestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->createForPhp7();
+    }
+
     public function testCreateClassType(): void
     {
         $types = [
-            ClassSchemeType::INTERFACES,
-            ClassSchemeType::CLASSES,
-            ClassSchemeType::ABSTRACT_CLASSES,
-            ClassSchemeType::TRAITS,
-            ClassSchemeType::ENUMS,
+            ClassSchemeType::INTERFACES(),
+            ClassSchemeType::CLASSES(),
+            ClassSchemeType::ABSTRACT_CLASSES(),
+            ClassSchemeType::TRAITS(),
+            // ClassSchemeType::ENUMS(), - Перечисления доступны начиная с PHP8
         ];
 
         foreach ($types as $classType) {
@@ -40,7 +46,7 @@ class ExeTest extends TestCase
 
     public function testCreateInterfaceWithParent(): void
     {
-        $scheme = new ClassScheme(ClassSchemeType::INTERFACES, 'TestCreateInterfaceWithParentInterface' . uniqid());
+        $scheme = new ClassScheme(ClassSchemeType::INTERFACES(), 'TestCreateInterfaceWithParentInterface' . uniqid());
         $scheme->interfaces['\Stringable'] = '\Stringable';
         $scheme->interfaces['\Countable'] = '\Countable';
         ClassGenerator::generateCodeAndEval($scheme);
@@ -53,7 +59,7 @@ class ExeTest extends TestCase
 
     public function testCreateClassWithParentAndInterface(): void
     {
-        $scheme = new ClassScheme(ClassSchemeType::CLASSES, 'TestCreateClassWithParentAndInterface' . uniqid());
+        $scheme = new ClassScheme(ClassSchemeType::CLASSES(), 'TestCreateClassWithParentAndInterface' . uniqid());
         $scheme->interfaces['\Stringable'] = '\Stringable';
         $scheme->methods['__toString'] = new MethodScheme($scheme, '__toString');
         $scheme->methods['__toString']->innerPhpCode = "return '';";
@@ -69,13 +75,13 @@ class ExeTest extends TestCase
 
     public function testCreateFinalClass(): void
     {
-        $scheme = new ClassScheme(ClassSchemeType::CLASSES, 'TestCreateInterfaceWithParentInterface' . uniqid());
+        $scheme = new ClassScheme(ClassSchemeType::CLASSES(), 'TestCreateInterfaceWithParentInterface' . uniqid());
         $scheme->isFinal = false;
         ClassGenerator::generateCodeAndEval($scheme);
         $newScheme = ReflectionReader::exe($scheme->getFullName());
         self::assertFalse($newScheme->isFinal);
 
-        $scheme = new ClassScheme(ClassSchemeType::CLASSES, 'TestCreateInterfaceWithParentInterface' . uniqid());
+        $scheme = new ClassScheme(ClassSchemeType::CLASSES(), 'TestCreateInterfaceWithParentInterface' . uniqid());
         $scheme->isFinal = true;
         ClassGenerator::generateCodeAndEval($scheme);
         $newScheme = ReflectionReader::exe($scheme->getFullName());
@@ -84,7 +90,11 @@ class ExeTest extends TestCase
 
     public function testCreateEnum(): void
     {
-        $scheme = new ClassScheme(ClassSchemeType::ENUMS, 'TestCreateEnumWithoutType' . uniqid());
+        // Тест не имеет смысла, так как перечисления доступны начиная с PHP8
+        self::assertTrue(true);
+        return;
+
+        $scheme = new ClassScheme(ClassSchemeType::ENUMS(), 'TestCreateEnumWithoutType' . uniqid());
         ClassGenerator::generateCodeAndEval($scheme);
         $newScheme = ReflectionReader::exe($scheme->getFullName());
         self::assertEquals($scheme->getFullName(), $newScheme->getFullName());
@@ -92,11 +102,18 @@ class ExeTest extends TestCase
 
         // * * *
 
-        $scheme = new ClassScheme(ClassSchemeType::ENUMS, 'TestCreateEnumWithType' . uniqid());
+        $scheme = new ClassScheme(ClassSchemeType::ENUMS(), 'TestCreateEnumWithType' . uniqid());
         $scheme->enumType = 'int';
         ClassGenerator::generateCodeAndEval($scheme);
         $newScheme = ReflectionReader::exe($scheme->getFullName());
         self::assertEquals($scheme->getFullName(), $newScheme->getFullName());
         self::assertEquals('int', $newScheme->enumType);
+    }
+
+    private function createForPhp7(): void
+    {
+        if (PHP_MAJOR_VERSION > 7) return;
+
+        if (!interface_exists(\Stringable::class, false)) eval('interface Stringable {}');
     }
 }

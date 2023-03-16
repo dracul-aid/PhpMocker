@@ -71,8 +71,10 @@ class MockManager
      * @throws  ObjectManagerNotFoundException   В случае, если не был найден "менеджер мок-объекта"
      * @throws  MethodManagerNotFoundException   Если метод не определён в классе
      */
-    public static function getForMethod(string|object $mockClassOrObject, string $methodName): MethodManager
+    public static function getForMethod($mockClassOrObject, string $methodName): MethodManager
     {
+        if (!is_string($mockClassOrObject) && !is_object($mockClassOrObject)) throw new \TypeError('$mockClassOrObject is not string or object');
+
         if (is_string($mockClassOrObject)) return self::getForClass($mockClassOrObject)->getMethodManager($methodName);
         else return self::getForObject($mockClassOrObject)->getMethodManager($methodName);
     }
@@ -91,8 +93,10 @@ class MockManager
      * @throws  MethodManagerNotFoundException   Если метод не определён в классе
      * @throws  PhpMockerLogicException          Если метод не может использоваться как "мок-метод"
      */
-    public static function getForMethodCase(string|object $mockClassOrObject, string $methodName, null|array $arguments = null): MethodCase
+    public static function getForMethodCase($mockClassOrObject, string $methodName, ?array $arguments = null): MethodCase
     {
+        if (!is_string($mockClassOrObject) && !is_object($mockClassOrObject)) throw new \TypeError('$mockClassOrObject is not string or object');
+
         if ($arguments === null) return self::getForMethod($mockClassOrObject, $methodName)->defaultCase();
         else return self::getForMethod($mockClassOrObject, $methodName)->case($arguments);
     }

@@ -16,6 +16,8 @@ use DraculAid\PhpMocker\Reader\PhpReader\ReaderElement\AbstractReader;
 use DraculAid\PhpMocker\Reader\PhpReader\ReaderElement\CodeReader;
 use DraculAid\PhpMocker\Schemes\UseScheme;
 use DraculAid\PhpMocker\Schemes\UseSchemeType;
+use DraculAid\PhpMocker\Tools\ClassTools;
+use DraculAid\PhpMocker\Tools\Php8Functions;
 
 /**
  * Осуществляет чтение конструкций USE (для подключения классов, функций и констант), разгружает код для:
@@ -53,7 +55,7 @@ class ScriptUseReader extends AbstractReader
         $this->phpReader->codeString->phpCode = substr($this->phpReader->codeString->phpCode, 2);
     }
 
-    public function run(): null|self
+    public function run(): ?AbstractReader
     {
         if ($this->phpReader->codeString->charFirst === ';')
         {
@@ -90,7 +92,7 @@ class ScriptUseReader extends AbstractReader
         }
         // это определения нескольких элементов в рамках разных пространств имен
         // конструкция: use catalog_1/class_1, catalog_2/class_2, const CONST;
-        elseif (str_contains($this->tmpUseCode, ','))
+        elseif (Php8Functions::str_contains($this->tmpUseCode, ','))
         {
             foreach (explode(',', $this->tmpUseCode) as $useValue)
             {
@@ -121,12 +123,12 @@ class ScriptUseReader extends AbstractReader
         if (strpos($useValue, '\\') > 0)
         {
             $namespace = $namespacePrefix !== ''
-                ? implode('\\', [$namespacePrefix, trim(dirname($useValue))])
-                : trim(dirname($useValue));
+                ? implode('\\', [$namespacePrefix, trim(ClassTools::getNamespace($useValue))])
+                : trim(ClassTools::getNamespace($useValue));
 
             $this->saveUseElementIntoClassScheme(
                 $namespace,
-                trim(basename($useValue)),
+                trim(ClassTools::getNameWithoutNamespace($useValue)),
                 $useType
             );
         }
@@ -149,18 +151,18 @@ class ScriptUseReader extends AbstractReader
         if (($tmp = strpos($useString, ' const ')) !== false)
         {
             $useString = substr($useString, $tmp + 7);
-            return UseSchemeType::CONSTANTS;
+            return UseSchemeType::CONSTANTS();
         }
         // если это use для функции
         elseif (($tmp = strpos($useString, ' function ')) !== false)
         {
             $useString = substr($useString, $tmp + 10);
-            return UseSchemeType::FUNCTIONS;
+            return UseSchemeType::FUNCTIONS();
         }
         // это для классов
         else
         {
-            return UseSchemeType::CLASSES;
+            return UseSchemeType::CLASSES();
         }
     }
 

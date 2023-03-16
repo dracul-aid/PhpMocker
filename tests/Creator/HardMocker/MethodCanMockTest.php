@@ -13,7 +13,11 @@ use PHPUnit\Framework\TestCase;
 class MethodCanMockTest extends TestCase
 {
     private string $className;
-    private string|object $owner;
+
+    /**
+     * @var string|object $owner
+     */
+    private $owner;
 
     public function testToObject(): void
     {

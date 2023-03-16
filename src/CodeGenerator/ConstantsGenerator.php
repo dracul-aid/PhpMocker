@@ -34,7 +34,7 @@ class ConstantsGenerator
      */
     public static function exe(ClassScheme $classScheme): string
     {
-        if ($classScheme->type === ClassSchemeType::TRAITS || count($classScheme->constants) === 0)
+        if ($classScheme->type === ClassSchemeType::TRAITS() || count($classScheme->constants) === 0)
         {
             return '';
         }
@@ -89,7 +89,7 @@ class ConstantsGenerator
     private static function constCode(ConstantScheme $constantScheme): string
     {
         $_return = ClassGenerator::NEW_LINE_FOR_ELEMENTS;
-        if ($constantScheme->isFinal) $_return .= "final ";
+        if (PHP_MAJOR_VERSION > 7 && $constantScheme->isFinal) $_return .= "final ";
         $_return .= "{$constantScheme->view->value} ";
         $_return .= "const {$constantScheme->name} = ";
         $_return .= "{$constantScheme->getValuePhpCode()};\n";

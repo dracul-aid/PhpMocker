@@ -33,7 +33,7 @@ class RunMethodsTest extends TestCase
         $this->classScheme = ReflectionReader::exe('RunMethodsTestClass1');
 
         self::assertIsArray($this->classScheme->methods);
-        self::assertCount(10, $this->classScheme->methods);
+        self::assertCount(9, $this->classScheme->methods);
         self::assertIsArray($this->classScheme->constants);
         self::assertCount(0, $this->classScheme->constants);
         self::assertIsArray($this->classScheme->properties);
@@ -48,7 +48,6 @@ class RunMethodsTest extends TestCase
         self::assertArrayHasKey('f_string', $this->classScheme->methods);
         self::assertArrayHasKey('f_string_null', $this->classScheme->methods);
         self::assertArrayHasKey('f_bool_null', $this->classScheme->methods);
-        self::assertArrayHasKey('f_intersection', $this->classScheme->methods);
 
         self::assertEquals('__construct', $this->classScheme->getConstructor()->name);
 
@@ -66,9 +65,8 @@ class RunMethodsTest extends TestCase
 
         self::assertEquals('', $this->classScheme->methods['f']->returnType);
         self::assertEquals('string', $this->classScheme->methods['f_string']->returnType);
-        self::assertEquals('string|null', $this->classScheme->methods['f_string_null']->returnType);
-        self::assertEquals('bool|null', $this->classScheme->methods['f_bool_null']->returnType);
-        self::assertEquals('\Traversable&\Stringable', $this->classScheme->methods['f_intersection']->returnType);
+        self::assertEquals('?string', $this->classScheme->methods['f_string_null']->returnType);
+        self::assertEquals('?bool', $this->classScheme->methods['f_bool_null']->returnType);
 
         self::assertEquals('', $this->classScheme->methods['f']->argumentsPhpCode);
         self::assertIsArray($this->classScheme->methods['f']->arguments);
@@ -86,14 +84,13 @@ class RunMethodsTest extends TestCase
         self::assertArrayHasKey('f', $this->classScheme->methods);
 
         self::assertIsArray($this->classScheme->methods['f']->arguments);
-        self::assertCount(7, $this->classScheme->methods['f']->arguments);
+        self::assertCount(6, $this->classScheme->methods['f']->arguments);
 
         $arguments = $this->classScheme->methods['f']->arguments;
 
         self::assertArrayHasKey('var', $arguments);
         self::assertArrayHasKey('var_int', $arguments);
         self::assertArrayHasKey('var_bool_null', $arguments);
-        self::assertArrayHasKey('var_intersection', $arguments);
         self::assertArrayHasKey('var_string_null', $arguments);
         self::assertArrayHasKey('var_link', $arguments);
         self::assertArrayHasKey('var_list', $arguments);
@@ -103,17 +100,18 @@ class RunMethodsTest extends TestCase
 
         self::assertEquals('int', $arguments['var_int']->type);
         self::assertEquals('', $arguments['var_int']->value);
-        self::assertCount(2, $arguments['var_int']->attributes);
-        self::assertEquals('Attribute1', $arguments['var_int']->attributes[0]->name);
-        self::assertEquals('Attribute2', $arguments['var_int']->attributes[1]->name);
 
-        self::assertEquals('bool|null', $arguments['var_bool_null']->type);
+        if (PHP_MAJOR_VERSION>7)
+        {
+            self::assertCount(2, $arguments['var_int']->attributes);
+            self::assertEquals('Attribute1', $arguments['var_int']->attributes[0]->name);
+            self::assertEquals('Attribute2', $arguments['var_int']->attributes[1]->name);
+        }
+
+        self::assertEquals('?bool', $arguments['var_bool_null']->type);
         self::assertEquals('', $arguments['var_bool_null']->value);
 
-        self::assertEquals('\Traversable&\Stringable', $arguments['var_intersection']->type);
-        self::assertEquals('', $arguments['var_intersection']->value);
-
-        self::assertEquals('string|null', $arguments['var_string_null']->type);
+        self::assertEquals('?string', $arguments['var_string_null']->type);
         self::assertEquals(null, $arguments['var_string_null']->value);
 
         self::assertEquals('', $arguments['var_link']->type);
@@ -144,11 +142,11 @@ class RunMethodsTest extends TestCase
         self::assertArrayHasKey('f_2_protected', $this->classScheme->methods);
         self::assertArrayHasKey('f_2_private', $this->classScheme->methods);
 
-        $this->assertConstSchemes('f_1_public', ViewScheme::PUBLIC, false);
-        $this->assertConstSchemes('f_1_protected', ViewScheme::PROTECTED, false);
-        $this->assertConstSchemes('f_2_public', ViewScheme::PUBLIC, true);
-        $this->assertConstSchemes('f_2_protected', ViewScheme::PROTECTED, true);
-        $this->assertConstSchemes('f_2_private', ViewScheme::PRIVATE, true);
+        $this->assertConstSchemes('f_1_public', ViewScheme::PUBLIC(), false);
+        $this->assertConstSchemes('f_1_protected', ViewScheme::PROTECTED(), false);
+        $this->assertConstSchemes('f_2_public', ViewScheme::PUBLIC(), true);
+        $this->assertConstSchemes('f_2_protected', ViewScheme::PROTECTED(), true);
+        $this->assertConstSchemes('f_2_private', ViewScheme::PRIVATE(), true);
     }
 
     private function assertConstSchemes(string $name, ViewScheme $view, bool $inClass): void
@@ -172,8 +170,7 @@ class RunMethodsTest extends TestCase
                     final public function f_final() {}
                     public function f_string(): string {}
                     public function f_string_null(): ?string {}
-                    public function f_bool_null(): null|bool {}
-                    public function f_intersection(): Traversable&\Stringable {}
+                    public function f_bool_null(): ?bool {}
                 }
             END
         );
@@ -189,7 +186,6 @@ class RunMethodsTest extends TestCase
                         #[Attribute2]
                         int $var_int,
                         ?bool $var_bool_null,
-                        Traversable&\Stringable $var_intersection,
                         string $var_string_null = null,
                         &$var_link = null,
                         self ...$var_list

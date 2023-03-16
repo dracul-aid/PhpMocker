@@ -31,7 +31,7 @@ abstract class AbstractAutoloaderFilerStorage
      *
      * @return  $this
      */
-    abstract public function add(string $addValue): static;
+    abstract public function add(string $addValue): AbstractAutoloaderFilerStorage;
 
     /**
      * Добавить в фильтр список новых значений
@@ -40,7 +40,7 @@ abstract class AbstractAutoloaderFilerStorage
      *
      * @return  $this
      */
-    public function addList(array $addValues): static
+    public function addList(array $addValues): AbstractAutoloaderFilerStorage
     {
         foreach ($addValues as $value) $this->add($value);
 
@@ -54,7 +54,7 @@ abstract class AbstractAutoloaderFilerStorage
      *
      * @return  $this
      */
-    abstract public function remove(string $removeValue): static;
+    abstract public function remove(string $removeValue): AbstractAutoloaderFilerStorage;
 
     /**
      * Удалит из фильтра значения переданные в массиве
@@ -63,7 +63,7 @@ abstract class AbstractAutoloaderFilerStorage
      *
      * @return  $this
      */
-    public function removeList(array $removeValues): static
+    public function removeList(array $removeValues): AbstractAutoloaderFilerStorage
     {
         foreach ($removeValues as $value) $this->remove($value);
 

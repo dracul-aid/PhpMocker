@@ -46,8 +46,9 @@ class RunConstantsTest extends TestCase
             self::assertFalse($this->classScheme->constants[$constName]->isEnumCase, "{$constName} is Enum Case");
         }
 
-        self::assertTrue($this->classScheme->constants['CONST_1']->isFinal);
-        self::assertFalse($this->classScheme->constants['CONST_2']->isFinal);
+        // финальные константы доступны начиная с PHP8
+        //self::assertTrue($this->classScheme->constants['CONST_1']->isFinal);
+        //self::assertFalse($this->classScheme->constants['CONST_2']->isFinal);
 
         self::assertEquals('111', $this->classScheme->constants['CONST_1']->value);
         self::assertEquals(222, $this->classScheme->constants['CONST_2']->value);
@@ -75,11 +76,11 @@ class RunConstantsTest extends TestCase
         self::assertArrayHasKey('CONST_2_PROTECTED', $this->classScheme->constants);
         self::assertArrayHasKey('CONST_2_PRIVATE', $this->classScheme->constants);
 
-        $this->assertConstSchemes('CONST_1_PUBLIC', '1_public', ViewScheme::PUBLIC, false);
-        $this->assertConstSchemes('CONST_1_PROTECTED', '1_protected', ViewScheme::PROTECTED, false);
-        $this->assertConstSchemes('CONST_2_PUBLIC', '2_public', ViewScheme::PUBLIC, true);
-        $this->assertConstSchemes('CONST_2_PROTECTED', '2_protected', ViewScheme::PROTECTED, true);
-        $this->assertConstSchemes('CONST_2_PRIVATE', '2_private', ViewScheme::PRIVATE, true);
+        $this->assertConstSchemes('CONST_1_PUBLIC', '1_public', ViewScheme::PUBLIC(), false);
+        $this->assertConstSchemes('CONST_1_PROTECTED', '1_protected', ViewScheme::PROTECTED(), false);
+        $this->assertConstSchemes('CONST_2_PUBLIC', '2_public', ViewScheme::PUBLIC(), true);
+        $this->assertConstSchemes('CONST_2_PROTECTED', '2_protected', ViewScheme::PROTECTED(), true);
+        $this->assertConstSchemes('CONST_2_PRIVATE', '2_private', ViewScheme::PRIVATE(), true);
     }
 
     private function assertConstSchemes(string $name, string $value, ViewScheme $view, bool $inClass): void
@@ -98,7 +99,7 @@ class RunConstantsTest extends TestCase
         eval(
         <<<END
                 class {$className} {
-                    final public const CONST_1 = '111';
+                    public const CONST_1 = '111';
                     public const CONST_2 = 222;
                     public const CONST_3 = self::CONST_1;
                     public const CONST_4 = self::CONST_1 . self::CONST_2;

@@ -28,7 +28,8 @@ class TraitTest extends TestCase
         $this->traitManager->getMethodManager('f1')->defaultCase()->setWillReturn('AAA');
         self::assertEquals('AAA', $this->testClassName::f1());
 
-        $testObject = new ($this->testClassName)();
+        // $testObject = new ($this->testClassName)(); - Такое создание объекта невозможно до PHP8
+        $testObject = eval("return new {$this->testClassName}();");
 
         self::assertEquals('222', $testObject->f2());
         $this->traitManager->getMethodManager('f2')->defaultCase()->setWillReturn('BBB');

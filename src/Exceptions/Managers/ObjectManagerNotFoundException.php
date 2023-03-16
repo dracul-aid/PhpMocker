@@ -24,7 +24,7 @@ class ObjectManagerNotFoundException extends PhpMockerRuntimeException implement
     /**
      * Объект, для которого не удалось найти менеджер
      */
-    readonly public object $toObject;
+    public object $toObject;
 
     /**
      * @param  object  $object  Объект, для которого не удалось найти менеджер

@@ -23,13 +23,18 @@ class StringTypeFromReflection
      */
     public static function exe(\ReflectionType $reflectionType): string
     {
-        return match (true) {
-            is_a($reflectionType, \ReflectionNamedType::class) => self::basic($reflectionType),
-            is_a($reflectionType, \ReflectionUnionType::class) => self::union($reflectionType),
-            is_a($reflectionType, \ReflectionIntersectionType::class) => self::intersection($reflectionType),
-            // все прочие варианты приведут к выброшенному исключению
-            default => throw new ReflectionReaderUndefinedTypeException(),
-        };
+        if (PHP_MAJOR_VERSION > 7)
+        {
+            if (is_a($reflectionType, \ReflectionNamedType::class)) return self::basic($reflectionType);
+            elseif (is_a($reflectionType, \ReflectionUnionType::class)) return self::union($reflectionType);
+            elseif (is_a($reflectionType, \ReflectionIntersectionType::class)) return self::intersection($reflectionType);
+        }
+        else
+        {
+            if (is_a($reflectionType, \ReflectionNamedType::class)) return self::basic($reflectionType);
+        }
+
+        throw new ReflectionReaderUndefinedTypeException();
     }
 
     /**
@@ -60,6 +65,8 @@ class StringTypeFromReflection
      */
     private static function union(\ReflectionUnionType $reflectionType): string
     {
+        if (PHP_MAJOR_VERSION < 8) return '';
+
         $_return = [];
 
         foreach ($reflectionType->getTypes() as $type)
@@ -88,7 +95,7 @@ class StringTypeFromReflection
         $_return = self::getName($reflectionType);
 
         if ($_return === 'mixed') return 'mixed';
-        elseif ($reflectionType->allowsNull()) $_return .= "|null";
+        elseif ($reflectionType->allowsNull()) $_return = "?{$_return}";
 
         return $_return;
     }
@@ -104,7 +111,15 @@ class StringTypeFromReflection
     {
         $name = $reflectionType->getName();
 
-        if ($reflectionType->isBuiltin() || $name === 'self' || $name === 'static' || $name === 'callable') return $name;
-        else return "\\{$name}";
+        if (PHP_MAJOR_VERSION > 7)
+        {
+            if ($reflectionType->isBuiltin() || $name === 'self' || $name === 'static' || $name === 'callable') return $name;
+            else return "\\{$name}";
+        }
+        else
+        {
+            if ($reflectionType->isBuiltin() || $name === 'self' || $name === 'callable') return $name;
+            else return "\\{$name}";
+        }
     }
 }

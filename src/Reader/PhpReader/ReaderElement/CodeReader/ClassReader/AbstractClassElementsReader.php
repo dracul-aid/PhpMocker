@@ -44,7 +44,7 @@ abstract class AbstractClassElementsReader
      *
      * @return  static  Вернет объект читатель кода
      */
-    final public static function start(PhpReader $phpReader, TmpClassElement $tmpClassElement): static
+    final public static function start(PhpReader $phpReader, TmpClassElement $tmpClassElement): AbstractClassElementsReader
     {
         static $_objects = [];
         if (empty($_objects[static::class])) $_objects[static::class] = new static();
@@ -111,9 +111,9 @@ abstract class AbstractClassElementsReader
      * Отрабатывает очередной символ кода для элемента класса,
      * срабатывает после окончания работы @see ClassElementSchemeCreator::run()
      *
-     * @return null|self
+     * @return null|static
      */
-    abstract public function run(): null|self;
+    abstract public function run(): ?AbstractClassElementsReader;
 
     /**
      * Создает схему элемента класса

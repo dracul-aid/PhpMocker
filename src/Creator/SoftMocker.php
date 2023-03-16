@@ -42,9 +42,9 @@ class SoftMocker extends AbstractMocker
     /**
      * Различные параметры и настройки создания мок-классов
      */
-    readonly protected SoftMockerOptions $mockerOptions;
+    protected SoftMockerOptions $mockerOptions;
 
-    public static function getTextWhyMethodIsNotMockMethod(string|object $owner, string $methodName): string
+    public static function getTextWhyMethodIsNotMockMethod($owner, string $methodName): string
     {
         $classReflection = new \ReflectionClass($owner);
 
@@ -83,11 +83,11 @@ class SoftMocker extends AbstractMocker
      * В случае, если мок-класс создан для абстрактного класса, все абстрактные методы будут реализованны, но в случае их вызова
      * они будут выбрасывать исключение (или не будут, если было установлено какое-либо мок значение для ответа)
      */
-    public static function createClass(string $classOriginal, null|callable $beforeRun = null): ClassManager
+    public static function createClass(string $classOriginal, ?callable $beforeRun = null): ClassManager
     {
         $scheme = ReflectionReader::exe($classOriginal);
 
-        if ($scheme->type !== ClassSchemeType::CLASSES && $scheme->type !== ClassSchemeType::ABSTRACT_CLASSES)
+        if ($scheme->type !== ClassSchemeType::CLASSES() && $scheme->type !== ClassSchemeType::ABSTRACT_CLASSES())
         {
             throw new SoftMockClassCreatorClassIsNotClassException($scheme->type->value, $classOriginal);
         }
@@ -124,8 +124,10 @@ class SoftMocker extends AbstractMocker
      * $trait = [ 'trait_1', 'trait_2', 'rules' => 'trait_2::bigTalk as talk;' ];
      * ```
      */
-    public static function createClassForTraits(string|array $trait, null|callable $beforeRun = null): ClassManager
+    public static function createClassForTraits($trait, ?callable $beforeRun = null): ClassManager
     {
+        if (!is_string($trait) && !is_array($trait)) throw new \TypeError('$trait is not string or object');
+
         $classForTrait = CreateClassImplementsTraits::exe($trait);
 
         $scheme = ReflectionReader::exe($classForTrait);
@@ -153,7 +155,7 @@ class SoftMocker extends AbstractMocker
      *
      * Описание "функций настройки создания" @see CreateOptionsInterface
      */
-    protected static function createClassExecuting(ClassScheme $classScheme, null|callable $beforeRun, string $classOriginal): ClassManager
+    protected static function createClassExecuting(ClassScheme $classScheme, ?callable $beforeRun, string $classOriginal): ClassManager
     {
         $generator = new static();
         $generator->classScheme = $classScheme;
@@ -163,7 +165,7 @@ class SoftMocker extends AbstractMocker
         if (is_callable($beforeRun)) $beforeRun($generator->classScheme, $generator->mockerOptions);
         else $generator->classScheme->name = ToolsElementNames::mockClassName($generator->index);
 
-        if ($generator->classScheme->type === ClassSchemeType::ABSTRACT_CLASSES) $generator->classScheme->type = ClassSchemeType::CLASSES;
+        if ($generator->classScheme->type === ClassSchemeType::ABSTRACT_CLASSES()) $generator->classScheme->type = ClassSchemeType::CLASSES();
 
         // * * *
 
@@ -187,12 +189,12 @@ class SoftMocker extends AbstractMocker
 
         // * * *
 
-        if ($this->classScheme->getConstructor()?->isPrivate())
+        if ($this->classScheme->getConstructor() && $this->classScheme->getConstructor()->isPrivate())
         {
             trigger_error("Class \\{$this->classOriginal} has private __constructor()", E_USER_WARNING);
             unset($this->classScheme['__constructor']);
         }
-        elseif ($this->classScheme->getConstructor()?->isAbstract)
+        elseif ($this->classScheme->getConstructor() && $this->classScheme->getConstructor()->isAbstract)
         {
             unset($this->classScheme['__constructor']);
         }

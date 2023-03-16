@@ -38,7 +38,7 @@ class ClassManagerWithPhpCode extends ClassManager
         eval($this->createPhpCode);
         $this->createPhpCode = '';
 
-        if ($this->classType !== ClassSchemeType::INTERFACES) $this->registerInManagerListExecuting();
+        if ($this->classType !== ClassSchemeType::INTERFACES()) $this->registerInManagerListExecuting();
     }
 
     /**

@@ -28,7 +28,7 @@ class PropertiesGenerator
     /**
      * Схема класса
      */
-    readonly private ClassScheme $classScheme;
+    private ClassScheme $classScheme;
 
     /**
      * Схема класса

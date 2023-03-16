@@ -18,18 +18,10 @@ use PHPUnit\Framework\TestCase;
  */
 class PropertiesGeneratorTest extends TestCase
 {
-    private const PROPERTIES = [
-        'static' => ['value' => [], 'isStatic' => true, 'isReadonly' => false, 'view' => ViewScheme::PUBLIC, 'type' => ''],
-        'readonly' => ['value' => '', 'isStatic' => false, 'isReadonly' => true, 'view' => ViewScheme::PUBLIC, 'type' => 'mixed'],
-        'string' => ['value' => '123', 'isStatic' => false, 'isReadonly' => false, 'view' => ViewScheme::PUBLIC, 'type' => ''],
-        'bool_null' => ['value' => false, 'isStatic' => false, 'isReadonly' => false, 'view' => ViewScheme::PROTECTED, 'type' => 'bool|null'],
-        'int' => ['value' => 123, 'isStatic' => false, 'isReadonly' => false, 'view' => ViewScheme::PRIVATE, 'type' => ''],
-    ];
-
     public function testGeneral(): void
     {
-        $scheme = new ClassScheme(ClassSchemeType::CLASSES, 'TestGeneral' . uniqid());
-        foreach (self::PROPERTIES as $property => $data)
+        $scheme = new ClassScheme(ClassSchemeType::CLASSES(), 'TestGeneral' . uniqid());
+        foreach (self::PROPERTIES() as $property => $data)
         {
             $scheme->properties[$property] = new PropertyScheme($scheme, $property);
             foreach ($data as $name => $value)
@@ -49,12 +41,14 @@ class PropertiesGeneratorTest extends TestCase
         $scheme->methods['getStaticProperty']->innerPhpCode = 'return self::$$name ?? null;';
 
         ClassGenerator::generateCodeAndEval($scheme);
-        $testObject = new ($scheme->getFullName())();
+
+        //$testObject = new ($scheme->getFullName())(); - Подобный вызов невозможен до PHP8
+        $testObject = eval("return new {$scheme->getFullName()}();");
 
         $newScheme = ReflectionReader::exe($scheme->getFullName());
-        self::assertCount(5, $newScheme->properties);
+        self::assertCount(4, $newScheme->properties);
 
-        foreach (self::PROPERTIES as $property => $data)
+        foreach (self::PROPERTIES() as $property => $data)
         {
             self::assertArrayHasKey($property, $newScheme->properties);
             self::assertEquals('', $newScheme->properties[$property]->innerPhpCode);
@@ -70,7 +64,7 @@ class PropertiesGeneratorTest extends TestCase
 
     public function testInnerPhpCode(): void
     {
-        $scheme = new ClassScheme(ClassSchemeType::CLASSES, 'testInnerPhpCode' . uniqid());
+        $scheme = new ClassScheme(ClassSchemeType::CLASSES(), 'testInnerPhpCode' . uniqid());
         $scheme->properties['property'] = new PropertyScheme($scheme, 'property');
         $scheme->properties['property']->isStatic = true;
         $scheme->properties['property']->isValue = true;
@@ -83,5 +77,15 @@ class PropertiesGeneratorTest extends TestCase
         self::assertArrayHasKey('property', $newScheme->properties);
 
         self::assertEquals(PHP_VERSION . PHP_EOL, $scheme->getFullName()::$property);
+    }
+
+    private static function PROPERTIES(): array
+    {
+        return [
+            'static' => ['value' => [], 'isStatic' => true, 'view' => ViewScheme::PUBLIC(), 'type' => ''],
+            'string' => ['value' => '123', 'isStatic' => false, 'view' => ViewScheme::PUBLIC(), 'type' => ''],
+            'bool_null' => ['value' => false, 'isStatic' => false, 'view' => ViewScheme::PROTECTED(), 'type' => '?bool'],
+            'int' => ['value' => 123, 'isStatic' => false, 'view' => ViewScheme::PRIVATE(), 'type' => ''],
+        ];
     }
 }

@@ -25,7 +25,7 @@ class ClassInnerReadTest extends TestCase
         self::assertCount(1, $schemes);
 
         self::assertEquals('myClassName', $schemes[0]->getFullName());
-        self::assertEquals(ClassSchemeType::ABSTRACT_CLASSES, $schemes[0]->type);
+        self::assertEquals(ClassSchemeType::ABSTRACT_CLASSES(), $schemes[0]->type);
         self::assertFalse($schemes[0]->isReadonly);
 
         // * * *
@@ -39,13 +39,13 @@ class ClassInnerReadTest extends TestCase
         $const = $schemes[0]->constants['OLD_STYLE'];
         self::assertEquals('OLD_STYLE', $const->name);
         self::assertEquals("'old_constant'", $const->innerPhpCode);
-        self::assertEquals(ViewScheme::PUBLIC, $const->view);
+        self::assertEquals(ViewScheme::PUBLIC(), $const->view);
         self::assertFalse($const->isFinal);
 
         $const = $schemes[0]->constants['FINAL_PROTECTED'];
         self::assertEquals('FINAL_PROTECTED', $const->name);
         self::assertEquals('123', $const->innerPhpCode);
-        self::assertEquals(ViewScheme::PROTECTED, $const->view);
+        self::assertEquals(ViewScheme::PROTECTED(), $const->view);
         self::assertTrue($const->isFinal);
 
 
@@ -61,7 +61,7 @@ class ClassInnerReadTest extends TestCase
         self::assertEquals('old_style_var', $var->name);
         self::assertEquals('', $var->type);
         self::assertEquals('false', $var->innerPhpCode);
-        self::assertEquals(ViewScheme::PUBLIC, $var->view);
+        self::assertEquals(ViewScheme::PUBLIC(), $var->view);
         self::assertTrue($var->isValue);
         self::assertFalse($var->isStatic);
         self::assertFalse($var->isReadonly);
@@ -70,7 +70,7 @@ class ClassInnerReadTest extends TestCase
         self::assertEquals('static_var', $var->name);
         self::assertEquals('', $var->type);
         self::assertEquals("'}static_var{'", $var->innerPhpCode);
-        self::assertEquals(ViewScheme::PUBLIC, $var->view);
+        self::assertEquals(ViewScheme::PUBLIC(), $var->view);
         self::assertTrue($var->isValue);
         self::assertTrue($var->isStatic);
         self::assertFalse($var->isReadonly);
@@ -79,7 +79,7 @@ class ClassInnerReadTest extends TestCase
         self::assertEquals('protectedVar', $var->name);
         self::assertEquals('', $var->type);
         self::assertEquals('132', $var->innerPhpCode);
-        self::assertEquals(ViewScheme::PROTECTED, $var->view);
+        self::assertEquals(ViewScheme::PROTECTED(), $var->view);
         self::assertTrue($var->isValue);
         self::assertFalse($var->isStatic);
         self::assertFalse($var->isReadonly);
@@ -88,7 +88,7 @@ class ClassInnerReadTest extends TestCase
         self::assertEquals('readonlyVar', $var->name);
         self::assertEquals('null|string', $var->type);
         self::assertEquals('', $var->innerPhpCode);
-        self::assertEquals(ViewScheme::PUBLIC, $var->view);
+        self::assertEquals(ViewScheme::PUBLIC(), $var->view);
         self::assertFalse($var->isValue);
         self::assertFalse($var->isStatic);
         self::assertTrue($var->isReadonly);
