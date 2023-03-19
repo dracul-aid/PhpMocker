@@ -21,6 +21,7 @@ use DraculAid\PhpMocker\Schemes\ClassScheme;
  * Оглавление:
  * @see self::$methodManagers - Массив с менеджерами мок-методов
  * @see self::getMethodManager() - Вернет менеджер мок-метода
+ * @see self::clearMockMethodsCases() - Удалит все установленные кейсы вызовов
  * @see self::$mockMethodNames - Список имен методов класса, для которых можно получить "мок-метод"
  * @see self::getDriver() - Вернет имя класса, с помощью которого был создан мок-класс
  * @see self::getToClass() - Вернет имя мок-класса, для которого создан менеджер
@@ -38,7 +39,7 @@ abstract class AbstractClassAndObjectManager
     /**
      * Массив с созданными менеджерами мок-методов
      *
-     * @var MethodManager[] $methodManagers
+     * @var array<string, MethodManager> $methodManagers в качестве ключей выступают имена методов
      */
     public array $methodManagers = [];
 
@@ -60,16 +61,28 @@ abstract class AbstractClassAndObjectManager
     }
 
     /**
+     * Удалит все установленные кейсы вызовов
+     *
+     * @return $this
+     */
+    public function clearMockMethodsCases(): self
+    {
+        foreach ($this->methodManagers as $methodManager) $methodManager->clearCases();
+
+        return $this;
+    }
+
+    /**
      * Вернет имя класса, с помощью которого был создан мок-класс
      *
-     * @return  string   Вернет полное имя класса или NULL (если невозможно получить менеджер мок-класса)
+     * @return  null|string   Вернет полное имя класса или NULL (если невозможно получить менеджер мок-класса)
      */
     abstract public function getDriver(): null|string;
 
     /**
      * Вернет имя мок-класса, для которого создан менеджер
      *
-     * @return  string   Вернет полное имя класса или NULL (если невозможно получить менеджер мок-класса)
+     * @return  null|string   Вернет полное имя класса или NULL (если невозможно получить менеджер мок-класса)
      */
     abstract public function getToClass(): null|string;
 

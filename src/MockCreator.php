@@ -40,6 +40,7 @@ class MockCreator
 {
     /**
      * Версия PHP мокера
+     * (Версии для PHP7 маркированы, как PHP7-X.X.X)
      */
     final public const VERSION = '0.0.1';
 
@@ -108,7 +109,7 @@ class MockCreator
      *
      * @param   string    $class
      *
-     * @return   null|ClassManager
+     * @return   ClassManager
      *
      * (!) Создаст мок классы для классов, абстрактных классов, трейтов и перечислений (включая финальные классы)
      * (!) Интерфейс будет загружен без преобразования в мок-класс
@@ -119,7 +120,7 @@ class MockCreator
      *
      * @todo  Переработать поиск менеджера и вызов загрузки класса (см комментарии в коде)
      */
-    public static function hardLoadClass(string $class): null|ClassManager
+    public static function hardLoadClass(string $class): ClassManager
     {
         // если уже есть менеджер класса - вернем его
         // если класс уже загружен, как обычный класс - выбросим исключение
@@ -149,7 +150,7 @@ class MockCreator
      * @param   string          $phpCode     PHP код с описанием класса (или классов)
      * @param   null|callable   $beforeRun   Функция с настройками создания
      *
-     * @return  array|ClassManager   Вернет схему или массив схем классов (ключи - имена классов)
+     * @return  ClassManager[]|ClassManager   Вернет схему или массив схем классов (ключи - имена классов)
      *
      * (!) Создаст мок классы для классов, абстрактных классов, трейтов и перечислений (включая финальные классы)
      * (!) Создание мок копии для интерфейсов бесполезно, поэтому не будет производиться
@@ -181,7 +182,7 @@ class MockCreator
      * @param   string          $path        Путь к PHP скрипту
      * @param   null|callable   $beforeRun   Функция с настройками создания
      *
-     * @return  array|ClassManager   Вернет схему или массив схем классов (ключи - имена классов)
+     * @return  ClassManager[]|ClassManager   Вернет схему или массив схем классов (ключи - имена классов)
      *
      * @throws  HardMockClassCreatorPhpCodeWithoutElementsException   В PHP коде не был найден код, для которого можно создать моки (не было определения классов)
      * @throws  MockClassCreatorClassIsInternalException              Попытка переопределить в мок-класс встроенный в PHP класс

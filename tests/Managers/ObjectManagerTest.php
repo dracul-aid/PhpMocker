@@ -95,6 +95,30 @@ class ObjectManagerTest extends TestCase
     }
 
     /**
+     * Test for @see ObjectManager::clearMockMethodsCases()
+     */
+    public function testClearMockMethodsCases(): void
+    {
+        $scheme = ReflectionReader::exe(
+            $this->generateClass()
+        );
+        $classManager = SoftMocker::createClass($scheme->getFullName());
+        $objectManager = $classManager->createObjectAndManager();
+
+        $classManager->getMethodManager('f_protected')->defaultCase()->setWillReturn('111');
+        $objectManager->getMethodManager('f_protected')->defaultCase()->setWillReturn('111');
+        $objectManager->getMethodManager('f_protected')->case('ABC')->setWillReturn('222');
+
+        self::assertCount(1, $classManager->getMethodManager('f_protected')->cases);
+        self::assertCount(2, $objectManager->getMethodManager('f_protected')->cases);
+
+        $objectManager->clearMockMethodsCases();
+
+        self::assertCount(1, $classManager->getMethodManager('f_protected')->cases);
+        self::assertCount(0, $objectManager->getMethodManager('f_protected')->cases);
+    }
+
+    /**
      * Test for:
      * @see ObjectManager::getProperty()
      * @see ObjectManager::setProperty()

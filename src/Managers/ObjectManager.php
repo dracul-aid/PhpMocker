@@ -37,6 +37,7 @@ use DraculAid\PhpMocker\Tools\ClassParents;
  * @see self::$mockMethodNames - Список имен методов класса, для которых можно получить "мок-метод"
  * @see self::$methodManagers - Массив с менеджерами мок-методов
  * @see self::getMethodManager() - Вернет менеджер мок-метода
+ * @see self::clearMockMethodsCases() - Удалит все установленные кейсы вызовов
  * --- Взаимодействие с элементами (в том числе и protected и private)
  * @see self::getProperty() - Получение значения свойства
  * @see self::setProperty() - Установка значения свойства
@@ -49,11 +50,11 @@ class ObjectManager extends AbstractClassAndObjectManager
      *
      * Для чтения @see ObjectManager::getManager()
      *
-     * @var ObjectManager[]|false $objectManagers
+     * @var \WeakMap|ObjectManager[]|false $objectManagers
      *   * Индексы: мок-объекты
      *   * Значения: "менеджер мок-объекта" или FALSE - если объект не являлся мок-объектом
      */
-    private static \SplObjectStorage $objectManagers;
+    private static \WeakMap $objectManagers;
 
     /**
      * Объект для которого создан менеджер
@@ -80,9 +81,9 @@ class ObjectManager extends AbstractClassAndObjectManager
 
         // Мок-объекты могут быть "не полными", это значит, что они могут быть созданы не от мок-класса, а от обычного
         // класса, который наследует мок-методы от мок-класса родителя (обычного класса-родителя или трейта)
-        $this->getClassManager()?->objectManagers->attach($toObject, $this);
+        $this->getClassManager()?->objectManagers->offsetSet($toObject, $this);
 
-        if (!isset(self::$objectManagers)) self::$objectManagers = new \SplObjectStorage();
+        if (!isset(self::$objectManagers)) self::$objectManagers = new \WeakMap();
         self::$objectManagers[$toObject] = $this;
 
         // * * *
@@ -102,7 +103,7 @@ class ObjectManager extends AbstractClassAndObjectManager
      */
     public static function getManager(object $mockObject, bool $throw = false): null|ObjectManager
     {
-        if (!isset(self::$objectManagers)) self::$objectManagers = new \SplObjectStorage();
+        if (!isset(self::$objectManagers)) self::$objectManagers = new \WeakMap();
 
         // * * *
 

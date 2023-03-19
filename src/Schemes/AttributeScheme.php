@@ -11,6 +11,8 @@
 
 namespace DraculAid\PhpMocker\Schemes;
 
+use DraculAid\PhpMocker\Tools\ClassTools;
+
 /**
  * Схемы для ООП элементов: описание атрибутов
  *
@@ -26,7 +28,7 @@ class AttributeScheme
     /**
      * Имя атрибута
      */
-    public string $name;
+    public string $name = '';
 
     /**
      * Пространство имен
@@ -83,20 +85,7 @@ class AttributeScheme
      */
     public function setFullName(string $name): static
     {
-        // если устанавливается пустое имя
-        if ($name === '')
-        {
-            $this->namespace = '';
-            $this->name = '';
-            return $this;
-        }
-
-
-        // * * *
-
-        $this->name = basename($name);
-        $this->namespace = dirname($name);
-        if ($this->namespace === '.') $this->namespace = '';
+        ClassTools::getNameAndNamespace($name, $this->namespace, $this->name);
 
         return $this;
     }

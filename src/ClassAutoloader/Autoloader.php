@@ -222,6 +222,8 @@ class Autoloader
      */
     protected function canClassLoadAsMock(string $class, string $classPath): bool
     {
+        if (str_starts_with($class, 'DraculAid\\PhpMocker\\')) return false;
+
         return static::$allConvertToMock ?? ($this->autoMockerEnabled && $this->autoloaderFilter->canBeMock($class, $classPath));
     }
 

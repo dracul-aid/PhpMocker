@@ -4,6 +4,7 @@ namespace DraculAid\PhpMocker\tests;
 
 use DraculAid\PhpMocker\NotPublic;
 use DraculAid\PhpMocker\tests\Reader\PhpReader\Tools\NotPublicProxyTest;
+use DraculAid\PhpMocker\Tools\TestTools;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -87,6 +88,23 @@ class NotPublicTest extends TestCase
         $f_t1 = 'С111';
         self::assertEquals("private_static_function_return_[С111]_D222", NotPublic::callMethod($testClass, 'private_static_function', [&$f_t1, 'D222']));
         self::assertEquals('[С111]', $f_t1);
+
+        // * * *
+
+        $f_t1 = 'A111';
+        self::assertEquals("private_function_return_[A111]_B222", NotPublic::callMethod([$testObject, 'private_function'], [&$f_t1, 'B222']));
+        self::assertEquals("[A111]", $f_t1);
+        $f_t1 = 'С111';
+        self::assertEquals("private_static_function_return_[С111]_D222", NotPublic::callMethod([$testClass, 'private_static_function'], [&$f_t1, 'D222']));
+        self::assertEquals('[С111]', $f_t1);
+
+        // * * *
+
+        self::assertTrue(TestTools::waitThrow([NotPublic::class, 'callMethod'], [[]], \TypeError::class));
+        self::assertTrue(TestTools::waitThrow([NotPublic::class, 'callMethod'], [['class']], \TypeError::class));
+        self::assertTrue(TestTools::waitThrow([NotPublic::class, 'callMethod'], [['class', 'method', 'error']], \TypeError::class));
+
+        self::assertTrue(TestTools::waitThrow([NotPublic::class, 'callMethod'], ['class', []], \TypeError::class));
     }
 
     /**

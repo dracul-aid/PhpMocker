@@ -47,9 +47,9 @@ class ConstantScheme extends AbstractElementsScheme
     public bool $isEnumCase = false;
 
     /**
-     * @param   ClassScheme   $schemesClass   Объект "схема класса" для которой создана константа
-     * @param   string    $name            Имя константы
-     * @param   mixed     $value           Значение константы
+     * @param   ClassScheme   $schemesClass    Объект "схема класса" для которой создана константа
+     * @param   string        $name            Имя константы
+     * @param   mixed         $value           Значение константы
      */
     public function __construct(ClassScheme $schemesClass, string $name, mixed $value = '')
     {

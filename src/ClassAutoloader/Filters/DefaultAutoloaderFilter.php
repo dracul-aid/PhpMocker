@@ -82,7 +82,6 @@ class DefaultAutoloaderFilter implements AutoloaderFilterInterface
      */
     protected function __constructSetDefaultValuesInFilters(): void
     {
-        $this->namespaceBlackList->add(static::PHP_MOCKER_NAMESPACE);
         $this->namespaceBlackList->addList(static::PHP_UNIT_NAMESPACES);
     }
 }

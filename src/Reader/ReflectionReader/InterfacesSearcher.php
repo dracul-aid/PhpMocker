@@ -6,6 +6,7 @@ namespace DraculAid\PhpMocker\Reader\ReflectionReader;
 
 use DraculAid\PhpMocker\Exceptions\Reader\ReflectionReaderUndefinedTypeException;
 use DraculAid\PhpMocker\Schemes\ClassScheme;
+use DraculAid\PhpMocker\Tools\ClassTools;
 
 /**
  * Класс-функция, для получения списка интерфейсов из рефлексии (интерфейсов конкретного класса, без интерфейсов его родителей)
@@ -61,7 +62,7 @@ class InterfacesSearcher
         // запомним все интерфейсы, кроме интерфейсов перечислений
         foreach ($this->reflection->getInterfaceNames() as $interface)
         {
-            if ($interface !== \BackedEnum::class && $interface !== \UnitEnum::class)
+            if (!ClassTools::isEnumInterface($interface))
             {
                 $this->scheme->interfaces["\\{$interface}"] = "\\{$interface}";
             }

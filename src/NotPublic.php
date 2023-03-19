@@ -43,6 +43,11 @@ class NotPublic
      */
     readonly public object $toObject;
 
+    /**
+     * @var \Closure[]  Массив с "функциями взаимодействия с классами", в качестве ключей выступают имена "методов-генератов" этих функций
+     */
+    private array $closureForObjects = [];
+
     private function __construct() {}
 
     /**
@@ -56,9 +61,9 @@ class NotPublic
     {
         /**
          * Массив объектов, для которых создан объект для взаимодействия с непубличными элементами
-         * @var NotPublic[]|\SplObjectStorage $_notPublicObjects
+         * @var NotPublic[]|\WeakMap $_notPublicObjects
          */
-        static $_notPublicObjects = new \SplObjectStorage();
+        static $_notPublicObjects = new \WeakMap();
 
         /**
          * Массив классов, для которых создан объект для взаимодействия с непубличными элементами
@@ -99,7 +104,7 @@ class NotPublic
      */
     public static function proxy(object $object): NotPublicProxy
     {
-        static $_proxyStorage = new \SplObjectStorage();
+        static $_proxyStorage = new \WeakMap();
 
         if (empty($_proxyStorage[$object])) $_proxyStorage[$object] = new NotPublicProxy($object);
 
@@ -260,14 +265,37 @@ class NotPublic
     /**
      * Вызов метода
      *
-     * @param   string|object   $classOrObject    Строка с именем класса (для вызова статического метода) или объект (для вызова метода объекта)
-     * @param   string|array    $name             Имя метода
-     * @param   array           $arguments        Список аргументов
+     * Поддерживает два формата вызова метода:
+     * {@see self::callMethod}($classNameOrObject, $methodName, $arguments) - отдельно указывается контекст вызова и имя метода
+     * {@see self::callMethod}([$classNameOrObject, 'method_name'], $arguments) - вызываемый метод указывается ввиде массива (callable стиль)
+     *                                                                            позволяет более удобно работать с различными средами разработки
+     *                                                                            (позволяя им подсвечивать массив, как метод)
+     *
+     * @param   string|array|object   $classOrObject    Строка с именем класса (для вызова статического метода) или объекта (для вызова метода объекта)
+     * @param   string|array          $name             Имя метода
+     * @param   array                 $arguments        Список аргументов
      *
      * @return  mixed
      */
-    public static function callMethod(string|object $classOrObject, string|array $name, array $arguments = []): mixed
+    public static function callMethod(string|array|object $classOrObject, string|array $name = [], array $arguments = []): mixed
     {
+        if (is_array($classOrObject))
+        {
+            if (count($classOrObject) !== 2 || empty($classOrObject[0]) || empty($classOrObject[1]))
+            {
+                throw new \TypeError('$classOrObject can be a callable array: [class_or_object, method_name]');
+            }
+
+            $arguments = $name;
+            [$classOrObject, $name] = [$classOrObject[0], $classOrObject[1]];
+        }
+        elseif (is_array($name))
+        {
+            throw new \TypeError('$name can be a string, now $name is a' . gettype($name));
+        }
+
+        // * * *
+
         if (is_object($classOrObject)) return self::instance($classOrObject)->call($name, $arguments);
         else return self::instance($classOrObject)->callStatic($name, $arguments);
     }
@@ -315,21 +343,15 @@ class NotPublic
      */
     private function getOrCreateFunctionForConstants(): \Closure
     {
-        /**
-         * Для хранения созданных анонимных функций для конкретных классов (ключи массива - объект, которому "принадлежит" функция)
-         * @var \Closure[]|\SplObjectStorage $_functionInObject
-         */
-        static $_functionInObject = new \SplObjectStorage();
-
-        if (empty($_functionInObject[$this->toObject]))
+        if (empty($this->closureForObjects[__FUNCTION__]))
         {
-            $_functionInObject[$this->toObject] = function($name) {
+            $this->closureForObjects[__FUNCTION__] = function($name) {
                 return constant($this::class . "::{$name}");
             };
-            $_functionInObject[$this->toObject] = $_functionInObject[$this->toObject]->bindTo($this->toObject, $this->toObject);
+            $this->closureForObjects[__FUNCTION__] = $this->closureForObjects[__FUNCTION__]->bindTo($this->toObject, $this->toObject);
         }
 
-        return $_functionInObject[$this->toObject];
+        return $this->closureForObjects[__FUNCTION__];
     }
 
     /**
@@ -339,21 +361,15 @@ class NotPublic
      */
     private function getOrCreateFunctionForGetProperties(): \Closure
     {
-        /**
-         * Для хранения созданных анонимных функций для конкретных классов (ключи массива - объект, которому "принадлежит" функция)
-         * @var \Closure[]|\SplObjectStorage $_functionInObject
-         */
-        static $_functionInObject = new \SplObjectStorage();
-
-        if (empty($_functionInObject[$this->toObject]))
+        if (empty($this->closureForObjects[__FUNCTION__]))
         {
-            $_functionInObject[$this->toObject] = function($name) {
+            $this->closureForObjects[__FUNCTION__] = function($name) {
                 return $this->{$name};
             };
-            $_functionInObject[$this->toObject] = $_functionInObject[$this->toObject]->bindTo($this->toObject, $this->toObject);
+            $this->closureForObjects[__FUNCTION__] = $this->closureForObjects[__FUNCTION__]->bindTo($this->toObject, $this->toObject);
         }
 
-        return $_functionInObject[$this->toObject];
+        return $this->closureForObjects[__FUNCTION__];
     }
 
     /**
@@ -363,21 +379,15 @@ class NotPublic
      */
     private function getOrCreateFunctionForGetStaticProperties(): \Closure
     {
-        /**
-         * Для хранения созданных анонимных функций для конкретных классов (ключи массива - объект, которому "принадлежит" функция)
-         * @var \Closure[]|\SplObjectStorage $_functionInObject
-         */
-        static $_functionInObject = new \SplObjectStorage();
-
-        if (empty($_functionInObject[$this->toObject]))
+        if (empty($this->closureForObjects[__FUNCTION__]))
         {
-            $_functionInObject[$this->toObject] = function($name) {
+            $this->closureForObjects[__FUNCTION__] = function($name) {
                 return ($this::class)::$$name;
             };
-            $_functionInObject[$this->toObject] = $_functionInObject[$this->toObject]->bindTo($this->toObject, $this->toObject);
+            $this->closureForObjects[__FUNCTION__] = $this->closureForObjects[__FUNCTION__]->bindTo($this->toObject, $this->toObject);
         }
 
-        return $_functionInObject[$this->toObject];
+        return $this->closureForObjects[__FUNCTION__];
     }
 
     /**
@@ -387,21 +397,15 @@ class NotPublic
      */
     private function getOrCreateFunctionForSetProperties(): \Closure
     {
-        /**
-         * Для хранения созданных анонимных функций для конкретных классов (ключи массива - объект, которому "принадлежит" функция)
-         * @var \Closure[]|\SplObjectStorage $_functionInObject
-         */
-        static $_functionInObject = new \SplObjectStorage();
-
-        if (empty($_functionInObject[$this->toObject]))
+        if (empty($this->closureForObjects[__FUNCTION__]))
         {
-            $_functionInObject[$this->toObject] = function($name, $data) {
+            $this->closureForObjects[__FUNCTION__] = function($name, $data) {
                 $this->{$name} = $data;
             };
-            $_functionInObject[$this->toObject] = $_functionInObject[$this->toObject]->bindTo($this->toObject, $this->toObject);
+            $this->closureForObjects[__FUNCTION__] = $this->closureForObjects[__FUNCTION__]->bindTo($this->toObject, $this->toObject);
         }
 
-        return $_functionInObject[$this->toObject];
+        return $this->closureForObjects[__FUNCTION__];
     }
 
     /**
@@ -411,21 +415,15 @@ class NotPublic
      */
     private function getOrCreateFunctionForSetStaticProperties(): \Closure
     {
-        /**
-         * Для хранения созданных анонимных функций для конкретных классов (ключи массива - объект, которому "принадлежит" функция)
-         * @var \Closure[]|\SplObjectStorage $_functionInObject
-         */
-        static $_functionInObject = new \SplObjectStorage();
-
-        if (empty($_functionInObject[$this->toObject]))
+        if (empty($this->closureForObjects[__FUNCTION__]))
         {
-            $_functionInObject[$this->toObject] = function($name, $data) {
+            $this->closureForObjects[__FUNCTION__] = function($name, $data) {
                 ($this::class)::$$name = $data;
             };
-            $_functionInObject[$this->toObject] = $_functionInObject[$this->toObject]->bindTo($this->toObject, $this->toObject);
+            $this->closureForObjects[__FUNCTION__] = $this->closureForObjects[__FUNCTION__]->bindTo($this->toObject, $this->toObject);
         }
 
-        return $_functionInObject[$this->toObject];
+        return $this->closureForObjects[__FUNCTION__];
     }
 
     /**
@@ -435,21 +433,15 @@ class NotPublic
      */
     private function getOrCreateFunctionForCall(): \Closure
     {
-        /**
-         * Для хранения созданных анонимных функций для конкретных классов (ключи массива - объект, которому "принадлежит" функция)
-         * @var \Closure[]|\SplObjectStorage $_functionInObject
-         */
-        static $_functionInObject = new \SplObjectStorage();
-
-        if (empty($_functionInObject[$this->toObject]))
+        if (empty($this->closureForObjects[__FUNCTION__]))
         {
-            $_functionInObject[$this->toObject] = function($name, $arguments) {
+            $this->closureForObjects[__FUNCTION__] = function($name, $arguments) {
                 return $this->{$name}(...$arguments);
             };
-            $_functionInObject[$this->toObject] = $_functionInObject[$this->toObject]->bindTo($this->toObject, $this->toObject);
+            $this->closureForObjects[__FUNCTION__] = $this->closureForObjects[__FUNCTION__]->bindTo($this->toObject, $this->toObject);
         }
 
-        return $_functionInObject[$this->toObject];
+        return $this->closureForObjects[__FUNCTION__];
     }
 
     /**
@@ -459,21 +451,15 @@ class NotPublic
      */
     private function getOrCreateFunctionForCallStatic(): \Closure
     {
-        /**
-         * Для хранения созданных анонимных функций для конкретных классов (ключи массива - объект, которому "принадлежит" функция)
-         * @var \Closure[]|\SplObjectStorage $_functionInObject
-         */
-        static $_functionInObject = new \SplObjectStorage();
-
-        if (empty($_functionInObject[$this->toObject]))
+        if (empty($this->closureForObjects[__FUNCTION__]))
         {
-            $_functionInObject[$this->toObject] = function($name, $arguments) {
+            $this->closureForObjects[__FUNCTION__] = function($name, $arguments) {
                 return [$this::class, $name](...$arguments);
             };
-            $_functionInObject[$this->toObject] = $_functionInObject[$this->toObject]->bindTo($this->toObject, $this->toObject);
+            $this->closureForObjects[__FUNCTION__] = $this->closureForObjects[__FUNCTION__]->bindTo($this->toObject, $this->toObject);
         }
 
-        return $_functionInObject[$this->toObject];
+        return $this->closureForObjects[__FUNCTION__];
     }
 
 }

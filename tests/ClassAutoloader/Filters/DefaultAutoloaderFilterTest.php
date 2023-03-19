@@ -18,17 +18,19 @@ class DefaultAutoloaderFilterTest extends TestCase
 
         self::assertTrue($testFilter->canBeMock(\stdClass::class, ''));
         self::assertTrue($testFilter->canBeMock(\CatalogName\ClassName1::class, ''));
-        self::assertFalse($testFilter->canBeMock(\DraculAid\PhpMocker\ClassAutoloader\Filters\DefaultAutoloaderFilter::class, ''));
         self::assertFalse($testFilter->canBeMock(\PHPUnit\Framework\TestCase::class, ''));
 
-        $testFilter->namespaceWhiteList->add('DraculAid\PhpMocker\ClassAutoloader\Filters');
-        self::assertTrue($testFilter->canBeMock(\DraculAid\PhpMocker\ClassAutoloader\Filters\DefaultAutoloaderFilter::class, ''));
-        self::assertFalse($testFilter->canBeMock(\DraculAid\PhpMocker\ClassAutoloader\Autoloader::class, ''));
+        $testFilter->namespaceBlackList->add('BlackListNamespace');
+        self::assertFalse($testFilter->canBeMock(\BlackListNamespace\TestClass::class, ''));
 
-        $testFilter->classBlackList->add(\DraculAid\PhpMocker\ClassAutoloader\Filters\DefaultAutoloaderFilter::class);
-        self::assertFalse($testFilter->canBeMock(\DraculAid\PhpMocker\ClassAutoloader\Filters\DefaultAutoloaderFilter::class, ''));
+        $testFilter->namespaceWhiteList->add('BlackListNamespace\WhiteNamespace');
+        self::assertTrue($testFilter->canBeMock(\BlackListNamespace\WhiteNamespace\TrueClass::class, ''));
+        self::assertFalse($testFilter->canBeMock(\BlackListNamespace\FalseClass::class, ''));
 
-        $testFilter->classWhiteList->add(\DraculAid\PhpMocker\ClassAutoloader\Filters\DefaultAutoloaderFilter::class);
-        self::assertTrue($testFilter->canBeMock(\DraculAid\PhpMocker\ClassAutoloader\Filters\DefaultAutoloaderFilter::class, ''));
+        $testFilter->classBlackList->add(\BlackListNamespace\WhiteNamespace\TrueClass::class);
+        self::assertFalse($testFilter->canBeMock(\BlackListNamespace\WhiteNamespace\TrueClass::class, ''));
+
+        $testFilter->classWhiteList->add(\BlackListNamespace\FalseClass::class);
+        self::assertTrue($testFilter->canBeMock(\BlackListNamespace\FalseClass::class, ''));
     }
 }

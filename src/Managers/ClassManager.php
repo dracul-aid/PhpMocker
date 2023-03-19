@@ -44,6 +44,7 @@ use DraculAid\PhpMocker\Schemes\ClassSchemeType;
  * @see self::$mockMethodNames - Список имен методов класса, для которых можно получить "мок-метод"
  * @see self::$methodManagers - Массив с созданными менеджерами мок-методов
  * @see self::getMethodManager() - Вернет менеджер мок-метода
+ * @see self::clearMockMethodsCases() - Удалит все установленные кейсы вызовов
  * --- Взаимодействие с статическими элементами (в том числе и protected и private)
  * @see self::getConst() - Получение значения константы
  * @see self::getProperty() - Получение значения статического свойства
@@ -101,9 +102,9 @@ class ClassManager extends AbstractClassAndObjectManager
      * Ключи [object]: мок-объекты для которых создан менеджер
      * Значения: объекты менеджеры мок-объектов
      *
-     * @var \SplObjectStorage|ObjectManager[] $objectManagers
+     * @var \WeakMap|ObjectManager[] $objectManagers
      */
-    readonly public \SplObjectStorage $objectManagers;
+    readonly public \WeakMap $objectManagers;
 
     /**
      * Хранит тип мок-класса (интерфейс, класс, трейт...)
@@ -142,7 +143,7 @@ class ClassManager extends AbstractClassAndObjectManager
         $this->driverName = $driverName;
 
         $this->index = $index ?? uniqid();
-        $this->objectManagers = new \SplObjectStorage();
+        $this->objectManagers = new \WeakMap();
 
         $this->classType = $classType;
 

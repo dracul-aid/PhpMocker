@@ -1,12 +1,18 @@
-# PhpMocker 0.0.1 - Создание мок-классов в PHP
+# PhpMocker 0.0.2 - Создание мок-классов в PHP8.1 и выше
+
+```
+Если ваш проект использует PHP7.4 - Следует смотерть ветку `master-7`. Эта ветка актуальна под PHP 8.1.0 и выше
+```
+
+Страница на [Packagist](https://packagist.org/packages/draculaid/phpmocker) и команды для добавления в композер ([подробней об установке](documentation-ru/install/README.md)):
+* для PHP 8.1 и выше `composer require draculaid/phpmocker dev-master`
+* для PHP 7.4.x - 8.0.x `composer require draculaid/phpmocker dev-master-7`
 
 **Документация и Примеры**
 * [Документация](documentation-ru/README.md)
 * [Примеры](examples-ru/README.md), включая пример с использованием [автозагрузчика композера и PhpUnit](examples-ru/phpunit-and-composer/README.md)
-
-**Ветки разработки**
-* [master](https://github.com/dracul-aid/PhpMocker/tree/master) - Релиз ветка под PHP 8.1
-* [master-7](https://github.com/dracul-aid/PhpMocker/tree/master-7) - Релиз ветка под PHP 7.4
+* [Информация по разработке и улучшению библиотеки](documentation-ru/develop.md)
+* [История изменений](documentation-ru/history.md)
 
 ---
 
@@ -41,7 +47,6 @@
 ---
 
 ### В ближайших планах
-* Версия под PHP 7.4
-* Документация (довести нынешний черновик до ума)
+* Продолжить работу над документацией
 * Мок для функций
 * Мок для конструкций include() и require()

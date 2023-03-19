@@ -15,17 +15,11 @@ namespace DraculAid\PhpMocker\ClassAutoloader\Filters;
  * Интерфейс для проверки классов, должны ли они быть преобразованны в мок-классы или нет
  *
  * Оглавление:
- * @see AutoloaderFilterInterface::PHP_MOCKER_NAMESPACE - Пространство имен PhpMocker-а
  * @see AutoloaderFilterInterface::PHP_UNIT_NAMESPACES - Список пространств имен PhpUnit библиотеки, и связанных с нею пакетов, которые не должны преобразовываться в мок-классы
  * @see self::canBeMock() - Вернет указание, нужно ли класс преобразовать в мок-класс
  */
 interface AutoloaderFilterInterface
 {
-    /**
-     * Пространство имен PhpMocker-а
-     */
-    final public const PHP_MOCKER_NAMESPACE = 'DraculAid\\PhpMocker';
-
     /**
      * Список пространств имен PhpUnit библиотеки, и связанных с нею пакетов, которые не должны преобразовываться в мок-классы
      *

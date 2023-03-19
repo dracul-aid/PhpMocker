@@ -92,7 +92,7 @@ class ClassManagerTest extends TestCase
         self::assertEquals('A11', $object5->in_construct_1);
         self::assertEquals('B22', $object5->in_construct_2);
         self::assertEquals('123ABC', $object5->is_not_in_constructor);
-        self::assertTrue($object5 === $classManager->objectManagers[$object5]->toObject);
+        self::assertTrue($object5 === $classManager->objectManagers->offsetGet($object5)->toObject);
     }
 
     /**
@@ -109,6 +109,30 @@ class ClassManagerTest extends TestCase
 
         self::assertEquals(MethodManager::class, get_class($classManager->getMethodManager('f_protected')));
         self::assertTrue($classManager->methodManagers['f_protected'] === $classManager->getMethodManager('f_protected'));
+    }
+
+    /**
+     * Test for @see ObjectManager::clearMockMethodsCases()
+     */
+    public function testClearMockMethodsCases(): void
+    {
+        $scheme = ReflectionReader::exe(
+            $this->generateClass()
+        );
+        $classManager = SoftMocker::createClass($scheme->getFullName());
+        $objectManager = $classManager->createObjectAndManager();
+
+        $classManager->getMethodManager('__construct')->defaultCase()->setWillReturn('111');
+        $classManager->getMethodManager('__construct')->case('ABC')->setWillReturn('222');
+        $objectManager->getMethodManager('__construct')->defaultCase()->setWillReturn('111');
+
+        self::assertCount(2, $classManager->getMethodManager('__construct')->cases);
+        self::assertCount(1, $objectManager->getMethodManager('__construct')->cases);
+
+        $classManager->clearMockMethodsCases();
+
+        self::assertCount(0, $classManager->getMethodManager('__construct')->cases);
+        self::assertCount(1, $objectManager->getMethodManager('__construct')->cases);
     }
 
     /**

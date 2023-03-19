@@ -18,6 +18,8 @@ namespace DraculAid\PhpMocker\Tools;
  * @see ClassTools::isLoad() - Проверит, данное имя является загруженным классом, трейтом, перечислением или интерфейсом
  * @see ClassTools::isInternal() - Проверит, является ли указанный класс встроенным в PHP классом
  * @see ClassTools::getMethodArgumentNames() - Вернет массив с именами всех аргументов метода
+ * @see ClassTools::getNamespace() - Вернет пространство имен класса
+ * @see ClassTools::getNameWithoutNamespace() - Вернет имя класса, без пространства имен
  */
 class ClassTools
 {
@@ -91,5 +93,76 @@ class ClassTools
 
             return $_storage[$fullMethodName];
         }
+    }
+
+    /**
+     * Вернет пространство имен класса
+     *
+     * @param   string   $class   Полное имя класса
+     *
+     * @return  string   Вернет пространство имен класса, если это "глобальное" пространство имен - вернет пустую строку
+     */
+    public static function getNamespace(string $class): string
+    {
+        $position = strrpos($class, '\\');
+
+        if ($position === false) return '';
+        else return substr($class, 0, $position);
+    }
+
+    /**
+     * Вернет имя класса, без пространства имен
+     *
+     * @param   string   $class   Полное имя класса
+     *
+     * @return  string
+     */
+    public static function getNameWithoutNamespace(string $class): string
+    {
+        $position = strrpos($class, '\\');
+
+        if ($position === false) return $class;
+        else return substr($class, $position + 1);
+    }
+
+    /**
+     * Вернет имя класса и пространство имен
+     *
+     * @param   string        $class       Полное имя класса
+     * @param   null|string  &$namespace   Пространство имен
+     * @param   null|string  &$name        Имя класса, без пространства имен
+     *
+     * @return  void
+     */
+    public static function getNameAndNamespace(string $class, ?string &$namespace, ?string &$name): void
+    {
+        $position = strrpos($class, '\\');
+
+        if ($position === false)
+        {
+            $namespace = '';
+            $name = $class;
+        }
+        else
+        {
+            $namespace = substr($class, 0, $position);
+            $name = substr($class, $position + 1);
+        }
+    }
+
+    /**
+     * Проверяет, указанный интерфейс - это интерфейс перечислений или нет
+     * (имеется ввиду базовые интерфейсы перечислений, которые назначаются перечислениям автоматически)
+     *
+     * @param   string   $interface   Имя интерфейса
+     *
+     * @return  bool
+     */
+    public static function isEnumInterface(string $interface): bool
+    {
+        return $interface === \BackedEnum::class
+            || $interface === \UnitEnum::class
+            || $interface === \IntBackedEnum::class
+            || $interface === \StringBackedEnum::class;
     }
 }

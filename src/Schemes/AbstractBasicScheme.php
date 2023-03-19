@@ -24,7 +24,7 @@ abstract class AbstractBasicScheme implements SchemeWithAttributesInterface
     /**
      * Имя элемента
      */
-    public string $name;
+    public string $name = '';
 
     /**
      * Внутренний код элемента (PHP код)

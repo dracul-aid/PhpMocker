@@ -1,4 +1,6 @@
 .idea/
+.fleet/
+.vscode/
 vendor/
 composer.phar
 test.php

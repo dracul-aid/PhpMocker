@@ -16,6 +16,7 @@ use DraculAid\PhpMocker\Reader\PhpReader\ReaderElement\AbstractReader;
 use DraculAid\PhpMocker\Reader\PhpReader\ReaderElement\CodeReader;
 use DraculAid\PhpMocker\Schemes\UseScheme;
 use DraculAid\PhpMocker\Schemes\UseSchemeType;
+use DraculAid\PhpMocker\Tools\ClassTools;
 
 /**
  * Осуществляет чтение конструкций USE (для подключения классов, функций и констант), разгружает код для:
@@ -120,13 +121,15 @@ class ScriptUseReader extends AbstractReader
 
         if (strpos($useValue, '\\') > 0)
         {
-            $namespace = $namespacePrefix !== ''
-                ? implode('\\', [$namespacePrefix, trim(dirname($useValue))])
-                : trim(dirname($useValue));
+            ClassTools::getNameAndNamespace($useValue, $classNamespace, $className);
+            $classNamespace = trim($classNamespace);
+            $className = trim($className);
+
+            if ($namespacePrefix !== '') $classNamespace = implode('\\', [$namespacePrefix, $classNamespace]);
 
             $this->saveUseElementIntoClassScheme(
-                $namespace,
-                trim(basename($useValue)),
+                $classNamespace,
+                $className,
                 $useType
             );
         }
