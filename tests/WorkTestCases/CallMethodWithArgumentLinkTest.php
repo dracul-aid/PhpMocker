@@ -23,17 +23,17 @@ class CallMethodWithArgumentLinkTest extends TestCase
         $this->createClass();
 
         $arg2 = '';
-        self::assertEquals('F:1', $this->methodManager->call('1', $arg2));
+        self::assertEquals('F:1', $this->methodManager->call(['1', $arg2]));
 
         // * * *
 
         $this->methodManager->setUserFunction(static function (HasCalled $calledData, MethodManager $manager) {
             $calledData->arguments['arg1'] = 'ABC';
         });
-        self::assertEquals('F:ABC', $this->methodManager->call('1', $arg2));
+        self::assertEquals('F:ABC', $this->methodManager->call(['1', $arg2]));
 
         $this->methodManager->setUserFunction(null);
-        self::assertEquals('F:1', $this->methodManager->call('1', $arg2));
+        self::assertEquals('F:1', $this->methodManager->call(['1', $arg2]));
 
         // * * *
 

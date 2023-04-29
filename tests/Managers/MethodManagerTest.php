@@ -37,8 +37,8 @@ class MethodManagerTest extends TestCase
         $classManager = SoftMocker::createClass($scheme->getFullName());
         $objectManager = $classManager->createObjectAndManager();
 
-        self::assertEquals(self::CLASS_FOR_CLOSE_ELEMENTS_VALUES['f_protected_static'] . 'A1', $classManager->getMethodManager('f_protected_static')->call('A1'));
-        self::assertEquals(self::CLASS_FOR_CLOSE_ELEMENTS_VALUES['f_protected'] . 'A2', $objectManager->getMethodManager('f_protected')->call('A2'));
+        self::assertEquals(self::CLASS_FOR_CLOSE_ELEMENTS_VALUES['f_protected_static'] . 'A1', $classManager->getMethodManager('f_protected_static')->call(['A1']));
+        self::assertEquals(self::CLASS_FOR_CLOSE_ELEMENTS_VALUES['f_protected'] . 'A2', $objectManager->getMethodManager('f_protected')->call(['A2']));
     }
 
     /**
@@ -53,7 +53,7 @@ class MethodManagerTest extends TestCase
         );
         $classManager = SoftMocker::createClass($scheme->getFullName());
 
-        $classManager->getMethodManager('f_protected')->call('A2');
+        $classManager->getMethodManager('f_protected')->call(['A2']);
     }
 
     /**
@@ -69,7 +69,7 @@ class MethodManagerTest extends TestCase
         $classManager = SoftMocker::createClass($scheme->getFullName());
         $objectManager = $classManager->createObjectAndManager();
 
-        $objectManager->getMethodManager('f_protected_static')->call('A1');
+        $objectManager->getMethodManager('f_protected_static')->call(['A1']);
     }
 
     /**
@@ -105,7 +105,7 @@ class MethodManagerTest extends TestCase
         $methodManager->defaultCase()->setWillReturn('');
         $methodManager->case('1')->setWillReturn('');
         $methodManager->userFunction = new CallableObject(static function() {});
-        self::assertEquals('', $objectManager->getMethodManager('f_protected')->call('1'));
+        self::assertEquals('', $objectManager->getMethodManager('f_protected')->call(['1']));
 
         $methodManager->clearCases();
         self::assertNull($methodManager->userFunction);
@@ -113,7 +113,7 @@ class MethodManagerTest extends TestCase
         self::assertEquals(0, $methodManager->countCall);
         self::assertEquals(0, $methodManager->countCallUserFunctionReturn);
         self::assertEquals(0, $methodManager->countCallWithoutCases);
-        self::assertEquals(self::CLASS_FOR_CLOSE_ELEMENTS_VALUES['f_protected'] . '1', $methodManager->call('1'));
+        self::assertEquals(self::CLASS_FOR_CLOSE_ELEMENTS_VALUES['f_protected'] . '1', $methodManager->call(['1']));
     }
 
     private function generateClass(): string

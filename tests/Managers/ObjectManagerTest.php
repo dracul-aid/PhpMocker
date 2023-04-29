@@ -136,7 +136,7 @@ class ObjectManagerTest extends TestCase
         self::assertEquals(self::CLASS_FOR_CLOSE_ELEMENTS_VALUES['protected_var'], $objectManager->getProperty('protected_var'));
         $objectManager->setProperty('protected_var', '123');
         self::assertEquals('123', $objectManager->getProperty('protected_var'));
-        self::assertEquals(self::CLASS_FOR_CLOSE_ELEMENTS_VALUES['f_protected'] . 'ABC', $objectManager->callMethod('f_protected', 'ABC'));
+        self::assertEquals(self::CLASS_FOR_CLOSE_ELEMENTS_VALUES['f_protected'] . 'ABC', $objectManager->callMethod('f_protected', ['ABC']));
 
         self::assertEquals(self::CLASS_FOR_CLOSE_ELEMENTS_VALUES['set_list_1'], $objectManager->getProperty('set_list_1'));
         self::assertEquals(self::CLASS_FOR_CLOSE_ELEMENTS_VALUES['set_list_2'], $objectManager->getProperty('set_list_2'));

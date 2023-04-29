@@ -308,12 +308,12 @@ class ClassManager extends AbstractClassAndObjectManager
     /**
      * Вызов статического метода (в том числе и protected и private)
      *
-     * @param   string    $name         Имя вызываемого метода
-     * @param   mixed  ...$arguments    Аргументы вызываемого метода
+     * @param   string   $name        Имя вызываемого метода
+     * @param   array    $arguments   Аргументы вызываемого метода
      *
      * @return  mixed    Вернет результат работы функции
      */
-    public function callMethod(string $name, mixed ... $arguments): mixed
+    public function callMethod(string $name, array $arguments = []): mixed
     {
         return [$this->toClass, ToolsElementNames::methodStaticCall($this->index)]($name, $arguments);
     }

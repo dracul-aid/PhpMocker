@@ -103,13 +103,13 @@ class MethodManager
     /**
      * Вызов метода (в том числе и protected и private)
      *
-     * @param   mixed  ...$arguments    Аргументы вызываемого метода
+     * @param   array   $arguments    Аргументы вызываемого метода
      *
      * @return  mixed    Вернет результат работы функции
      */
-    public function call(mixed ... $arguments): mixed
+    public function call(array $arguments = []): mixed
     {
-        return $this->ownerManager->callMethod($this->name, ... $arguments);
+        return $this->ownerManager->callMethod($this->name, $arguments);
     }
 
     /**

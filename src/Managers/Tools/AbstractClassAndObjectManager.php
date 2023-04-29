@@ -130,13 +130,12 @@ abstract class AbstractClassAndObjectManager
     /**
      * Вызов метода (в том числе и protected и private)
      *
-     * @param   string    $name         Имя вызываемого метода
-     * @param   mixed  ...$arguments    Аргументы вызываемого метода
+     * @param   string   $name        Имя вызываемого метода
+     * @param   array    $arguments   Аргументы вызываемого метода
      *
      * @return  mixed    Вернет результат работы функции
      */
-    abstract public function callMethod(string $name, mixed ... $arguments): mixed;
-
+    abstract public function callMethod(string $name, array $arguments = []): mixed;
 
     /**
      * Вернет указание, может ли метод выступать, как мок-метод
