@@ -11,4 +11,4 @@
 
 namespace DraculAid\PhpMocker\Exceptions;
 
-class PhpMockerLogicException extends \RuntimeException implements PphMockerExceptionInterface {}
+class PhpMockerLogicException extends \LogicException implements PphMockerExceptionInterface {}
