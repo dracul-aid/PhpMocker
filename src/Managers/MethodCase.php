@@ -282,7 +282,7 @@ class MethodCase
 
         if ($this->userFunction !== null)
         {
-            $resultUserFunction = $this->userFunction->call([$calledData, $this->methodManager]);
+            $resultUserFunction = $this->userFunction->__invoke($calledData, $this->methodManager);
             if (is_a($resultUserFunction, CallResult::class))
             {
                 return $resultUserFunction;
