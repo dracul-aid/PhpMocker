@@ -55,6 +55,18 @@ class CallResult
     }
 
     /**
+     * Упрощенное создание "ответа вызова мок-метода", для случаев, когда мок-метод не должен выполнять своий изначальный код
+     *
+     * @param   null|mixed   $canReturnData    Возвращаемое функцией значение
+     *
+     * @return  static
+     */
+    public static function createForStopMethod(mixed $canReturnData = null): self
+    {
+        return new self(true, $canReturnData);
+    }
+
+    /**
      * Создаст
      *
      * @return static

@@ -5,6 +5,8 @@
 - Изменен список аргументов у функций, работающих с методами
 - Изменено пространство имен для интерфейса "Пользовательских функций" для мок-методов `MethodUserFunctionInterface`
   (для выделения в отдельное пространства "стандартных" функций)
+- Добавлены "Стандартные пользовательские функции" `Managers\MethodUserFunctions\OverwritePropertyMethodUserFunction`
+  (Для перезаписи свойств) и `Managers\MethodUserFunctions\OverwritePropertyMethodUserFunction` (для выполнения списка функций)
 
 Список функций, для которых был изменен список аргументов
 - `MethodManager::call()`
