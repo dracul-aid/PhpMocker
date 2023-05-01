@@ -17,6 +17,11 @@
 Также подобную функцию можно назначит [менеджеру мок-метода](../manager-method/user-function.md), в этом случае функция будет
 выполняться перед выполнением любого кейса
 
+### Стандартные функции
+
+* `Managers\MethodUserFunctions\MethodUserFunctionsList` Позволяет выполнить список функций
+* `Managers\MethodUserFunctions\OverwritePropertyMethodUserFunction` Позволяет перезаписать свойства объекта или статические свойства класса
+
 ## Аргументы вызова
 
 Аргументы с которыми был вызван метод хранятся `\DraculAid\PhpMocker\Managers\Tools\HasCalled::$arguments` (объект `HasCalled`
