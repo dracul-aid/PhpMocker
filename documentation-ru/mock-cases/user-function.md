@@ -33,6 +33,7 @@
 
 ## Примеры
 
+Более подробный [пример](../../examples-ru/new-function-code.php)
 ```php
 use DraculAid\PhpMocker\Managers\MethodCase;
 use DraculAid\PhpMocker\Managers\Tools\CallResult;
