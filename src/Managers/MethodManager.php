@@ -208,9 +208,11 @@ class MethodManager
 
         // * * *
 
-        if (isset($this->cases[$this->caseIndex($calledData->arguments)]) && $this->cases[$this->caseIndex($calledData->arguments)]->isWork())
+        $calledDataIndex = $this->caseIndex($calledData->arguments);
+
+        if (isset($this->cases[$calledDataIndex]) && $this->cases[$calledDataIndex]->isWork())
         {
-            return $this->cases[$this->caseIndex($calledData->arguments)]->hasCalled($calledData);
+            return $this->cases[$calledDataIndex]->hasCalled($calledData);
         }
         elseif ($this->defaultCase()->isWork())
         {
@@ -221,21 +223,6 @@ class MethodManager
             $this->countCallWithoutCases++;
             return CallResult::none();
         }
-    }
-
-    /**
-     * Вернет хэш для аргументов вызова метода
-     *
-     * @param   array|HasCalledArguments   $arguments   Аргументы вызова метода
-     *
-     * @return  string   Хэш от аргументов
-     */
-    private function caseIndex(array|HasCalledArguments $arguments): string
-    {
-        if (is_object($arguments)) $arguments = iterator_to_array($arguments->for(false));
-
-        // Тесты показали, что json_encode() быстрее serialize()
-        return hash('crc32c', json_encode(array_values($arguments)));
     }
 
     /**
@@ -263,5 +250,20 @@ class MethodManager
         }
 
         return $this->cases[$caseIndex];
+    }
+
+    /**
+     * Вернет хэш для аргументов вызова метода
+     *
+     * @param   array|HasCalledArguments   $arguments   Аргументы вызова метода
+     *
+     * @return  string   Хэш от аргументов
+     */
+    private function caseIndex(array|HasCalledArguments $arguments): string
+    {
+        if (is_object($arguments)) $arguments = iterator_to_array($arguments->for(false));
+
+        // Тесты показали, что json_encode() быстрее serialize()
+        return hash('crc32c', json_encode(array_values($arguments)));
     }
 }
