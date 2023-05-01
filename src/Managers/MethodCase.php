@@ -11,7 +11,9 @@
 
 namespace DraculAid\PhpMocker\Managers;
 
+use DraculAid\PhpMocker\Exceptions\Managers\MethodIsNotConstructorException;
 use DraculAid\PhpMocker\Managers\MethodUserFunctions\MethodUserFunctionInterface;
+use DraculAid\PhpMocker\Managers\MethodUserFunctions\OverwritePropertyMethodUserFunction;
 use DraculAid\PhpMocker\Managers\Tools\CallResult;
 use DraculAid\PhpMocker\Managers\Tools\HasCalled;
 use DraculAid\PhpMocker\Tools\CallableObject;
@@ -239,6 +241,26 @@ class MethodCase
         // * * *
 
         if ($clearCounter) $this->countCall = 0;
+
+        return $this;
+    }
+
+    /**
+     * Позволяет сбросить работу стандартного конструктора
+     *
+     * * Для сброса используйте {@see self::setUserFunction}(null)
+     * * Если для конструктора уже было установлено "значение для возврата" - оно будет проигнорировано
+     * * Большую часть работы внутри мок-методы осуществляет {@see OverwritePropertyMethodUserFunction}
+     *
+     * @param   array   $setPropertyData   Список свойств для перезаписи в объекте (в том числе и не публичные свойства)
+     *
+     * @return  $this
+     */
+    public function setClearConstructor(array $setPropertyData = [], mixed $returnData = null): self
+    {
+        if ($this->methodManager->name !== '__construct') throw new MethodIsNotConstructorException($this->methodManager->name);
+
+        $this->setUserFunction(new OverwritePropertyMethodUserFunction($setPropertyData, true,true, $returnData));
 
         return $this;
     }

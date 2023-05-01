@@ -2,11 +2,13 @@
 
 namespace DraculAid\PhpMocker\tests\WorkTestCases;
 
+use DraculAid\PhpMocker\Exceptions\Managers\MethodIsNotConstructorException;
 use DraculAid\PhpMocker\Managers\ClassManager;
 use DraculAid\PhpMocker\Managers\MethodCase;
 use DraculAid\PhpMocker\Managers\Tools\CallResult;
 use DraculAid\PhpMocker\MockCreator;
 use DraculAid\PhpMocker\Tools\CallableObject;
+use DraculAid\PhpMocker\Tools\TestTools;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -47,7 +49,6 @@ class CallCaseTest extends TestCase
         self::assertEquals('aaa', $this->className::f('a'));
         self::assertEquals('DEFAULT', $this->className::f('b'));
 
-
         // * * *
 
         $methodManager->case('a')->setWillException(new \RuntimeException('test-text'));
@@ -68,6 +69,24 @@ class CallCaseTest extends TestCase
         self::assertEquals(1, $methodManager->countCallWithoutCases);
         self::assertEquals(4, $methodManager->defaultCase()->countCall);
         self::assertEquals(4, $methodManager->case('a')->countCall);
+
+        // * * *
+
+        $objectManager = $this->classManager->createObjectAndManager();
+        $methodManager = $objectManager->getMethodManager('__construct');
+        $methodManager->defaultCase()->setClearConstructor();
+        self::assertNull($methodManager->call());
+
+        $objectManager = $this->classManager->createObjectAndManager();
+        $methodManager = $objectManager->getMethodManager('__construct');
+        $methodManager->defaultCase()->setWillReturn('string')->setClearConstructor([], 'new_string');
+        self::assertEquals('new_string', $methodManager->call());
+
+        $objectManager = $this->classManager->createObjectAndManager();
+        $methodManager = $objectManager->getMethodManager('f2');
+        self::assertTrue(
+            TestTools::waitThrow([$methodManager->defaultCase(), 'setClearConstructor'], [], MethodIsNotConstructorException::class)
+        );
     }
 
     private function createClassAndManager(): void
@@ -81,6 +100,8 @@ class CallCaseTest extends TestCase
                     {
                         return 'f_' . \$arg;                    
                     }
+                    public function __construct() {return 'not_set_string';}
+                    public function f2() {}
                 }
             CODE
         );
