@@ -14,7 +14,7 @@ namespace DraculAid\PhpMocker\Reader\PhpReader;
 use DraculAid\PhpMocker\Reader\PhpReader;
 
 /**
- * Объект для работы с еще не обработанным PHP кодом в @see PhpReader и дочерних классов
+ * Объект для работы с еще не обработанным PHP кодом в {@see PhpReader} и дочерних классов
  *
  * Оглавление:
  * @see self::$phpCode - Еще не обработанный PHP код
@@ -29,9 +29,9 @@ class CodeString
     /**
      * Строка с еще не обработанным PHP кодом
      *
-     * Из этой строки при каждом чтении @see self::read() изымаются:
-     * @see self::$charFirst - Первый символ прочитанный из PHP кода
-     * @see self::$charSecond - Второй символ прочитанный из PHP кода
+     * Из этой строки при каждом чтении {@see self::read()} изымаются:
+     * * {@see self::$charFirst} - Первый символ прочитанный из PHP кода
+     * * {@see self::$charSecond} - Второй символ прочитанный из PHP кода
      */
     public string $phpCode;
 

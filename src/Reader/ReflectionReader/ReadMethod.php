@@ -13,7 +13,7 @@ use DraculAid\PhpMocker\Schemes\MethodArgumentScheme;
 
 /**
  * Класс-функция - Создаст схему метода на основе рефлексии метода
- * @see ReadMethod::exe()
+ * {@see ReadMethod::exe()}
  */
 class ReadMethod
 {
@@ -23,7 +23,7 @@ class ReadMethod
     private \ReflectionMethod $reflectionMethod;
 
     /**
-     * Объект "схема метода", результат работы @see ReadMethod::exe()
+     * Объект "схема метода", результат работы {@see ReadMethod::exe()}
      */
     private ClassScheme $scheme;
 

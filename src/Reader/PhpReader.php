@@ -72,7 +72,7 @@ class PhpReader
     readonly public TmpResult $tmpResult;
 
     /**
-     * Нужно ли "временный результат" помещать строки, @see self::$codeTmp
+     * Нужно ли "временный результат" помещать строки, {@see self::$codeTmp}
      */
     public bool $readWithStrings = false;
 
@@ -84,7 +84,7 @@ class PhpReader
     public array $result = [];
 
     /**
-     * Объект для чтения кода, если не удалось определить объект в @see self::$codeReader
+     * Объект для чтения кода, если не удалось определить объект в {@see self::$codeReader}
      */
     readonly protected CodeReader $defaultCodeReader;
 

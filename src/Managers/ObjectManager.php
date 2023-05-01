@@ -47,12 +47,12 @@ class ObjectManager extends AbstractClassAndObjectManager
 {
     /**
      * Хранилище всех менеджеров мок-объектов
-     *
-     * Для чтения @see ObjectManager::getManager()
-     *
-     * @var \WeakMap|ObjectManager[]|false $objectManagers
      *   * Индексы: мок-объекты
      *   * Значения: "менеджер мок-объекта" или FALSE - если объект не являлся мок-объектом
+     *
+     * Для чтения {@see ObjectManager::getManager()}
+     *
+     * @var \WeakMap|ObjectManager[]|false $objectManagers
      */
     private static \WeakMap $objectManagers;
 

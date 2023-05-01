@@ -94,9 +94,9 @@ class ClassScheme extends AbstractBasicScheme
     /**
      * Список трейтов
      *
-     * @var string[] $traits
-     *
      * Все перечисленные трейты используются как "use trait_name;" - т.е. используясь полностью
+     *
+     * @var string[] $traits
      */
     public array $traits = [];
     /**
@@ -111,7 +111,7 @@ class ClassScheme extends AbstractBasicScheme
      *    * индекс: имя константы
      *    * значение: объект - схема константы
      *
-     * @var ConstantScheme[] $constants
+     * @var array<string, ConstantScheme> $constants
      */
     public array $constants = [];
 
@@ -122,7 +122,7 @@ class ClassScheme extends AbstractBasicScheme
      *    * индекс: имя свойства
      *    * значение: объект - схема свойства
      *
-     * @var PropertyScheme[] $properties
+     * @var array<string, PropertyScheme> $properties
      */
     public array $properties = [];
 
@@ -133,7 +133,7 @@ class ClassScheme extends AbstractBasicScheme
      *    * индекс: имя метода
      *    * значение: объект - схема метода
      *
-     * @var MethodScheme[] $methods
+     * @var array<string, MethodScheme> $methods
      */
     public array $methods = [];
 

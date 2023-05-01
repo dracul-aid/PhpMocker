@@ -18,7 +18,7 @@ use DraculAid\PhpMocker\Schemes\ClassScheme;
 use DraculAid\PhpMocker\Schemes\MethodScheme;
 
 /**
- * Генератор методов, для взаимодействия с мок-классами @see GeneratorNoPublicMethods::exe()
+ * Генератор методов, для взаимодействия с мок-классами {@see GeneratorNoPublicMethods::exe()}
  * (вызов не публичных методов, получения значения непубличных свойств и констант)
  */
 class GeneratorNoPublicMethods

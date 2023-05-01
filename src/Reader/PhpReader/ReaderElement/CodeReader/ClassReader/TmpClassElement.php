@@ -39,7 +39,7 @@ class TmpClassElement
     /**
      * В настоящий момент чтение проводится для "имени"
      *
-     * Обслуживает @see TmpClassElement::$writeFor
+     * Обслуживает {@see TmpClassElement::$writeFor}
      *
      * @see \DraculAid\PhpMocker\Schemes\ConstantScheme::$name - Если записывается имя константы
      * @see \DraculAid\PhpMocker\Schemes\PropertyScheme::$name - Если записывается имя константы
@@ -49,7 +49,7 @@ class TmpClassElement
     /**
      * В настоящий момент чтение проводится для "значения" (содержимого функций)
      *
-     * Обслуживает @see TmpClassElement::$writeFor
+     * Обслуживает {@see TmpClassElement::$writeFor}
      *
      * @see \DraculAid\PhpMocker\Schemes\ConstantScheme::$innerPhpCode - Если записывается значение константы
      * @see \DraculAid\PhpMocker\Schemes\PropertyScheme::$innerPhpCode - Если записывается значение свойства
@@ -60,7 +60,7 @@ class TmpClassElement
      * В настоящий момент чтение проводится для "возвращаемого значения функции"
      * @see TmpClassElement::WRITE_FOR_METHOD_RETURN
      *
-     * Обслуживает @see TmpClassElement::$writeFor
+     * Обслуживает {@see TmpClassElement::$writeFor}
      */
     public const WRITE_FOR_METHOD_RETURN = 3;
     /**
@@ -73,7 +73,7 @@ class TmpClassElement
 
     /**
      * Хранит объект схему, для читаемого элемента класса (метода, константы...)
-     * @see TmpClassElement::$scheme
+     * {@see TmpClassElement::$scheme}
      *
      * @var null|\DraculAid\PhpMocker\Schemes\ConstantScheme|\DraculAid\PhpMocker\Schemes\PropertyScheme|\DraculAid\PhpMocker\Schemes\MethodScheme $scheme
      * (Классы перечислены явно, так как имеют немного разный набор методов)

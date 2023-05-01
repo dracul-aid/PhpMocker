@@ -14,6 +14,6 @@ namespace DraculAid\PhpMocker\Creator\MockerOptions;
 use DraculAid\PhpMocker\Creator\SoftMocker;
 
 /**
- * Класс настроек создания мок-классов с помощью "наследования", @see SoftMocker
+ * Класс настроек создания мок-классов с помощью "наследования", {@see SoftMocker}
  */
 class SoftMockerOptions extends AbstractMockerOptions {}

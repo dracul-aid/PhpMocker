@@ -16,7 +16,7 @@ use DraculAid\PhpMocker\Schemes\ClassScheme;
 use DraculAid\PhpMocker\Schemes\UseScheme;
 
 /**
- * Используется для хранения временных результатов получения схем классов из PHP кода в @see PhpReader и дочерних классов
+ * Используется для хранения временных результатов получения схем классов из PHP кода в {@see PhpReader} и дочерних классов
  *
  * Оглавление:
  * @see self::$namespace - Текущее читаемое пространство имен

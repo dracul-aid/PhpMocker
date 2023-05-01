@@ -93,7 +93,7 @@ class MethodCase
      * Функция, которая будет выполнена перед выполнением основного тела метода
      * (только, если метод может быть мок-методом)
      *
-     * @see \DraculAid\PhpMocker\Managers\MethodUserFunctions\MethodUserFunctionInterface::__invoke() Описание входящих параметров функции и ее ответа
+     * {@see MethodUserFunctionInterface::__invoke()} Описание входящих параметров функции и ее ответа
      */
     public null|CallableObject|MethodUserFunctionInterface $userFunction = null;
 
@@ -118,14 +118,14 @@ class MethodCase
      * Указание, что кейс вызова должен вернуть результат
      * (т.е. основное тело функции не будет выполнено)
      *
-     * Возвращаемый результат @see MethodCase::$canReturnData
+     * Возвращаемый результат {@see MethodCase::$canReturnData}
      */
     private bool $isCanReturn = false;
 
     /**
      * Какие данные должен вернуть мок-метод
      *
-     * Данные будут возвращены, если только @see MethodCase::$isCanReturn === true
+     * Данные будут возвращены, если только {@see MethodCase::$isCanReturn} === true
      */
     private mixed $canReturnData = null;
 
@@ -288,7 +288,7 @@ class MethodCase
     /**
      * Отрабатывает вызов метода для данного кейса-вызова
      *
-     * В результате работы может быть выброшено исключение хранимое в @see MethodCase::$canReturnException
+     * В результате работы может быть выброшено исключение хранимое в {@see MethodCase::$canReturnException}
      *
      * @return   CallResult   Вернет объект "результат вызова мок-метода"
      *

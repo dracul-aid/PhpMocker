@@ -21,14 +21,14 @@ use DraculAid\PhpMocker\Managers\Tools\HasCalled;
 interface MethodUserFunctionsListInterface extends MethodUserFunctionInterface
 {
     /**
+     * Если функция вернет объект {@see CallResult} То это приостановит выполнение мок-метода, поиск по кейсам-вызова
+     * не будет проводиться, точно также, как и не будет отработан код самого метода
+     *
      * @param   HasCalled                       $hasCalled        Объект с параметрами вызова
      * @param   MethodManager                   $methodManager    Менеджер мок-метода
      * @param   null|MethodUserFunctionsList    $functionsList    Объект "список-функций" для изменения поведения мок-метода
      *
      * @return  CallResult|mixed   Любой результат кроме CallResult будет проигнорирован
-     *
-     * Если функция вернет объект @see CallResult То это приостановит выполнение мок-метода, поиск по кейсам-вызова
-     * не будет проводиться, точно также, как и не будет отработан код самого метода
      */
     public function __invoke(HasCalled $hasCalled, MethodManager $methodManager, null|MethodUserFunctionsList $functionsList = null): mixed;
 }

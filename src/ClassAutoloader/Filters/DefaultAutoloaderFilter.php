@@ -18,10 +18,10 @@ use DraculAid\PhpMocker\ClassAutoloader\Filters\Storages\AutoloaderFilerNamespac
  * Фильтр "по умолчанию", для проверок "нужно ли преобразовывать класс в мок-класс при автозагрузке классов"
  *
  * Приоритет:
- * 1) Белый список имен классов
- * 2) Черный список имен классов
- * 3) Белый список пространств имен классов
- * 4) Черный список пространств имен классов
+ * 1. Белый список имен классов
+ * 2. Черный список имен классов
+ * 3. Белый список пространств имен классов
+ * 4. Черный список пространств имен классов
  *
  * Оглавление:
  * @see self::$classBlackList [const] - Черный Список классов
@@ -62,9 +62,6 @@ class DefaultAutoloaderFilter implements AutoloaderFilterInterface
         $this->__constructSetDefaultValuesInFilters();
     }
 
-    /**
-     *
-     */
     public function canBeMock(string $class, string $path): bool
     {
         if ($this->classWhiteList->in($class)) return true;

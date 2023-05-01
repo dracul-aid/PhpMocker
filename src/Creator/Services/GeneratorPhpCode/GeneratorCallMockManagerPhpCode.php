@@ -20,6 +20,7 @@ use DraculAid\PhpMocker\Tools\ClassTools;
 
 /**
  * Класс-функция для создания PHP кода, отработки вызова мок-метода
+ *
  * @see GeneratorCallMockManagerPhpCode::exe()
  */
 class GeneratorCallMockManagerPhpCode
@@ -36,7 +37,7 @@ class GeneratorCallMockManagerPhpCode
     private string $index;
 
     /**
-     * Имя переменной для хранения ответа "менеджера мок объекта", хранит @see \DraculAid\PhpMocker\Managers\Tools\CallResult
+     * Имя переменной для хранения ответа "менеджера мок объекта", хранит {@see CallResult}
      */
     private string $nameMockResult;
 

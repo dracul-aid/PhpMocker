@@ -15,9 +15,9 @@ use DraculAid\PhpMocker\Schemes\ClassScheme;
 use DraculAid\PhpMocker\Schemes\PropertyScheme;
 
 /**
- * Создает PHP строку со свойствами класса из схем свойств @see PropertyScheme
+ * Создает PHP строку со свойствами класса из схем свойств {@see PropertyScheme}
  *
- * Это класс, для разгрузки кода @see ClassGenerator - Генератора PHP кода класса по схеме класса
+ * Это класс, для разгрузки кода {@see ClassGenerator} - Генератора PHP кода класса по схеме класса
  *
  * Оглавление:
  * @see PropertiesGenerator::exe() - Генератор PHP кода свойств

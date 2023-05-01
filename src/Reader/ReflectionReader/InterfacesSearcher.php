@@ -10,7 +10,7 @@ use DraculAid\PhpMocker\Tools\ClassTools;
 
 /**
  * Класс-функция, для получения списка интерфейсов из рефлексии (интерфейсов конкретного класса, без интерфейсов его родителей)
- * @see InterfacesSearcher::exe()
+ * {@see InterfacesSearcher::exe()}
  */
 class InterfacesSearcher
 {

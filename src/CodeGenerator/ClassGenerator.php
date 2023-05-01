@@ -12,10 +12,9 @@
 namespace DraculAid\PhpMocker\CodeGenerator;
 
 use DraculAid\PhpMocker\Schemes\ClassScheme;
-use PHPUnit\TextUI\RuntimeException;
 
 /**
- * Генератор кода класса по схеме класса, @see \DraculAid\PhpMocker\Schemes\ClassScheme
+ * Генератор кода класса по схеме класса, {@see ClassScheme}
  *
  * Оглавление:
  * @see ClassGenerator::generatePhpCode() - Создаст PHP код для переданной схемы класса

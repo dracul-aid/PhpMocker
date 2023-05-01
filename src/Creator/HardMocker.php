@@ -55,25 +55,25 @@ class HardMocker extends AbstractMocker
     /**
      * Создаст мок-класс(ы) для классов найденных в переданном PHP коде и вернет схему(ы) классов
      *
-     * @param   string          $phpCode     PHP код с описанием класса (или классов)
-     * @param   null|callable   $beforeRun   Функция с настройками создания
-     * @param   bool            $create      TRUE для создания мок-класса, FALSE мок-класс не будет создан, а его код будет помещен в "менеджер мок-класа"
+     * $beforeRun может быть любой функцией, но лучше следовать объекту-функции описанной интерфейсом {@see CreateOptionsInterface}
      *
-     * @return  ClassManager[]   Вернет массив схем классов (ключи - имена классов)
-     *
-     * $beforeRun может быть любой функцией, но лучше следовать объекту-функции описанной интерфейсом @see CreateOptionsInterface
-     *
-     * (!) Создаст мок классы для классов, абстрактных классов, трейтов и перечислений (включая финальные классы)
-     * (!) Создание мок копии для интерфейсов бесполезно, поэтому не будет производиться
-     * (!) Если класс уже инициализирован - выбросит исключение (пересоздание класса под тем же именем невозможно)
-     * (!) Невозможно будет создать мок-методы для абстрактных методов
+     * * Создаст мок классы для классов, абстрактных классов, трейтов и перечислений (включая финальные классы)
+     * * Создание мок копии для интерфейсов бесполезно, поэтому не будет производиться
+     * * Если класс уже инициализирован - выбросит исключение (пересоздание класса под тем же именем невозможно)
+     * * Невозможно будет создать мок-методы для абстрактных методов
      *
      * RETURN:
      * Если PHP код содержал описание 1-го класса, функция вернет менеджер для этого класса
      * Если код содержал несколько классов, функция вернет массив менеджеров классов (ключи массива - иена классов)
      *
-     * Если $create === FALSE, созданный PHP код мок класса будет помещен в @see ClassManagerWithPhpCode::$createPhpCode
-     * Кроме того, возвращенные функцией "менеджеры мок-класса" будут объектами @see ClassManagerWithPhpCode
+     * Если $create === FALSE, созданный PHP код мок класса будет помещен в {@see ClassManagerWithPhpCode::$createPhpCode}
+     * Кроме того, возвращенные функцией "менеджеры мок-класса" будут объектами {@see ClassManagerWithPhpCode}
+     *
+     * @param   string          $phpCode     PHP код с описанием класса (или классов)
+     * @param   null|callable   $beforeRun   Функция с настройками создания
+     * @param   bool            $create      TRUE для создания мок-класса, FALSE мок-класс не будет создан, а его код будет помещен в "менеджер мок-класа"
+     *
+     * @return  ClassManager[]   Вернет массив схем классов (ключи - имена классов)
      *
      * @throws  HardMockClassCreatorPhpCodeWithoutElementsException   В PHP коде не был найден код, для которого можно создать моки (не было определения классов)
      * @throws  MockClassCreatorClassIsInternalException              Попытка переопределить в мок-класс встроенный в PHP класс
@@ -106,14 +106,14 @@ class HardMocker extends AbstractMocker
     /**
      * Создает мок-класс с помощью изменения PHP кода для указанного файла-скрипта (PHP файла)
      *
+     * $beforeRun может быть любой функцией, но лучше следовать объекту-функции описанной интерфейсом {@see CreateOptionsInterface}
+     *
+     * (!) Ограничения и детали по результирующему значению {@see self::createForCode()}
+     *
      * @param   string          $path        Путь к PHP скрипту
      * @param   null|callable   $beforeRun   Функция с настройками создания
      *
      * @return  ClassManager[]   Вернет массив схем классов (ключи - имена классов)
-     *
-     * $beforeRun может быть любой функцией, но лучше следовать объекту-функции описанной интерфейсом @see CreateOptionsInterface
-     *
-     * (!) Ограничения и детали по результирующему значению @see self::createForCode()
      *
      * @throws  HardMockClassCreatorPhpCodeWithoutElementsException   В PHP коде не был найден код, для которого можно создать моки (не было определения классов)
      * @throws  MockClassCreatorClassIsInternalException              Попытка переопределить в мок-класс встроенный в PHP класс
@@ -143,17 +143,17 @@ class HardMocker extends AbstractMocker
     /**
      * Создает мок-класс для указанного класса или абстрактного класса
      *
+     * Описание "функций настройки создания" {@see CreateOptionsInterface}
+     *
+     * Если $create === FALSE, созданный PHP код мок класса будет помещен в {@see ClassManagerWithPhpCode::$createPhpCode}
+     * Кроме того, возвращенные функцией "менеджеры мок-класса" будут объектами {@see ClassManagerWithPhpCode}
+     *
      * @param   ClassScheme     $classScheme      Имя класса для которого создается мок
      * @param   null|callable   $beforeRun        Функция настройки создания
      * @param   string          $classOriginal    Имя класса-оригинала, для которого создавался мок-класс (или список классов (через запятую))
      * @param   bool            $create           TRUE для создания мок-класса, FALSE мок-класс не будет создан, а его код будет помещен в "менеджер мок-класа"
      *
      * @return  ClassManager   Вернет объект "менеджер мок-класса"
-     *
-     * Описание "функций настройки создания" @see CreateOptionsInterface
-     *
-     * Если $create === FALSE, созданный PHP код мок класса будет помещен в @see ClassManagerWithPhpCode::$createPhpCode
-     * Кроме того, возвращенные функцией "менеджеры мок-класса" будут объектами @see ClassManagerWithPhpCode
      */
     protected static function createClassExecuting(ClassScheme $classScheme, null|callable $beforeRun, string $classOriginal, bool $create = true): ClassManager
     {

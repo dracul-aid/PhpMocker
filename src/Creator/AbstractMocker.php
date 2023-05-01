@@ -50,9 +50,9 @@ abstract class AbstractMocker
     /**
      * Мок-Менеджер создаваемого класса
      *
-     * @var ClassManager|ClassManagerWithPhpCode $classManager
+     * Класс объектов хранимых в $classManager определяется в {@see self::$create}
      *
-     * Класс объектов хранимых в $classManager определяется в @see self::$create
+     * @var ClassManager|ClassManagerWithPhpCode $classManager
      */
     protected ClassManager $classManager;
 
@@ -67,8 +67,8 @@ abstract class AbstractMocker
     /**
      * TRUE если нужно выполнить создание мок-класса или FALSE - создать PHP код мок-класса и записать его в "менеджер мок-класса"
      *
-     * Если $create === FALSE, созданный PHP код мок класса будет помещен в @see ClassManagerWithPhpCode::$createPhpCode
-     * Кроме того, возвращенные функцией "менеджеры мок-класса" будут объектами @see ClassManagerWithPhpCode
+     * Если $create === FALSE, созданный PHP код мок класса будет помещен в {@see ClassManagerWithPhpCode::$createPhpCode}
+     * Кроме того, возвращенные функцией "менеджеры мок-класса" будут объектами {@see ClassManagerWithPhpCode}
      */
     protected bool $create = true;
 
@@ -128,7 +128,7 @@ abstract class AbstractMocker
         $phpCode = ClassGenerator::generatePhpCode($this->classScheme);
         // echo $phpCode; die();
 
-        /** Может закончиться выбрасыванием исключения: @see BeforeCreateMockClassStopException */
+        /** Может закончиться выбрасыванием исключения: {@see BeforeCreateMockClassStopException} */
         BeforeCreateMockClassHandler::exe($this->classScheme, $phpCode, static::class);
 
         if ($this->create) eval($phpCode);
@@ -157,13 +157,13 @@ abstract class AbstractMocker
     /**
      * Создает мок-класс для указанного класса, абстрактного класса или анонимного класса
      *
+     * Описание "функций настройки создания" {@see CreateOptionsInterface}
+     *
      * @param   ClassScheme         $classScheme      Имя класса для которого создается мок
      * @param   null|callable       $beforeRun        Функция настройки создания
      * @param   string              $classOriginal    Имя класса-оригинала, для которого создавался мок-класс (или список классов (через запятую))
      *
      * @return  ClassManager   Вернет объект "менеджер мок-класса"
-     *
-     * Описание "функций настройки создания" @see CreateOptionsInterface
      */
     abstract protected static function createClassExecuting(ClassScheme $classScheme, null|callable $beforeRun, string $classOriginal): ClassManager;
 

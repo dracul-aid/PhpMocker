@@ -28,18 +28,20 @@ class CallableObject
     readonly public string|array|\Closure $callable;
 
     /**
-     * Параметры, которые будут переданы функции, при вызове с помощью @see CallableObject::call()
+     * Параметры, которые будут переданы функции, при вызове с помощью {@see CallableObject::call()}
      *
-     * При вызове функции с помощью @see CallableObject::call() эти аргументы будут взяты, как аргументы "по умолчанию"
+     * При вызове функции с помощью {@see CallableObject::call()} эти аргументы будут взяты, как аргументы "по умолчанию"
      */
     public array $defaultArguments = [];
 
     /**
+     * Конструктор
+     *
+     * Если передан $defaultArguments, то они применяются только при использовании {@see CallableObject::call()}
+     * Если функция вызвана из переменной {@see CallableObject::$callable} - то "аргументы по умолчанию" игнорируются
+     *
      * @param   callable   $callable           Прикрепляемая функция
      * @param   array      $defaultArguments   Аргументы для функции "по умолчанию"
-     *
-     * Если передан $defaultArguments, то они применяются только при использовании @see CallableObject::call()
-     * Если функция вызвана из переменной @see CallableObject::$callable - то "аргументы по умолчанию" игнорируются
      */
     public function __construct(callable $callable, array $defaultArguments = [])
     {
@@ -49,7 +51,7 @@ class CallableObject
 
     /**
      * Вызов объекта эквивалентен вызову функции. При вызове можно передать список аргументов.
-     * Не переданные аргументы, будут дополнены из @see self::$defaultArguments
+     * Не переданные аргументы, будут дополнены из {@see self::$defaultArguments}
      *
      * @param   array   ...$arguments   Аргументы вызова функции
      *
@@ -62,7 +64,7 @@ class CallableObject
 
     /**
      * Вызов прикрепленной функции, с массивом аргументов (позволяет передавать аргументы по ссылке)
-     * Не переданные аргументы, будут дополнены из @see self::$defaultArguments
+     * Не переданные аргументы, будут дополнены из {@see self::$defaultArguments}
      *
      * @param   array   $arguments   Аргументы вызова функции
      *

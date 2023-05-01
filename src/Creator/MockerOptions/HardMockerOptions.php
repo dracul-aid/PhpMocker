@@ -14,7 +14,7 @@ namespace DraculAid\PhpMocker\Creator\MockerOptions;
 use DraculAid\PhpMocker\Creator\HardMocker;
 
 /**
- * Класс настроек создания мок-классов с помощью "изменения PHP кода", @see HardMocker
+ * Класс настроек создания мок-классов с помощью "изменения PHP кода", {@see HardMocker}
  *
  * Оглавление:
  * @see self::$exceptionForInterface

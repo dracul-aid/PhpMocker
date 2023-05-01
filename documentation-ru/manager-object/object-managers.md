@@ -8,6 +8,8 @@
 Статический метод `ObjectManager::getManager()` позволяет получить "менеджер мок-объекта" для переданного объекта. Если
 переданный объект не был мок-объектом, будет выброшено исключение
 
+`ObjectManager::clearMockMethodsCases()` Позволяет удалить все установленные кейсы вызова
+
 ```php
 use DraculAid\PhpMocker\Managers\ObjectManager;
 

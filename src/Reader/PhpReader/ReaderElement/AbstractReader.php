@@ -14,10 +14,10 @@ namespace DraculAid\PhpMocker\Reader\PhpReader\ReaderElement;
 use DraculAid\PhpMocker\Reader\PhpReader;
 
 /**
- * Абстрактный класс анализаторов кода, дочерние классы, главным образом, разгружают код для @see PhpReader
+ * Абстрактный класс анализаторов кода, дочерние классы, главным образом, разгружают код для {@see PhpReader}
  * и используются в:
- * @see PhpReader::run()
- * @see AttributesReader::run()
+ * {@see PhpReader::run()}
+ * {@see AttributesReader::run()}
  *
  * Оглавление:
  * @see AbstractReader::$phpReader - Объект "читатель кода", для которого идет накопление временных результатов

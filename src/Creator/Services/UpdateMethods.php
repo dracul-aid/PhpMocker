@@ -20,7 +20,7 @@ use DraculAid\PhpMocker\Schemes\ViewScheme;
 
 /**
  * Создает для мок-класса мок-методы
- * @see UpdateMethods::exe() Основная функция
+ * @see UpdateMethods::exe()
  */
 class UpdateMethods
 {

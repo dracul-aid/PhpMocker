@@ -13,7 +13,7 @@ namespace DraculAid\PhpMocker\Tools;
 
 /**
  * Класс-функция, создающая класс, вызывающий трейты
- * @see CreateClassImplementsTraits::exe()
+ * {@see CreateClassImplementsTraits::exe()}
  */
 class CreateClassImplementsTraits
 {

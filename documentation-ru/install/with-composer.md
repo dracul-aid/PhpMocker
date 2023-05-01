@@ -1,19 +1,23 @@
 # PhpMocker - Установка с помощью Composer
 [<< Оглавление](../README.md) | [Установка](README.md)
 
+---
+
 Страница на [Packagist](https://packagist.org/packages/draculaid/phpmocker)
+
+---
 
 ## Установка под PHP 8.1 и выше
 
 Выполнить команду
 ```console
-composer require draculaid/phpmocker dev-master
+composer require draculaid/phpmocker
 ```
 
 Или добавит в `composer.json`
 ```json
 "require": {
-    "draculaid/phpmocker": "dev-master"
+    "draculaid/phpmocker": "версия_пакета"
 }
 ```
 

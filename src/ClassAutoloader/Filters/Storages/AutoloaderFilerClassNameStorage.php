@@ -27,7 +27,7 @@ class AutoloaderFilerClassNameStorage extends AbstractAutoloaderFilerStorage
     /**
      * Хранимые имена классов
      *
-     * @var true[] Массив, ключи - имена классов, значения - всегда TRUE
+     * @var array<string, true> Массив, ключи - имена классов, значения - всегда TRUE
      */
     private array $storage = [];
 

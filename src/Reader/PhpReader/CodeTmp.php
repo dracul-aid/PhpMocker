@@ -14,7 +14,7 @@ namespace DraculAid\PhpMocker\Reader\PhpReader;
 use DraculAid\PhpMocker\Reader\PhpReader;
 
 /**
- * Для хранения временного результата при обработке PHP кода в @see PhpReader и дочерних классов
+ * Для хранения временного результата при обработке PHP кода в {@see PhpReader} и дочерних классов
  *
  * Оглавление:
  * @see self::$result - Строка с накопленным временным результатом

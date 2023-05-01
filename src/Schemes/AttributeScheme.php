@@ -36,7 +36,9 @@ class AttributeScheme
     public string $namespace = '';
 
     /**
-     * Аргументы атрибута
+     * Аргументы переданные в атрибут
+     *
+     * @var mixed[] $arguments
      */
     public array $arguments = [];
 

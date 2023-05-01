@@ -15,7 +15,7 @@ use DraculAid\PhpMocker\Reader\PhpReader;
 use DraculAid\PhpMocker\Schemes\AttributeScheme;
 
 /**
- * Осуществляет чтение атрибутов для классов или элементов классов, разгружает код для @see PhpReader
+ * Осуществляет чтение атрибутов для классов или элементов классов, разгружает код для {@see PhpReader}
  *
  * Оглавление:
  * @see AttributesReader::isStart() - Проверяет, текущий читаемый PHP код, является ли он кодом определенного типа
@@ -26,12 +26,12 @@ use DraculAid\PhpMocker\Schemes\AttributeScheme;
 class AttributesReader extends AbstractReader
 {
     /**
-    * В данный момент идет чтение-накопление имени атрибута @see static::$tmpName
+    * В данный момент идет чтение-накопление имени атрибута {@see static::$tmpName}
     * static::READ_FROM_NAME
     */
     private const READ_FROM_NAME = 1;
     /**
-     * В данный момент идет чтение-накопление аргументов атрибута @see static::$tmpArguments
+     * В данный момент идет чтение-накопление аргументов атрибута {@see static::$tmpArguments}
      * static::READ_FROM_NAME
      */
     private const READ_FROM_ARGUMENTS = 2;

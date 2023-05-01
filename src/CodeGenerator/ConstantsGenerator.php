@@ -16,9 +16,9 @@ use DraculAid\PhpMocker\Schemes\ConstantScheme;
 use DraculAid\PhpMocker\Schemes\ClassSchemeType;
 
 /**
- * Создает PHP строку с константами класса из схем констант @see ConstantScheme
+ * Создает PHP строку с константами класса из схем констант {@see ConstantScheme}
  *
- * Это класс, для разгрузки кода @see ClassGenerator - Генератора PHP кода класса по схеме класса
+ * Это класс, для разгрузки кода {@see ClassGenerator} - Генератора PHP кода класса по схеме класса
  *
  * Оглавление:
  * @see ConstantsGenerator::exe() - Генератор PHP кода констант

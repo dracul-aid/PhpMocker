@@ -17,6 +17,11 @@ use DraculAid\PhpMocker\Managers\Tools\HasCalled;
 
 /**
  * Список пользовательских функций, для выполнения в мок-методе
+ *
+ * Оглавление:
+ * @see self::$functions - Список функций для исполнения
+ * @see self::$stopMock - Нужно ли прекратить дальнейшее выполнение мок-кода
+ * @see self::$resultCallResult - Объект для хранения результатов работы пользовательской функции
  */
 class MethodUserFunctionsList implements MethodUserFunctionInterface
 {

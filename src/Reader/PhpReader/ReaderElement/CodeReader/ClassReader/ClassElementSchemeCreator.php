@@ -17,9 +17,9 @@ use DraculAid\PhpMocker\Schemes\ViewScheme;
 
 /**
  * Класс, для создания схемы элементов классов (методов, свойств, констант), используется для разгрузки кода в:
- * @see ClassReader - непосредственно в читателе кода класса
- * @see CodeReader - опосредованно в анализаторе кода
- * @see PhpReader - опосредованно в анализаторе скрипта (код, с комментариями и строками)
+ * * {@see ClassReader} - непосредственно в читателе кода класса
+ * * {@see CodeReader} - опосредованно в анализаторе кода
+ * * {@see PhpReader} - опосредованно в анализаторе скрипта (код, с комментариями и строками)
  *
  * Оглавление:
  * @see ClassElementSchemeCreator::start() - Вернет объект для чтения кода и поиска в не ключевых слов для определения элемента класса
@@ -60,10 +60,10 @@ class ClassElementSchemeCreator
      * Осуществит чтение кода, для поиска в нем ключевых слов определение элемента класса.
      * Определив элемент, вернет объект для дальнейшего чтения кода
      *
-     * @return null|self|AbstractClassElementsReader
-     *
-     * Возвращает, как самого себя, так и объект чтения конкретного элемента класса @seeAbstractClassElementsReader
+     * Возвращает, как самого себя, так и объект чтения конкретного элемента класса {@see AbstractClassElementsReader}
      * (если был определен читаемый в настоящий момент элемент)
+     *
+     * @return null|self|AbstractClassElementsReader
      */
     public function run(): null|self|AbstractClassElementsReader
     {

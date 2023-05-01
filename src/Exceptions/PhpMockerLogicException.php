@@ -11,4 +11,7 @@
 
 namespace DraculAid\PhpMocker\Exceptions;
 
+/**
+ * LogicException исключения для библиотеки PHP Mocker
+ */
 class PhpMockerLogicException extends \LogicException implements PphMockerExceptionInterface {}

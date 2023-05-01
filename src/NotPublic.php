@@ -44,7 +44,7 @@ class NotPublic
     readonly public object $toObject;
 
     /**
-     * @var \Closure[]  Массив с "функциями взаимодействия с классами", в качестве ключей выступают имена "методов-генератов" этих функций
+     * @var \Closure[] $closureForObjects  Массив с "функциями взаимодействия с классами", в качестве ключей выступают имена "методов-генератов" этих функций
      */
     private array $closureForObjects = [];
 

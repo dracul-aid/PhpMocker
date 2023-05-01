@@ -116,14 +116,14 @@ class HasCalledArguments implements \Countable, \ArrayAccess, \IteratorAggregate
     /**
      * Обновит значение аргумента или аргументов
      *
+     * (!) Если $index массив, то функция рекурсивно вызывает саму себя. Используя ключи $index, как имя или позицию аргумента
+     *
      * @param   int|string|array   $index      Имя или позиция аргумента. Также может быть массивом аргументов для массового изменения
      * @param   mixed              $setData    Новое значение для аргумента
      *
      * @return  mixed
      *
      * @throws  \TypeError  Аргумент с таким именем или позицией не был найден
-     *
-     * (!) Если $index массив, то функция рекурсивно вызывает саму себя. Используя ключи $index, как имя или позицию аргумента
      */
     public function update(int|string|array $index, mixed $setData = null): static
     {

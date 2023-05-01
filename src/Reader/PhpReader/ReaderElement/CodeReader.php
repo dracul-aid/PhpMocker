@@ -17,7 +17,7 @@ use DraculAid\PhpMocker\Reader\PhpReader\ReaderElement\CodeReader\ScriptNamespac
 use DraculAid\PhpMocker\Reader\PhpReader\ReaderElement\CodeReader\ScriptUseReader;
 
 /**
- * Осуществляет чтение PHP кода (конструкции use, классы и так далее), разгружает код для @see PhpReader
+ * Осуществляет чтение PHP кода (конструкции use, классы и так далее), разгружает код для {@see PhpReader}
  * Используется, если текущий читаемый код, не комментарий и не строка, а именно PHP код
  *
  * Оглавление:

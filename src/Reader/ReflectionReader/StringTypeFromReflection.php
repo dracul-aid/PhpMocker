@@ -8,7 +8,7 @@ use DraculAid\PhpMocker\Exceptions\Reader\ReflectionReaderUndefinedTypeException
 
 /**
  * Класс-функция, с функционалом для получения строкового представления типов из рефлексии
- * @see StringTypeFromReflection::exe()
+ * {@see StringTypeFromReflection::exe()}
  */
 class StringTypeFromReflection
 {

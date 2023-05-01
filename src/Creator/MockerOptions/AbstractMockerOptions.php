@@ -14,6 +14,6 @@ namespace DraculAid\PhpMocker\Creator\MockerOptions;
 use DraculAid\PhpMocker\Creator\AbstractMocker;
 
 /**
- * Абстрактный класс параметров создания мок-классов @see AbstractMocker
+ * Абстрактный класс параметров создания мок-классов {@see AbstractMocker}
  */
 abstract class AbstractMockerOptions {}

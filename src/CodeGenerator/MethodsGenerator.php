@@ -16,9 +16,9 @@ use DraculAid\PhpMocker\Schemes\ClassSchemeType;
 use DraculAid\PhpMocker\Schemes\MethodScheme;
 
 /**
- * Создает PHP строку с методами класса из схем методов @see MethodScheme
+ * Создает PHP строку с методами класса из схем методов {@see MethodScheme}
  *
- * Это класс, для разгрузки кода @see ClassGenerator - Генератора PHP кода класса по схеме класса
+ * Это класс, для разгрузки кода {@see ClassGenerator} - Генератора PHP кода класса по схеме класса
  *
  * Оглавление:
  * @see MethodsGenerator::exe() - Генератор PHP кода методов

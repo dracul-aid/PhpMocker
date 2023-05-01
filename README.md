@@ -5,7 +5,7 @@
 ```
 
 Страница на [Packagist](https://packagist.org/packages/draculaid/phpmocker) и команды для добавления в композер ([подробней об установке](documentation-ru/install/README.md)):
-* для PHP 8.1 и выше `composer require draculaid/phpmocker dev-master`
+* для PHP 8.1 и выше `composer require draculaid/phpmocker`
 * для PHP 7.4.x - 8.0.x `composer require draculaid/phpmocker dev-master-7`
 
 **Документация и Примеры**
@@ -46,7 +46,7 @@
 
 ---
 
-### В ближайших планах
+### В планах...
 * Продолжить работу над документацией
 * Мок для функций
 * Мок для конструкций include() и require()

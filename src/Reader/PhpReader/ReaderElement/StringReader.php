@@ -15,9 +15,9 @@ use DraculAid\PhpMocker\Reader\PhpReader;
 use DraculAid\PhpMocker\Reader\PhpReader\CodeTmp;
 
 /**
- * Осуществляет чтение строки, разгружает код для @see PhpReader
+ * Осуществляет чтение строки, разгружает код для {@see PhpReader}
  *
- * Для чтения Heredoc и Nowdoc строк @see HeredocAndNowdocReader
+ * Для чтения Heredoc и Nowdoc строк {@see HeredocAndNowdocReader}
  *
  * Оглавление:
  * @see StringReader::isStart() - Проверяет, текущий читаемый PHP код, является ли он кодом определенного типа

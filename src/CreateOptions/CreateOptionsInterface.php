@@ -19,18 +19,18 @@ use DraculAid\PhpMocker\Schemes\ClassScheme;
  * Интерфейс с описанием классов, используемых для установки параметров создания мок-классов
  *
  * Для установки параметров создания может быть передана любая функция (в том числе и объект с методом __invoke())
- * Функция будет вызвана перед началом создания мок-класса @see AbstractMocker::createClassExecuting()
+ * Функция будет вызвана перед началом создания мок-класса {@see AbstractMocker::createClassExecuting()}
  *
  * В качестве параметров функция получает:
- * 1) Схему создаваемого класса @see ClassScheme
- * 2) Объект с настройками создания мок-класса @see AbstractMockerOptions
+ * 1. Схему создаваемого класса {@see ClassScheme}
+ * 2. Объект с настройками создания мок-класса {@see AbstractMockerOptions}
  */
 interface CreateOptionsInterface
 {
     /**
      * Вызывается перед началом создания мок-класса
      *
-     * @param   ClassScheme         $classesScheme   Схему создаваемого класса
+     * @param   ClassScheme             $classesScheme   Схему создаваемого класса
      * @param   AbstractMockerOptions   $mockerOptions   Объект с настройками создания мок-класса
      *
      * @return void

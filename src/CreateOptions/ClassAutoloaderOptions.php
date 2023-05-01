@@ -17,7 +17,7 @@ use DraculAid\PhpMocker\Creator\MockerOptions\HardMockerOptions;
 use DraculAid\PhpMocker\Schemes\ClassScheme;
 
 /**
- * Настройка создания мок-классов для автозагрузчика классов @see Autoloader
+ * Настройка создания мок-классов для автозагрузчика классов {@see Autoloader}
  */
 class ClassAutoloaderOptions implements CreateOptionsInterface
 {

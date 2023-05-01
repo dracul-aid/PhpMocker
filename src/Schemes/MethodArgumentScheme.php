@@ -80,7 +80,7 @@ class MethodArgumentScheme implements SchemeWithAttributesInterface
      * Создание новой константы для схемы
      *
      * @param   MethodScheme   $methodScheme   Объект "схема класса" для которой создана константа
-     * @param   string    $name           Имя элемента
+     * @param   string         $name           Имя элемента
      */
     public function __construct(MethodScheme $methodScheme, string $name)
     {

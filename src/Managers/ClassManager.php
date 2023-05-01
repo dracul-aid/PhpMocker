@@ -57,8 +57,8 @@ class ClassManager extends AbstractClassAndObjectManager
      * Список всех менеджеров мок-классов
      *
      * Представляет собой массив:
-     *    * ключи [string]: имена мок-классов
-     *    * значения: объекты менеджеры мок-классов
+     * * ключи [string]: имена мок-классов
+     * * значения: объекты менеджеры мок-классов
      *
      * @var ClassManager[] $managers
      */
@@ -85,8 +85,8 @@ class ClassManager extends AbstractClassAndObjectManager
 
     /**
      * Имя класса, с помощью которого создан мок-класс, обычно это:
-     * @see \DraculAid\PhpMocker\Creator\SoftMocker Мок-классы созданные с помощью наследования
-     * @see \DraculAid\PhpMocker\Creator\HurdMocker Мок-классы созданные с помощью изменения PHP кода
+     * * {@see \DraculAid\PhpMocker\Creator\SoftMocker} Мок-классы созданные с помощью наследования
+     * * {@see \DraculAid\PhpMocker\Creator\HurdMocker} Мок-классы созданные с помощью изменения PHP кода
      */
     readonly protected string $driverName;
 
@@ -99,8 +99,8 @@ class ClassManager extends AbstractClassAndObjectManager
     /**
      * Хранилище менеджеров мок-объектов созданных на основе класса (взаимодействие, как с массивом)
      *
-     * Ключи [object]: мок-объекты для которых создан менеджер
-     * Значения: объекты менеджеры мок-объектов
+     * * Ключи [object]: мок-объекты для которых создан менеджер
+     * * Значения: объекты менеджеры мок-объектов
      *
      * @var \WeakMap|ObjectManager[] $objectManagers
      */
@@ -282,14 +282,14 @@ class ClassManager extends AbstractClassAndObjectManager
     /**
      * Установка значения статического свойства или списка свойств (в том числе и protected и private)
      *
+     * Если устанавливается конкретное свойство, то в $nameOrList передается строка с именем свойства
+     * Если устанавливается список свойств, то $nameOrList - представляет собой массив, в котором ключи - имена свойств,
+     * а значения - устанавливаемые значения для свойства
+     *
      * @param   string|array   $nameOrList   Имя статического свойства или массив с устанавливаемыми свойствами
      * @param   mixed          $value        Устанавливаемое значение
      *
      * @return  $this
-     *
-     * Если устанавливается конкретное свойство, то в $nameOrList передается строка с именем свойства
-     * Если устанавливается список свойств, то $nameOrList - представляет собой массив, в котором ключи - имена свойств,
-     * а значения - устанавливаемые значения для свойства
      */
     public function setProperty(string|array $nameOrList, mixed $value = null): self
     {

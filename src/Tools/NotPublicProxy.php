@@ -16,13 +16,19 @@ use DraculAid\PhpMocker\NotPublic;
 /**
  * Создает объект, проксирующий вызов "другого объекта" для получения доступа к непубличным свойствам и методам
  *
- * В отличие от @see NotPublic::instance() не дает доступа к статическим элементам и константам, но позволяет
+ * В отличие от {@see NotPublic::instance()} не дает доступа к статическим элементам и константам, но позволяет
  * типизировать переменные (в докблоках) тем же типом, что и оригинальный объект, тем самым облегчая разработку
  */
 class NotPublicProxy
 {
-    readonly private NotPublic $___not_public_object___;
+    /**
+     * Проксируемый объект (т.е. объект, для которого создана прокси)
+     */
+    private NotPublic $___not_public_object___;
 
+    /**
+     * @param   object  $toObject  Проксируемый объект
+     */
     public function __construct(object $toObject)
     {
         $this->___not_public_object___ = NotPublic::instance($toObject);

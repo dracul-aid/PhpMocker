@@ -12,6 +12,8 @@
 
 `ClassManager::$mockMethodNames` Содержит список всех методов мок-класса, которые могут выступать как мок-методы
 
+`ClassManager::clearMockMethodsCases()` Позволяет удалить все установленные кейсы вызова
+
 ```php
 use DraculAid\PhpMocker\MockCreator;
 

@@ -14,9 +14,9 @@ namespace DraculAid\PhpMocker\Reader\PhpReader\ReaderElement;
 use DraculAid\PhpMocker\Reader\PhpReader;
 
 /**
- * Осуществляет чтение блочного комментария, разгружает код для @see PhpReader
+ * Осуществляет чтение блочного комментария, разгружает код для {@see PhpReader}
  *
- * Для чтения однострочных комментариев @see CommentLineReader
+ * Для чтения однострочных комментариев {@see CommentLineReader}
  *
  * Оглавление:
  * @see CommentBlockReader::isStart() - Проверяет, текущий читаемый PHP код, является ли он кодом определенного типа

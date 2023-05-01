@@ -11,4 +11,7 @@
 
 namespace DraculAid\PhpMocker\Exceptions;
 
+/**
+ * RuntimeException исключения для библиотеки PHP Mocker
+ */
 class PhpMockerRuntimeException extends \RuntimeException implements PphMockerExceptionInterface {}

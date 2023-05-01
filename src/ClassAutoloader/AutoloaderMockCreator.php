@@ -193,19 +193,19 @@ class AutoloaderMockCreator
     /**
      * Сохраняет созданный мок-клас в кеш
      *
+     * $saveCreateManagerData - Представляет собой список, каждый элемент которого массив со следующими элементами:
+     *   * 'type': Строка с представлением типа-класса {@see ClassManager::$classType}
+     *   * 'class_name': Строка с именем мок-класса {@see ClassManager::$driverName}
+     *   * 'driver_name': строка с именем драйвера (класса, создавшего мок-класс) {@see ClassManager::$driverName}
+     *   * 'index': уникальный идентификатор мок-класса {@see ClassManager::$index}
+     *   * 'mock_method_names': Список имен методов класса, для которых можно получить "мок-метод" {@see ClassManager::$mockMethodNames}
+     *
      * @param   string   $phpCode                 PHP код для сохранения
      * @param   array    $saveCreateManagerData   Массив с данными для создания "менеджеров мок-методов"
      *
      * @return  void
      *
      * @throws  PhpMockerAutoloaderErorrSaveCacheException  Если не удалось записать PHP код в файл кеша
-     *
-     * @var $saveCreateManagerData - Представляет собой список, каждый элемент которого массив со следующими элементами:
-     *    * 'type': Строка с представлением типа-класса @see ClassManager::$classType
-     *    * 'class_name': Строка с именем мок-класса @see ClassManager::$driverName
-     *    * 'driver_name': строка с именем драйвера (класса, создавшего мок-класс) @see ClassManager::$driverName
-     *    * 'index': уникальный идентификатор мок-класса @see ClassManager::$index
-     *    * 'mock_method_names': Список имен методов класса, для которых можно получить "мок-метод" @see ClassManager::$mockMethodNames
      */
     protected function saveInCache(string $phpCode, array $saveCreateManagerData): void
     {

@@ -19,6 +19,7 @@
 **Дерево Исключений**
 
 * `Exceptions\PhpMockerLogicException` (наследует от `\LogicException`)
+  * `Exceptions\Managers\MethodIsNotConstructorException` в случаях, если с мок-методом проводится работа, возможная только для конструкторов
 * `Exceptions\PhpMockerRuntimeException` (наследует от `\RuntimeException`)
   * **Creator - Исключения связанные с созданием мок-классов**
     * **A:** `Exceptions\Creator\AbstractMockClassCreateFailException` Провал создания мок-класса
