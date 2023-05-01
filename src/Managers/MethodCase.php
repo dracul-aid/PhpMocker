@@ -11,7 +11,7 @@
 
 namespace DraculAid\PhpMocker\Managers;
 
-use DraculAid\PhpMocker\Managers\Tools\MethodUserFunctionInterface;
+use DraculAid\PhpMocker\Managers\MethodUserFunctions\MethodUserFunctionInterface;
 use DraculAid\PhpMocker\Managers\Tools\CallResult;
 use DraculAid\PhpMocker\Managers\Tools\HasCalled;
 use DraculAid\PhpMocker\Tools\CallableObject;
@@ -91,7 +91,7 @@ class MethodCase
      * Функция, которая будет выполнена перед выполнением основного тела метода
      * (только, если метод может быть мок-методом)
      *
-     * @see MethodUserFunctionInterface::__invoke() Описание входящих параметров функции и ее ответа
+     * @see \DraculAid\PhpMocker\Managers\MethodUserFunctions\MethodUserFunctionInterface::__invoke() Описание входящих параметров функции и ее ответа
      */
     public null|CallableObject|MethodUserFunctionInterface $userFunction = null;
 
@@ -218,15 +218,12 @@ class MethodCase
     /**
      * Установит функцию, которая будет выполнена перед выполнением кейса-вызова
      *
-     * Аргументы и описание работы функции
+     * Аргументы и описание работы функции {@see MethodUserFunctionInterface}
      *
      * @param   null|callable|CallableObject|MethodUserFunctionInterface   $userFunction    Может быть любой callable, или объект-функция. NULL - для удаления функции
      * @param   bool                                                       $clearCounter    TRUE, если нужно сбросить счетчик вызова кейса
      *
      * @return  $this
-     *
-     * @see MethodUserFunctionInterface
-     *
      */
     public function setUserFunction(null|callable|CallableObject|MethodUserFunctionInterface $userFunction, bool $clearCounter = false): self
     {

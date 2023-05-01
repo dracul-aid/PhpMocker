@@ -6,7 +6,7 @@
 
 Для установки функции используется `MethodCase::setUserFunction()`
 
-В качестве функции также может выступать объект имплементирующий `\DraculAid\PhpMocker\Managers\Tools\MethodUserFunctionInterface`
+В качестве функции также может выступать объект имплементирующий `\DraculAid\PhpMocker\Managers\MethodUserFunctions\MethodUserFunctionInterface`
 
 Функция получит на вход два аргумента:
 1) Объект с параметрами вызова `\DraculAid\PhpMocker\Managers\Tools\HasCalled`

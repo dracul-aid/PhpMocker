@@ -13,11 +13,11 @@ namespace DraculAid\PhpMocker\Managers;
 
 use DraculAid\PhpMocker\Creator\AbstractMocker;
 use DraculAid\PhpMocker\Exceptions\PhpMockerLogicException;
+use DraculAid\PhpMocker\Managers\MethodUserFunctions\MethodUserFunctionInterface;
 use DraculAid\PhpMocker\Managers\Tools\AbstractClassAndObjectManager;
-use DraculAid\PhpMocker\Managers\Tools\HasCalledArguments;
-use DraculAid\PhpMocker\Managers\Tools\MethodUserFunctionInterface;
 use DraculAid\PhpMocker\Managers\Tools\CallResult;
 use DraculAid\PhpMocker\Managers\Tools\HasCalled;
+use DraculAid\PhpMocker\Managers\Tools\HasCalledArguments;
 use DraculAid\PhpMocker\Tools\CallableObject;
 
 /**

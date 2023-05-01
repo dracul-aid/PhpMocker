@@ -9,10 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace DraculAid\PhpMocker\Managers\Tools;
+namespace DraculAid\PhpMocker\Managers\MethodUserFunctions;
 
 use DraculAid\PhpMocker\Managers\MethodCase;
 use DraculAid\PhpMocker\Managers\MethodManager;
+use DraculAid\PhpMocker\Managers\Tools\CallResult;
+use DraculAid\PhpMocker\Managers\Tools\HasCalled;
 
 /**
  * Интерфейс, описывающий объекты-функции, выполняющиеся перед началом выполнения мок-метода или мок-кейса

@@ -14,7 +14,7 @@ PhpMocker позволяет назначить всем мок-методам �
 `MethodManager::$userFunction` - Функция, которая будет выполнена перед выполнением основного тела мок-метода и проверок
 кейсов вызова. Благородя этой функции можно накладывать любою логику на работу мок-методов.
 
-В качестве значения `MethodManager::$userFunction` может выступать любая функция или объект наследующий `\DraculAid\PhpMocker\Managers\Tools\MethodUserFunctionInterface`
+В качестве значения `MethodManager::$userFunction` может выступать любая функция или объект наследующий `\DraculAid\PhpMocker\Managers\MethodUserFunctions\MethodUserFunctionInterface`
 
 Функция получит на вход два аргумента:
 1) Объект с параметрами вызова `\DraculAid\PhpMocker\Managers\Tools\HasCalled`
@@ -40,8 +40,8 @@ PhpMocker позволяет назначить всем мок-методам �
 
 ```php
 use DraculAid\PhpMocker\Managers\MethodManager;
+use DraculAid\PhpMocker\Managers\MethodUserFunctions\MethodUserFunctionInterface;
 use DraculAid\PhpMocker\Managers\Tools\CallResult;
-use DraculAid\PhpMocker\Managers\Tools\MethodUserFunctionInterface;
 use DraculAid\PhpMocker\Tools\CallableObject;
 
 /** @var MethodManager $methodManager Полученный каким-то образом менеджер метода */
